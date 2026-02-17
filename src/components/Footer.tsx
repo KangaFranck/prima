@@ -1,0 +1,133 @@
+import React from 'react';
+import { Facebook, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+// Footer component with contact information and social links
+const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <footer className="bg-black text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10">
+        {/* Mobile : colonne unique puis icônes + logo côte à côte */}
+        {/* Tablette (md) : grille 3 colonnes (MAGASINS | HORAIRE+CONTACT | Icônes) + logo en bas à droite */}
+        <div className="flex flex-col gap-10 md:gap-12">
+          {/* Ligne 1 : contenu en colonne (mobile) ou grille 3 colonnes (tablette+) */}
+          <div className="flex flex-col md:grid md:grid-cols-3 md:gap-x-12 md:gap-y-0 gap-8">
+            {/* Colonne 1 : MAGASINS */}
+            <div className="flex flex-col">
+              <h3 className="text-sm md:text-xl font-ogg font-bold mb-3 md:mb-4 text-white uppercase">
+                MAGASINS
+              </h3>
+              <div className="space-y-1.5 md:space-y-2 text-gray-300 font-sofia text-sm md:text-base">
+                <p>Grands magasins spécialisés</p>
+                <p>Mode féminine</p>
+                <p>Mode homme / femme</p>
+                <p>Mode masculine</p>
+                <p>Chaussures, sacs et maroquinerie</p>
+                <p>Bijoux</p>
+                <p>Vêtements pour enfants</p>
+                <p>Livres, cadeaux et maison</p>
+                <p>Soins personnels</p>
+              </div>
+            </div>
+
+            {/* Colonne 2 : HORAIRE + CONTACT */}
+            <div className="flex flex-col gap-6 md:gap-8">
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-xl font-ogg font-bold mb-3 md:mb-4 text-white uppercase">
+                  HORAIRE
+                </h3>
+                <div className="space-y-1.5 md:space-y-2 text-gray-300 font-sofia text-sm md:text-base">
+                  <p>du lundi au dimanche</p>
+                  <p>ouvert de 9h00 à 00h00</p>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-xl font-ogg font-bold mb-3 md:mb-4 text-white uppercase">
+                  CONTACT
+                </h3>
+                <div className="space-y-1.5 md:space-y-2 text-gray-300 font-sofia text-sm md:text-base">
+                  <p>info@primacenter.ci</p>
+                  <p>+225 07 88 00 80</p>
+                  <p>Marcory Zone 4, Abidjan</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Colonne 3 : icônes réseaux (mobile = ligne avec logo à droite, tablette+ = colonne seule) */}
+            <div className="flex flex-row md:flex-col gap-4 items-start md:items-start w-full md:w-auto">
+              <div className="flex flex-col gap-4 flex-shrink-0">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </a>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </a>
+                <a
+                  href="https://tiktok.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  aria-label="TikTok"
+                >
+                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0011.14-4.02v-7a8.16 8.16 0 004.65 1.48V7.1a4.79 4.79 0 01-1.2-.41z" />
+                  </svg>
+                </a>
+              </div>
+              {/* Logo à droite des icônes : mobile uniquement */}
+              <div className="flex-1 flex items-center justify-center md:hidden min-h-[240px]">
+                <Link to="/" className="inline-block" onClick={scrollToTop}>
+                  <img
+                    src="/images/logo%20blanc.jpeg"
+                    alt="Prima Center"
+                    className="h-36 w-auto object-contain max-h-48 sm:h-40 sm:max-h-56"
+                  />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Tablette+ : logo en bas à droite, bien visible */}
+          <div className="hidden md:flex md:justify-end md:items-end pt-4">
+            <Link to="/" className="inline-block" onClick={scrollToTop}>
+              <img
+                src="/images/logo%20blanc.jpeg"
+                alt="Prima Center"
+                className="h-20 md:h-24 lg:h-32 xl:h-40 w-auto object-contain"
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white" />
+
+      <div className="bg-black w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-5 md:py-6">
+          <p className="font-sofia text-white text-center text-sm md:text-base">© 2025 Prima Center.</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

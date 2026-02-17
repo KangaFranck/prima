@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "public": true,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "installCommand": "npm install"
+      }
+    },
+    {
+      "src": "api/routes.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/routes?path=$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept",
+        "Cache-Control": "no-store, no-cache, must-revalidate"
+      }
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate"
+      }
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "https://prima-five.vercel.app/api",
+    "MONGODB_URI": "mongodb+srv://franckkanga0707:csNtNgcYQp2raCoq@prima.l2xpx7h.mongodb.net/?retryWrites=true&w=majority&appName=prima",
+    "JWT_SECRET": "prima_secret_key_2024_secure_jwt"
+  }
+} 

@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+/* === Ogg Roman (titres) – fichier : public/fonts/Ogg-Roman.otf === */
+@font-face {
+  font-family: 'Ogg Roman';
+  src: url('/fonts/Ogg-Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* === Sofia Pro (corps) – fichier : public/fonts/SofiaPro-SoftLight.ttf === */
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/SofiaPro-SoftLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/SofiaPro-SoftLight.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback : si les fichiers ne sont pas encore présents, Playfair + Source Sans 3 restent utilisés via les règles plus bas */
+/* Les polices Neue Montreal seront réactivées une fois que nous aurons les fichiers corrects */
+/* @font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Regular.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Medium.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Bold.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Alignement barre d'info + logo : même décalage depuis le conteneur */
+:root {
+  --header-content-start: 1rem;   /* décalage commun (texte "Ouvert" + bloc logo) */
+  --logo-offset: 2.5rem;          /* décalage supplémentaire du logo vers la droite --> */
+  --logo-image-pull: 0;            /* si le P visuel n’est pas au bord de l’image : ex. -0.5rem */
+}
+
+/* Pull optionnel sur l’image du logo en header pour aligner le P visuel avec le O */
+.header-logo img {
+  margin-left: var(--logo-image-pull);
+}
+
+/* === Responsive tous navigateurs (Chrome, Firefox, Safari, Edge, mobile) === */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* iOS Safari : hauteur fenêtre correcte */
+    min-height: 100%;
+    min-height: -webkit-fill-available;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    overflow-x: hidden;
+    max-width: 100vw;
+    min-width: 0;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    /* Éviter débordement horizontal (tous navigateurs) */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Contenu et médias toujours adaptés (video garde object-cover en section hero) */
+  img, iframe, object, embed {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  img {
+    display: block;
+    height: auto;
+  }
+
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Liens et boutons : zone tactile min 44px (Safari, Chrome mobile) */
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Tables et textes longs : ne pas casser la mise en page */
+  table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    table {
+      display: table;
+    }
+  }
+}
+
+/* Conteneur de page commun : largeur max cohérente sur tous les écrans */
+@layer components {
+  .page-container {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .page-container { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+  @media (min-width: 768px) {
+    .page-container { padding-left: 2rem; padding-right: 2rem; }
+  }
+  @media (min-width: 1280px) {
+    .page-container { max-width: 1400px; }
+  }
+  @media (min-width: 1536px) {
+    .page-container { max-width: 1600px; }
+  }
+}
+
+/* Custom styles – Ogg Roman + Sofia Pro */
+@layer base {
+  /* Titres : Ogg Roman partout (toutes les pages + footer) */
+  h1, h2, h3 {
+    font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.19;
+  }
+
+  /* Corps de texte : Sofia Pro partout */
+  * {
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+  }
+
+  .prima-center {
+    font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif !important;
+  }
+}
+
+/* Custom animations */
+@layer utilities {
+  .transition-transform {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
