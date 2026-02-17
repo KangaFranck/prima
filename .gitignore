@@ -88,9 +88,8 @@ jspm_packages/
 # Nuxt.js build / generate output
 .nuxt
 
-# Gatsby files
+# Gatsby files (ne pas ignorer public/ pour Vite : images, fonts, etc.)
 .cache/
-public
 
 # Storybook build outputs
 .out
