@@ -16,15 +16,11 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-/** Construit l'URL de l'API. En prod (pas localhost) : toujours relative /api/... pour éviter mauvaise URL. */
+/** Construit l'URL de l'API. Si VITE_API_URL est défini (dev 2 serveurs), l'utiliser ; sinon toujours /api/ (même origine). */
 function apiPath(segment: string): string {
-  if (typeof window !== 'undefined') {
-    const isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
-    if (!isLocal) return `/api/${segment}`; // Production Vercel : même origine
-  }
   const base = baseURL.replace(/\/$/, '');
-  const prefix = base ? `${base}/api` : '/api';
-  return `${prefix}/${segment}`;
+  if (base) return `${base}/api/${segment}`;
+  return `/api/${segment}`;
 }
 
 /** Invalide le cache (après création/modification/suppression côté admin). */

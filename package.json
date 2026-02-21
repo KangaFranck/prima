@@ -37,7 +37,8 @@
     "vercel-build": "vite build",
     "migrate:pb": "node --env-file=.env.migration scripts/migratePocketBase.js",
     "prepare-deploy": "node scripts/prepare-deployment.js",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "start": "npx tsx server.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.700.0",
