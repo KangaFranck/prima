@@ -206,29 +206,30 @@ export default function Home() {
               spaceBetween={16}
               slidesPerView={1}
               centeredSlides={true}
+              speed={600}
               breakpoints={{
                 480: {
                   slidesPerView: 1.2,
                   spaceBetween: 20,
-                  centeredSlides: true, // Centrer aussi sur mobile large
+                  centeredSlides: true,
                 },
                 640: {
-                  slidesPerView: 3, // Tablette: 3 logos
+                  slidesPerView: 3,
                   spaceBetween: 4,
-                  centeredSlides: false, // Pas besoin de centrer sur tablette
+                  centeredSlides: false,
                 },
                 768: {
-                  slidesPerView: 4, // Desktop petit: 4 logos
+                  slidesPerView: 4,
                   spaceBetween: 6,
                   centeredSlides: false,
                 },
                 1024: {
-                  slidesPerView: 5, // Desktop: 5 logos
+                  slidesPerView: 5,
                   spaceBetween: 8,
                   centeredSlides: false,
                 },
                 1280: {
-                  slidesPerView: 6, // Desktop large: 6 logos
+                  slidesPerView: 6,
                   spaceBetween: 10,
                   centeredSlides: false,
                 }
@@ -239,7 +240,7 @@ export default function Home() {
                 bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active !bg-black !opacity-100'
               }}
               autoplay={{
-                delay: 3000,
+                delay: 2500,
                 disableOnInteraction: false,
               }}
               className="w-full"
@@ -249,12 +250,13 @@ export default function Home() {
                   <Link 
                     to={`/${item.type}s/${item.id}`}
                     className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
+                    title={item.name}
                   >
                     <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
                       {(item.logoCarousel || item.logo || item.image) ? (
                         <img
                           src={item.logoCarousel || item.logo || item.image}
-                          alt={item.name}
+                          alt=""
                           className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                         />
                       ) : (

@@ -98,6 +98,13 @@ const server = createServer(async (req, res) => {
 
   if (pathname.startsWith('/api')) {
     const path = parsePath(pathname);
+    const maxUploadBytes = 5 * 1024 * 1024; // 5 MB pour éviter 502 (mémoire) sur Render Free
+    const contentLength = req.headers['content-length'];
+    if (path === 'upload' && req.method === 'POST' && contentLength && Number(contentLength) > maxUploadBytes) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Image trop volumineuse. Réduisez la taille (max 5 Mo) ou enregistrez sans image.' }));
+      return;
+    }
     const vercelReq = {
       method: req.method,
       headers: req.headers,
