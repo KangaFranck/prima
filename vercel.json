@@ -15,7 +15,8 @@
     },
     { "src": "api/routes.ts", "use": "@vercel/node" },
     { "src": "api/debug.ts", "use": "@vercel/node" },
-    { "src": "api/login.ts", "use": "@vercel/node" }
+    { "src": "api/login.ts", "use": "@vercel/node" },
+    { "src": "api/auth/login.ts", "use": "@vercel/node" }
   ],
   "rewrites": [
     { "source": "/api/debug", "destination": "/api/debug" },

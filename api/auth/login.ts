@@ -16,8 +16,9 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
 function cors(res: VercelResponse, origin: string | undefined) {
   const originNorm = origin ? origin.replace(/\/$/, '') : '';
   const allowed = originNorm && ALLOWED_ORIGINS.includes(originNorm);
-  const o = allowed ? (origin ?? '*') : ALLOWED_ORIGINS[0] || '*';
-  res.setHeader('Access-Control-Allow-Origin', typeof o === 'string' ? o.replace(/\/$/, '') : o);
+  const vercelApp = originNorm && /\.vercel\.app$/i.test(originNorm);
+  const o = allowed ? originNorm : (vercelApp ? originNorm : ALLOWED_ORIGINS[0] || '*');
+  res.setHeader('Access-Control-Allow-Origin', (typeof o === 'string' ? o.replace(/\/$/, '') : o) || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
