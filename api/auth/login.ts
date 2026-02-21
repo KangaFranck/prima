@@ -25,11 +25,11 @@ function cors(res: VercelResponse, origin: string | undefined) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   cors(res, req.headers.origin);
 
-  if (req.method === 'OPTIONS') {
+  if ((req.method || '').toUpperCase() === 'OPTIONS') {
     return res.status(204).end();
   }
 
-  if (req.method !== 'POST') {
+  if ((req.method || '').toUpperCase() !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Méthode non autorisée. Utilisez POST.' });
   }

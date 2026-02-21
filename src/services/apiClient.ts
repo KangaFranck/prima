@@ -49,7 +49,7 @@ async function request<T>(
   const isGet = method === 'GET';
   if (isGet) {
     const cached = dataCache.get(pathSegment);
-    if (cached && cached.expiry > Date.now()) return cached.data as T;
+    if (cached !== undefined) return cached as T;
   }
   const url = apiPath(pathSegment);
   const headers: Record<string, string> = {
@@ -59,7 +59,12 @@ async function request<T>(
   const token = getToken();
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(url, { ...init, headers });
+  // Pour POST/PUT/DELETE, ne pas suivre les redirections (évite POST→GET et 405 en prod)
+  const fetchOpts: RequestInit =
+    method !== 'GET'
+      ? { ...init, headers, redirect: 'manual' as RequestRedirect }
+      : { ...init, headers };
+  const res = await fetch(url, fetchOpts);
   const contentType = res.headers.get('content-type') || '';
   const isJson = contentType.includes('application/json');
   const text = await res.text();
