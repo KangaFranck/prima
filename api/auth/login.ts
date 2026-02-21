@@ -8,11 +8,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
 function cors(res: VercelResponse, origin: string | undefined) {
-  const o = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0] || '*';
-  res.setHeader('Access-Control-Allow-Origin', o);
+  const originNorm = origin ? origin.replace(/\/$/, '') : '';
+  const allowed = originNorm && ALLOWED_ORIGINS.includes(originNorm);
+  const o = allowed ? (origin ?? '*') : ALLOWED_ORIGINS[0] || '*';
+  res.setHeader('Access-Control-Allow-Origin', typeof o === 'string' ? o.replace(/\/$/, '') : o);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
