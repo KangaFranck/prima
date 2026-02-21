@@ -1,10 +1,7 @@
 /**
- * GET /api/health — Format officiel Vercel (doc).
- * https://vercel.com/docs/functions/serverless-functions
+ * GET /api/health — Handler Node pour @vercel/node (builds explicites).
  */
-export function GET() {
-  return new Response(
-    JSON.stringify({ ok: true, message: 'API Vercel OK' }),
-    { status: 200, headers: { 'Content-Type': 'application/json' } }
-  );
+export default function handler(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).json({ ok: true, message: 'API Vercel OK' });
 }
