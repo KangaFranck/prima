@@ -16,9 +16,11 @@
     { "src": "api/routes.ts", "use": "@vercel/node" },
     { "src": "api/debug.ts", "use": "@vercel/node" },
     { "src": "api/login.ts", "use": "@vercel/node" },
-    { "src": "api/auth/login.ts", "use": "@vercel/node" }
+    { "src": "api/auth/login.ts", "use": "@vercel/node" },
+    { "src": "api/health.js", "use": "@vercel/node" }
   ],
   "rewrites": [
+    { "source": "/api/health", "destination": "/api/health" },
     { "source": "/api/debug", "destination": "/api/debug" },
     { "source": "/api/routes", "destination": "/api/routes" },
     { "source": "/api/auth/login", "destination": "/api/auth/login" },
