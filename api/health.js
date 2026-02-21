@@ -1,9 +1,10 @@
 /**
- * Route de test minimale (aucune dépendance).
- * GET /api/health → si 200, les fonctions API sont déployées.
- * Export ESM pour compatibilité avec package.json "type": "module".
+ * GET /api/health — Format officiel Vercel (doc).
+ * https://vercel.com/docs/functions/serverless-functions
  */
-export default function handler(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  res.status(200).json({ ok: true, message: 'API Vercel OK' });
+export function GET() {
+  return new Response(
+    JSON.stringify({ ok: true, message: 'API Vercel OK' }),
+    { status: 200, headers: { 'Content-Type': 'application/json' } }
+  );
 }
