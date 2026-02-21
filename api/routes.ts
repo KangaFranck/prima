@@ -71,8 +71,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // ---- Auth login : tout /api/auth/login passe par ici (un seul point d'entrée = pas de 405) ----
-    if (path === 'auth/login') {
+    // ---- Login : /api/login ET /api/auth/login (un seul handler = plus de 404) ----
+    const isLoginPath = path === 'login' || path === 'auth/login';
+    if (isLoginPath) {
       const raw = req.headers['x-vercel-forwarded-method'] ?? req.method ?? '';
       const method = (Array.isArray(raw) ? raw[0] : raw).toUpperCase();
       if (method !== 'POST') {
