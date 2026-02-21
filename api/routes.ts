@@ -1,8 +1,8 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from './db.js';
-import { getAdminFromToken, withAdminAuth } from './middleware/auth.js';
-import { rowToBoutique, rowToRestaurant, rowToLoisir, rowToEvenement, toTimePg } from './lib/mappers.js';
-import { uploadToR2, checkR2 } from './lib/r2.js';
+import { sql } from './db.ts';
+import { getAdminFromToken, withAdminAuth } from './middleware/auth.ts';
+import { rowToBoutique, rowToRestaurant, rowToLoisir, rowToEvenement, toTimePg } from './lib/mappers.ts';
+import { uploadToR2, checkR2 } from './lib/r2.ts';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 

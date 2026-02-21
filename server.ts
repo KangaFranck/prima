@@ -138,7 +138,7 @@ const server = createServer(async (req, res) => {
     };
     try {
       if (!apiHandler) {
-        const mod = await import('./api/routes.js');
+        const mod = await import('./api/routes.ts');
         apiHandler = mod.default;
       }
       await apiHandler(vercelReq, vercelRes);
@@ -160,8 +160,13 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, async () => {
-  const mod = await import('./api/routes.js');
-  apiHandler = mod.default;
-  console.log(`Serveur Prima Center: http://localhost:${PORT}`);
-  console.log(`  API: http://localhost:${PORT}/api/health`);
+  try {
+    const mod = await import('./api/routes.ts');
+    apiHandler = mod.default;
+    console.log(`Serveur Prima Center: http://localhost:${PORT}`);
+    console.log(`  API: http://localhost:${PORT}/api/health`);
+  } catch (err) {
+    console.error('Erreur au chargement de l\'API:', err);
+    process.exit(1);
+  }
 });

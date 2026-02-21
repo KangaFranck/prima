@@ -1,9 +1,10 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET doit être défini (env).');
+function getJwtSecret(): string {
+  const s = process.env.JWT_SECRET;
+  if (!s) throw new Error('JWT_SECRET doit être défini (env).');
+  return s;
 }
 
 export interface AdminPayload {
@@ -24,7 +25,7 @@ export function getAdminFromToken(req: VercelRequest): AdminPayload | null {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
   if (!token) return null;
   try {
-    return jwt.verify(token, JWT_SECRET) as AdminPayload;
+    return jwt.verify(token, getJwtSecret()) as AdminPayload;
   } catch {
     return null;
   }
