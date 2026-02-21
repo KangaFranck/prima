@@ -183,5 +183,6 @@ export const apiClient = {
 
 /** true si le front doit utiliser l’API (Neon/R2) au lieu de PocketBase */
 export function useApi(): boolean {
-  return Boolean(baseURL) || import.meta.env.DEV;
+  // En production (Vercel) : toujours l'API (même origine /api/). En dev : API si VITE_API_URL ou par défaut.
+  return Boolean(baseURL) || import.meta.env.DEV || import.meta.env.PROD;
 }
