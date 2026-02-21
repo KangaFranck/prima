@@ -4,11 +4,13 @@ Quand le login admin renvoie **405** en production malgré le code, la cause est
 
 **Si `/api/debug` affiche la page du site (footer) au lieu du JSON :** le fallback SPA prenait toute l’URL. Le `vercel.json` utilise maintenant `rewrites` pour que `/api/*` aille d’abord à la fonction API. **Redéploie** (Redeploy sur Vercel) puis réessaie `/api/debug`.
 
+**Si 404 sur le login (API 404) :**
+- Le front appelle maintenant **`/api/login`** (fichier `api/login.ts` à la racine de `api/`), plus fiable que `/api/auth/login` sur Vercel.
+- **Vercel → Settings → General** : **Root Directory** doit être vide ou `.` (pas un sous-dossier), sinon le dossier `api/` n’est pas pris en compte.
+- **Redeploy** : après un push, faire **Redeploy** → **Clear cache and redeploy** sur le dernier déploiement, attendre 2–3 min puis réessayer.
+
 **Si `/api/debug` ou `/api/auth/login` renvoie 404 NOT_FOUND :**
-- **Cause :** Avec un tableau **builds** explicite dans `vercel.json`, Vercel ne déploie que les fichiers listés. Si `api/auth/login.ts` n’est pas dans **builds**, la route `/api/auth/login` n’existe pas → 404.
-- **Solution :** ajouter `{ "src": "api/auth/login.ts", "use": "@vercel/node" }` dans **builds** de `vercel.json`, puis redéployer.
-- Vérifier que **Root Directory** est vide (ou `.`) dans Vercel → Settings → General.
-- Après push : **Redeploy** → **Clear cache and redeploy**, puis réessayer après 2–3 min.
+- Avec un tableau **builds** explicite, ajouter les fichiers API dans **builds** et vérifier **Root Directory** (voir ci-dessus).
 
 ---
 
