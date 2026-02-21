@@ -52,9 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // ---- Auth login ----
+    // ---- Auth login (secours si la requête arrive ici au lieu de api/auth/login.ts) ----
     if (path === 'auth/login') {
-      if (req.method !== 'POST') {
+      console.log('[routes] auth/login reçu ici method=', req.method, 'path=', path);
+      if ((req.method || '').toUpperCase() !== 'POST') {
         res.setHeader('Allow', 'POST');
         return res.status(405).json({ error: 'Méthode non autorisée. Utilisez POST.' });
       }

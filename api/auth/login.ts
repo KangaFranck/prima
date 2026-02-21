@@ -23,6 +23,9 @@ function cors(res: VercelResponse, origin: string | undefined) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Debug prod : voir dans Vercel > Logs ce qui est reçu (méthode, URL)
+  console.log('[login] method=', req.method, 'url=', req.url, 'headers.method=', (req.headers as Record<string, string>)['x-vercel-forwarded-method']);
+
   cors(res, req.headers.origin);
 
   if ((req.method || '').toUpperCase() === 'OPTIONS') {

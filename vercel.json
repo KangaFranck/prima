@@ -26,6 +26,10 @@
       "dest": "/api/auth/login"
     },
     {
+      "src": "/api/auth/login/",
+      "dest": "/api/auth/login"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/routes?path=$1",
       "headers": {
