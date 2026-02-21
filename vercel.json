@@ -22,7 +22,7 @@
     { "source": "/api/debug", "destination": "/api/debug" },
     { "source": "/api/routes", "destination": "/api/routes" },
     { "source": "/api/auth/login", "destination": "/api/auth/login" },
-    { "source": "/api/login", "destination": "/api/routes?path=login" },
+    { "source": "/api/login", "destination": "/api/login" },
     { "source": "/api/(.*)", "destination": "/api/routes?path=$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
