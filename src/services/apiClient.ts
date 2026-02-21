@@ -101,10 +101,20 @@ export interface AuthResponse {
 export const apiClient = {
   auth: {
     async login(email: string, password: string): Promise<AuthResponse> {
-      return request<AuthResponse>('auth/login', {
+      const url = apiPath('auth/login');
+      const body = JSON.stringify({ email, password });
+      const res = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        redirect: 'manual',
       });
+      const text = await res.text();
+      if (!res.ok) {
+        const err = (() => { try { return text && JSON.parse(text); } catch { return {}; } })() as { error?: string };
+        throw new Error(err?.error || `API ${res.status}`);
+      }
+      return JSON.parse(text) as AuthResponse;
     },
   },
 

@@ -31,7 +31,7 @@ export function getAdminFromToken(req: VercelRequest): AdminPayload | null {
 }
 
 export function withAdminAuth(
-  handler: (req: VercelRequest, res: VercelResponse) => Promise<void>
+  handler: (req: VercelRequest, res: VercelResponse) => Promise<void | VercelResponse>
 ) {
   return async (req: VercelRequest, res: VercelResponse) => {
     const admin = getAdminFromToken(req);
