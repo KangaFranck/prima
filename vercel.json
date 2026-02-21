@@ -1,1 +1,23 @@
-{"version":2,"public":true,"builds":[{"src":"package.json","use":"@vercel/static-build","config":{"buildCommand":"npm run build","outputDirectory":"dist","installCommand":"npm install"}},{"src":"api/routes.ts","use":"@vercel/node"},{"src":"api/debug.ts","use":"@vercel/node"}],"rewrites":[{"source":"/api/debug","destination":"/api/debug"},{"source":"/api/(.*)","destination":"/api/routes?path=$1"},{"source":"/((?!api/).*)","destination":"/index.html"}],"headers":[{"source":"/api/(.*)","headers":[{"key":"Access-Control-Allow-Methods","value":"GET, POST, PUT, DELETE, OPTIONS"},{"key":"Access-Control-Allow-Headers","value":"X-Requested-With, Content-Type, Accept, Authorization"},{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"}]}]}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "public": true,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "rewrites": [
+    { "source": "/api/debug", "destination": "/api/debug" },
+    { "source": "/api/(.*)", "destination": "/api/routes?path=$1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept, Authorization" },
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+      ]
+    }
+  ]
+}
