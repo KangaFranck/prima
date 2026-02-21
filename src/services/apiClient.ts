@@ -27,12 +27,6 @@ function apiPath(segment: string): string {
   return `${prefix}/${segment}`;
 }
 
-/** URL directe vers routes.ts (évite 404 si le rewrite /api/login ne s'applique pas sur Vercel). */
-function routesPath(pathSegment: string): string {
-  const segment = apiPath('routes');
-  return `${segment}?path=${encodeURIComponent(pathSegment)}`;
-}
-
 /** Invalide le cache (après création/modification/suppression côté admin). */
 export function invalidateDataCache(segment?: string): void {
   if (segment) {
@@ -107,7 +101,7 @@ export interface AuthResponse {
 export const apiClient = {
   auth: {
     async login(email: string, password: string): Promise<AuthResponse> {
-      const url = routesPath('login');
+      const url = apiPath('auth/login');
       const body = JSON.stringify({ email, password });
       const res = await fetch(url, {
         method: 'POST',
