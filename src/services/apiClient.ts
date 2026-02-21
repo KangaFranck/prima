@@ -16,8 +16,12 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-// Vercel réécrit /api/(.*) vers /api/routes?path=$1 — il faut donc appeler /api/auth/login, pas /api?path=...
+/** Construit l'URL de l'API. En prod (pas localhost) : toujours relative /api/... pour éviter mauvaise URL. */
 function apiPath(segment: string): string {
+  if (typeof window !== 'undefined') {
+    const isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
+    if (!isLocal) return `/api/${segment}`; // Production Vercel : même origine
+  }
   const base = baseURL.replace(/\/$/, '');
   const prefix = base ? `${base}/api` : '/api';
   return `${prefix}/${segment}`;
