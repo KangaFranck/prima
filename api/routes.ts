@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
 
 function cors(res: VercelResponse, origin: string | undefined) {
   const originNorm = origin ? origin.replace(/\/$/, '') : '';
