@@ -3,7 +3,7 @@
  * Déployé par Vercel comme /api/auth/login (plus de conflit 405).
  */
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from '../db';
+import { sql } from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
