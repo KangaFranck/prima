@@ -20,6 +20,7 @@
   ],
   "rewrites": [
     { "source": "/api/debug", "destination": "/api/debug" },
+    { "source": "/api/routes", "destination": "/api/routes" },
     { "source": "/api/auth/login", "destination": "/api/routes?path=auth/login" },
     { "source": "/api/login", "destination": "/api/routes?path=login" },
     { "source": "/api/(.*)", "destination": "/api/routes?path=$1" },
