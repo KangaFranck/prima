@@ -2,6 +2,8 @@
 
 Quand le login admin renvoie **405** en production malgré le code, la cause est souvent **l’environnement** (Vercel, Neon, CORS). Suivre cette checklist dans l’ordre.
 
+**Si `/api/debug` affiche la page du site (footer) au lieu du JSON :** le fallback SPA prenait toute l’URL. Le `vercel.json` utilise maintenant `rewrites` pour que `/api/*` aille d’abord à la fonction API. **Redéploie** (Redeploy sur Vercel) puis réessaie `/api/debug`.
+
 ---
 
 ## 1. Vérifier ce que reçoit l’API (debug)
@@ -9,7 +11,7 @@ Quand le login admin renvoie **405** en production malgré le code, la cause est
 Après déploiement, ouvre dans le navigateur :
 
 ```
-https://TON-URL.vercel.app/api/debug
+https://prima-six-eta.vercel.app/api/debug
 ```
 
 (Remplace `TON-URL` par l’URL réelle de ton déploiement, ex. `prima-kanga` ou `prima-six-eta`.)
