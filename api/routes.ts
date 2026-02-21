@@ -10,8 +10,11 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
 
 function cors(res: VercelResponse, origin: string | undefined) {
-  const o = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
-  res.setHeader('Access-Control-Allow-Origin', o);
+  const originNorm = origin ? origin.replace(/\/$/, '') : '';
+  const allowed = originNorm && ALLOWED_ORIGINS.includes(originNorm);
+  const vercelApp = originNorm && /\.vercel\.app$/i.test(originNorm);
+  const o = allowed ? originNorm : (vercelApp ? originNorm : ALLOWED_ORIGINS[0]);
+  res.setHeader('Access-Control-Allow-Origin', o || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Max-Age', '86400');
@@ -28,6 +31,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const path = ((req.query.path as string) || '').replace(/\/$/, '').trim();
   const segments = path.split('/').filter(Boolean);
   const [resource, id] = segments;
+
+  // GET /api/debug — diagnostic : path, method, env (sans secrets) pour trouver la cause 405
+  if (path === 'debug' && (req.method || '').toUpperCase() === 'GET') {
+    const originNorm = (origin || '').replace(/\/$/, '');
+    return res.status(200).json({
+      ok: true,
+      path,
+      method: req.method,
+      xForwardedMethod: req.headers['x-vercel-forwarded-method'],
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+      hasJwtSecret: Boolean(process.env.JWT_SECRET),
+      allowedOriginsCount: (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean).length,
+      originReceived: originNorm || null,
+      hint: 'Si method !== POST sur login, le problème vient du routage Vercel. Ajoute ton URL dans ALLOWED_ORIGINS sur Vercel.',
+    });
+  }
 
   // GET /api/health — vérifie Neon + R2 (réécrit en /api/routes?path=health)
   if (path === 'health' && req.method === 'GET') {
