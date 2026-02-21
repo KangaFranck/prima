@@ -10,7 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const loisirs = await Loisir.find({ statut: 'actif' });
         res.status(200).json(loisirs);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erreur lors de la récupération des loisirs' });
       }
       break;
@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const loisir = await Loisir.create(req.body);
         res.status(201).json(loisir);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la création du loisir' });
       }
       break;
@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Loisir non trouvé' });
         }
         res.status(200).json(loisir);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la mise à jour du loisir' });
       }
       break;
@@ -48,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Loisir non trouvé' });
         }
         res.status(200).json({ message: 'Loisir supprimé avec succès' });
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la suppression du loisir' });
       }
       break;

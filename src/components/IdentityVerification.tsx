@@ -1,6 +1,6 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Lock, Shield, AlertTriangle } from 'lucide-react';
-import { pb } from '../services/pbClient';
+import { pbAuthService } from '../services/pbAuthService';
 
 interface IdentityVerificationProps {
   onVerified: () => void;
@@ -18,18 +18,19 @@ export const IdentityVerification: React.FC<IdentityVerificationProps> = ({ onVe
     setError('');
 
     try {
-      // Vérifier l'identité avec le mot de passe
-      const currentUser = pb.authStore.model;
-      
+      // Utiliser getCurrentUser() (cohérent avec le login PocketBase admin)
+      const currentUser = pbAuthService.getCurrentUser();
       if (!currentUser || currentUser.email !== 'communicationprimacenter@gmail.com') {
         setError('Accès refusé. Seul l\'administrateur principal peut accéder aux paramètres.');
         return;
       }
 
-      // Tenter de se reconnecter avec le mot de passe pour vérifier l'identité
-      await pb.collection('users').authWithPassword('communicationprimacenter@gmail.com', password);
-      
-      console.log(' Identité vérifiée avec succès');
+      // Vérifier le mot de passe via l'API Admins (cohérent avec le login)
+      const ok = await pbAuthService.verifyAdminPassword(currentUser.email, password);
+      if (!ok) {
+        setError('Mot de passe incorrect. Accès refusé.');
+        return;
+      }
       onVerified();
     } catch (error) {
       console.error('Erreur de vérification d\'identité:', error);

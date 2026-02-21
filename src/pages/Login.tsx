@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/pbAuthStore';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
   const { login, loading, error, clearError } = useAuthStore();
-  const [email, setEmail] = useState('communicationprimacenter@gmail.com');
-  const [password, setPassword] = useState('Pr!ma@center#2025');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
 
@@ -157,24 +157,6 @@ const Login = () => {
               </div>
             </motion.div>
           )}
-
-          {/* Informations de connexion */}
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <CheckCircle className="h-5 w-5 text-blue-400" />
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-blue-800">
-                  Informations de connexion
-                </h3>
-                <div className="mt-2 text-sm text-blue-700">
-                  <p><strong>Email :</strong> communicationprimacenter@gmail.com</p>
-                  <p><strong>Mot de passe :</strong> Pr!ma@center#2025</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <div>
             <button

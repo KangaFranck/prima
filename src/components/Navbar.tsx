@@ -44,6 +44,12 @@ const Navbar = () => {
   // Hooks React Router
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Synchroniser --navbar-height sur :root pour les pages qui l’utilisent (ActusEvents, APropos) et tous navigateurs
+  useEffect(() => {
+    const value = isTopInfoBarVisible ? 'calc(152px + var(--safe-area-top))' : 'calc(112px + var(--safe-area-top))';
+    document.documentElement.style.setProperty('--navbar-height', value);
+  }, [isTopInfoBarVisible]);
   
   // Hook personnalisé pour la recherche
   const { searchQuery, setSearchQuery, results, isLoading, handleResultClick } = useSearch();
@@ -220,17 +226,18 @@ const Navbar = () => {
     <div className="relative">
       {/* En-tête fixe avec animation */}
       <motion.header 
-        className="fixed left-0 right-0 z-40 bg-white shadow-none transition-all duration-300"
+        className="fixed left-0 right-0 w-full z-40 bg-white shadow-none transition-all duration-300 pt-[var(--safe-area-top)]"
         style={{
-          '--navbar-height': isTopInfoBarVisible ? '144px' : '96px',
+          '--navbar-height': isTopInfoBarVisible ? 'calc(152px + var(--safe-area-top))' : 'calc(112px + var(--safe-area-top))',
           top: isTopInfoBarVisible ? '32px' : '0px',
+          width: '100%',
         } as React.CSSProperties}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center h-20 md:h-24 relative">
+        <div className="content-wrap">
+          <div className="flex items-center h-24 md:h-28 relative min-w-0">
             {/* Logo : même décalage que le texte "Ouvert" (variable --header-content-start) */}
             <Link to="/" className="absolute left-[calc(var(--header-content-start)+var(--logo-offset))] header-logo" onClick={handleLogoClick}>
-              <Logo className="h-16 md:h-20" />
+              <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" />
             </Link>
 
             {/* Menu desktop : à partir de lg (1024px) pour garder le hamburger sur iPad */}
@@ -241,7 +248,7 @@ const Navbar = () => {
                     <div className="relative univers-menu">
                       <button
                         onClick={() => setIsUniversOpen(!isUniversOpen)}
-                        className="flex items-center text-base font-sofia font-light hover:text-gray-600 transition-colors"
+                        className="flex items-center text-lg font-sofia font-light hover:text-gray-600 transition-colors"
                       >
                         {link.label}
                         <ChevronDown className="ml-1 w-4 h-4 transition-transform" />
@@ -253,7 +260,7 @@ const Navbar = () => {
                   ) : (
                     <Link
                       to={link.path!}
-                      className="text-base font-sofia font-light hover:text-gray-600 transition-colors"
+                      className="text-lg font-sofia font-light hover:text-gray-600 transition-colors"
                     >
                       {link.label}
                     </Link>

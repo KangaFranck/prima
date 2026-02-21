@@ -12,33 +12,9 @@ const APropos = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-white antialiased"
     >
-      {/* Section Hero avec image en arrière-plan */}
-      <div className="relative min-h-[calc(100vh-var(--navbar-height))] mt-[var(--navbar-height)] will-change-transform">
-        <img
-          src="/images/prima-center-facade.jpg"
-          alt="Prima Center Façade"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-black/30 backdrop-filter">
-          <div className="container mx-auto h-full flex flex-col">
-            <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="transform translate-y-8 will-change-transform">
-                <h1 className="prima-center text-[45px] sm:text-[60px] md:text-[75px] lg:text-[90px] font-extralight text-white leading-[0.9] tracking-wider uppercase mb-4 [-webkit-font-smoothing:antialiased] [text-rendering:optimizeLegibility]">
-                  Prima Center
-                </h1>
-                <p className="text-[16px] sm:text-[20px] md:text-[24px] lg:text-[28px] font-sofia font-extralight text-white [-webkit-font-smoothing:antialiased]">
-                  Le centre commercial de référence à Abidjan
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Section Notre Histoire */}
-      <section className="py-16 md:py-24 bg-[#FFFEF2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-[var(--navbar-height)] py-16 md:py-24 bg-[#FFFEF2] w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div 
               initial={{ x: -50, opacity: 0 }}
@@ -77,8 +53,8 @@ const APropos = () => {
       </section>
 
       {/* Section Nos Valeurs */}
-      <section className="py-16 md:py-24 bg-[#E5DDD3]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 md:py-24 bg-[#E5DDD3]/10 w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8">
           <motion.h2 
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}

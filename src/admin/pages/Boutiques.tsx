@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash, Search, X } from 'lucide-react';
 import { EntityModal } from '../components/EntityModal';
 import { Boutique } from '../../types/entity';
@@ -28,20 +28,25 @@ export const Boutiques = () => {
     
     try {
       // Construction de l'objet boutique à partir du FormData
+      const heureOuverture = String(formData.get('heureOuverture') ?? '').trim();
+      const heureFermeture = String(formData.get('heureFermeture') ?? '').trim();
+      if (import.meta.env.DEV) console.log('Boutiques handleSubmit – heures FormData:', { heureOuverture: heureOuverture || '(vide)', heureFermeture: heureFermeture || '(vide)' });
+
       const boutique: Partial<Boutique> = {
         nom: formData.get('nom') as string,
         description: formData.get('description') as string,
         horaires: formData.get('horaires') as string,
-        heureOuverture: formData.get('heureOuverture') as string,
-        heureFermeture: formData.get('heureFermeture') as string,
+        heureOuverture,
+        heureFermeture,
         openSunday: formData.get('openSunday') === 'true',
         statut: formData.get('statut') as 'actif' | 'inactif',
         universe: formData.get('universe') as string || 'Général',
         telephone: formData.get('telephone') as string || undefined,
         email: formData.get('email') as string || undefined,
-        instagram: formData.get('instagram') as string || undefined,
+        instagram: (formData.get('instagram') as string)?.trim() || undefined,
         facebook: formData.get('facebook') as string || undefined,
-        tiktok: formData.get('tiktok') as string || undefined
+        tiktok: (formData.get('tiktok') as string)?.trim() || undefined,
+        website: formData.get('website') as string || undefined
       };
 
       // Gestion des fichiers
@@ -61,6 +66,13 @@ export const Boutiques = () => {
       } else if (selectedBoutique?.image) {
         console.log('Utilisation de l\'image existante');
         boutique.image = selectedBoutique.image;
+      }
+
+      const logoCarouselFile = formData.get('logoCarousel') as File;
+      if (logoCarouselFile && logoCarouselFile.size > 0) {
+        boutique.logoCarousel = logoCarouselFile;
+      } else if (selectedBoutique?.logoCarousel) {
+        boutique.logoCarousel = selectedBoutique.logoCarousel;
       }
 
       console.log('Objet boutique final:', {
@@ -86,18 +98,33 @@ export const Boutiques = () => {
       fetchBoutiques();
     } catch (error: any) {
       console.error('❌ Erreur lors de la soumission:', error);
-      
-      // Afficher un message d'erreur plus clair à l'utilisateur
-      let errorMessage = 'Erreur lors de la sauvegarde de la boutique';
-      
-      if (error.message) {
-        errorMessage = error.message;
-      } else if (error.data && error.data.message) {
-        errorMessage = error.data.message;
-      } else if (error.status === 400) {
-        errorMessage = 'Données invalides. Vérifiez que tous les champs obligatoires sont remplis.';
+      if (error?.data) console.error('Détails PocketBase (error.data):', error.data);
+
+      let errorMessage = 'Erreur lors de la sauvegarde de la boutique.';
+      if (error?.status === 400 && error?.data) {
+        const data = error.data;
+        if (typeof data === 'object' && data !== null && data.data && typeof data.data === 'object') {
+          const details = data.data as Record<string, { code?: string; message?: string }>;
+          if (details.image?.code === 'validation_file_size_limit') {
+            errorMessage = 'L\'image dépasse la taille maximale autorisée (5 Mo). Réduisez la taille du fichier ou choisissez une image plus légère.';
+          } else {
+            const parts: string[] = [];
+            Object.entries(details).forEach(([field, err]) => {
+              const msg = err?.message || String(err);
+              parts.push(`${field}: ${msg}`);
+            });
+            if (parts.length) errorMessage = parts.join('\n');
+          }
+        } else if (typeof data === 'object' && data !== null && (data as { message?: string }).message) {
+          errorMessage = (data as { message: string }).message;
+        }
       }
-      
+      if (errorMessage === 'Erreur lors de la sauvegarde de la boutique.' && error?.message) {
+        errorMessage = error.message;
+      } else if (errorMessage === 'Erreur lors de la sauvegarde de la boutique.' && error?.data?.message) {
+        errorMessage = error.data.message;
+      }
+
       alert(`❌ ${errorMessage}`);
     }
   };
@@ -144,27 +171,27 @@ export const Boutiques = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-3 sm:p-4 md:p-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-stone-800 mb-2">Boutiques</h1>
-            <p className="text-stone-600">Gérez vos boutiques et commerces</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-800 mb-1 sm:mb-2">Boutiques</h1>
+            <p className="text-sm sm:text-base text-stone-600">Gérez vos boutiques et commerces</p>
           </div>
           <button
             onClick={handleAdd}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="flex items-center justify-center px-4 py-3 sm:px-6 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
-            <Plus className="w-5 h-5 mr-2" />
+            <Plus className="w-5 h-5 mr-2 shrink-0" />
             Ajouter une boutique
           </button>
         </div>
       </div>
 
       {/* Barre de recherche */}
-      <div className="mb-8">
-        <div className="relative max-w-md">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
@@ -192,11 +219,11 @@ export const Boutiques = () => {
       </div>
 
       {/* Grid des boutiques - DESIGN ULTRA SIMPLIFIÉ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
         {filteredBoutiques.map((boutique) => (
-          <div key={boutique.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-amber-100 hover:border-amber-300 transform hover:-translate-y-2">
+          <div key={boutique.id} className="group bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-amber-100 hover:border-amber-300 transform hover:-translate-y-2">
             {/* Image de fond avec overlay */}
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative h-40 sm:h-48 overflow-hidden">
               {boutique.image ? (
                 <img
                   src={boutique.image}
@@ -261,8 +288,8 @@ export const Boutiques = () => {
             </div>
             
             {/* NOM SEULEMENT EN DESSOUS */}
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-stone-800 group-hover:text-amber-700 transition-colors">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-800 group-hover:text-amber-700 transition-colors">
                 {boutique.nom}
               </h3>
             </div>
@@ -311,6 +338,7 @@ export const Boutiques = () => {
       )}
 
       <EntityModal
+        key={selectedBoutique?.id ?? 'new'}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -318,7 +346,7 @@ export const Boutiques = () => {
         }}
         onSubmit={handleSubmit}
         title={selectedBoutique ? "Modifier la boutique" : "Ajouter une boutique"}
-        entityData={selectedBoutique}
+        entityData={selectedBoutique ?? undefined}
         entityType="boutiques"
       />
     </div>

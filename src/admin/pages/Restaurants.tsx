@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash, Search, X } from 'lucide-react';
 import { EntityModal } from '../components/EntityModal';
 import { Restaurant } from '../../types/entity';
@@ -32,16 +32,17 @@ export const Restaurants = () => {
         nom: formData.get('nom') as string,
         description: formData.get('description') as string,
         horaires: formData.get('horaires') as string,
-        heureOuverture: formData.get('heureOuverture') as string,
-        heureFermeture: formData.get('heureFermeture') as string,
+        heureOuverture: String(formData.get('heureOuverture') ?? '').trim(),
+        heureFermeture: String(formData.get('heureFermeture') ?? '').trim(),
         openSunday: formData.get('openSunday') === 'true',
         statut: formData.get('statut') as 'actif' | 'inactif',
         universe: formData.get('universe') as string || 'Général',
-        telephone: formData.get('telephone') as string || undefined,
-        email: formData.get('email') as string || undefined,
-        instagram: formData.get('instagram') as string || undefined,
-        facebook: formData.get('facebook') as string || undefined,
-        tiktok: formData.get('tiktok') as string || undefined
+        telephone: (formData.get('telephone') as string)?.trim() || undefined,
+        email: (formData.get('email') as string)?.trim() || undefined,
+        instagram: (formData.get('instagram') as string)?.trim() || undefined,
+        facebook: (formData.get('facebook') as string)?.trim() || undefined,
+        tiktok: (formData.get('tiktok') as string)?.trim() || undefined,
+        website: (formData.get('website') as string)?.trim() || undefined
       };
 
       // Gestion des fichiers
@@ -61,6 +62,13 @@ export const Restaurants = () => {
       } else if (selectedRestaurant?.image) {
         console.log('Utilisation de l\'image existante');
         restaurant.image = selectedRestaurant.image;
+      }
+
+      const logoCarouselFile = formData.get('logoCarousel') as File;
+      if (logoCarouselFile && logoCarouselFile.size > 0) {
+        restaurant.logoCarousel = logoCarouselFile;
+      } else if (selectedRestaurant?.logoCarousel) {
+        restaurant.logoCarousel = selectedRestaurant.logoCarousel;
       }
 
       console.log('Objet restaurant final:', {
@@ -84,8 +92,20 @@ export const Restaurants = () => {
       setIsModalOpen(false);
       setSelectedRestaurant(null);
       fetchRestaurants();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la soumission:', error);
+      const err = error as { status?: number; data?: { data?: Record<string, { code?: string; message?: string }>; message?: string }; message?: string };
+      let msg = 'Erreur lors de la sauvegarde du restaurant.';
+      if (err?.status === 400 && err?.data?.data && typeof err.data.data === 'object') {
+        const d = err.data.data;
+        if (d.image?.code === 'validation_file_size_limit') {
+          msg = 'L\'image dépasse la taille maximale (5 Mo). Réduisez la taille du fichier ou choisissez une image plus légère.';
+        } else {
+          const parts = Object.entries(d).map(([f, e]) => `${f}: ${e?.message || ''}`);
+          if (parts.length) msg = parts.join('\n');
+        }
+      } else if (err?.message) msg = err.message;
+      alert('❌ ' + msg);
     }
   };
 
@@ -131,27 +151,27 @@ export const Restaurants = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-3 sm:p-4 md:p-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-stone-800 mb-2">Restaurants</h1>
-            <p className="text-stone-600">Gérez vos restaurants et établissements</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-800 mb-1 sm:mb-2">Restaurants</h1>
+            <p className="text-sm sm:text-base text-stone-600">Gérez vos restaurants et établissements</p>
           </div>
           <button
             onClick={handleAdd}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="flex items-center justify-center px-4 py-3 sm:px-6 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
-            <Plus className="w-5 h-5 mr-2" />
+            <Plus className="w-5 h-5 mr-2 shrink-0" />
             Ajouter un restaurant
           </button>
         </div>
       </div>
 
       {/* Barre de recherche */}
-      <div className="mb-8">
-        <div className="relative max-w-md">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
@@ -248,8 +268,8 @@ export const Restaurants = () => {
             </div>
             
             {/* NOM SEULEMENT EN DESSOUS */}
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-stone-800 group-hover:text-amber-700 transition-colors">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-800 group-hover:text-amber-700 transition-colors">
                 {restaurant.nom}
               </h3>
             </div>
@@ -298,6 +318,7 @@ export const Restaurants = () => {
       )}
 
       <EntityModal
+        key={selectedRestaurant?.id ?? 'new'}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -305,7 +326,7 @@ export const Restaurants = () => {
         }}
         onSubmit={handleSubmit}
         title={selectedRestaurant ? "Modifier le restaurant" : "Ajouter un restaurant"}
-        entityData={selectedRestaurant}
+        entityData={selectedRestaurant ?? undefined}
         entityType="restaurants"
       />
     </div>

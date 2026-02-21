@@ -1,4 +1,4 @@
-﻿export interface OpeningHours {
+export interface OpeningHours {
   heureOuverture: string;
   heureFermeture: string;
   openSunday?: boolean;
@@ -6,117 +6,74 @@
   statut?: 'actif' | 'inactif';
 }
 
-// Fonction pour parser une heure au format "HH:MM" ou ISO corrompu
-const parseTime = (time: string) => {
-  console.log(' Parsing time:', time);
-  
-  // Si c'est déjà au format HH:MM, on l'utilise directement
-  if (/^\d{1,2}:\d{2}$/.test(time)) {
-    const [hours, minutes] = time.split(':').map(Number);
-    return {
-      hours: hours || 0,
-      minutes: minutes || 0,
-      totalMinutes: (hours || 0) * 60 + (minutes || 0)
-    };
-  }
-  
-  // Si c'est un format ISO corrompu, on essaie d'extraire l'heure
-  if (time.includes('T') && time.includes(':')) {
-    try {
-      // Extraire la partie heure de "2025-09-27T2025-09-27T09:44:00.000Z:00.000Z"
-      const timeMatch = time.match(/(\d{1,2}):(\d{2})/);
-      if (timeMatch) {
-        const hours = parseInt(timeMatch[1]);
-        const minutes = parseInt(timeMatch[2]);
-        console.log(' Extracted from ISO:', { hours, minutes });
-        return {
-          hours,
-          minutes,
-          totalMinutes: hours * 60 + minutes
-        };
-      }
-    } catch (error) {
-      console.error(' Error parsing ISO time:', error);
-    }
-  }
-  
-  // Fallback: essayer de parser n'importe quel format
-  try {
-    const date = new Date(time);
-    if (!isNaN(date.getTime())) {
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
-      console.log(' Parsed as Date:', { hours, minutes });
-      return {
-        hours,
-        minutes,
-        totalMinutes: hours * 60 + minutes
-      };
-    }
-  } catch (error) {
-    console.error(' Error parsing as Date:', error);
-  }
-  
-  // Dernier recours: retourner 0:00
-  console.warn(' Could not parse time, using 0:00');
-  return {
-    hours: 0,
-    minutes: 0,
-    totalMinutes: 0
-  };
-};
+const devLog = (...args: unknown[]) => { if (typeof import.meta !== 'undefined' && import.meta.env?.DEV) console.log(...args); };
 
+/** Normalise une heure (ISO, "YYYY-MM-DD HH:MM:SS", "HH:MM" ou Date) en "HH:MM". */
+function toHHMM(v: unknown): string {
+  if (v == null) return '00:00';
+  if (typeof v === 'string') {
+    const s = v.trim();
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(s)) return s.slice(0, 5);
+    const m = s.match(/(\d{1,2}):(\d{2})/);
+    if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+  }
+  if (typeof v === 'object' && v instanceof Date && !isNaN(v.getTime())) {
+    const h = v.getHours();
+    const m = v.getMinutes();
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  }
+  return '00:00';
+}
+
+function parseTime(time: string) {
+  const normalized = toHHMM(time);
+  const [hours, minutes] = normalized.split(':').map(Number);
+  return {
+    hours: hours || 0,
+    minutes: minutes || 0,
+    totalMinutes: (hours || 0) * 60 + (minutes || 0)
+  };
+}
+
+/**
+ * Indique si le commerce est actuellement ouvert selon :
+ * - heureOuverture / heureFermeture (définies en base),
+ * - openSunday (ouvert le dimanche ou non),
+ * - statut (actif / inactif).
+ * Fuseau : Africa/Abidjan (Côte d'Ivoire).
+ */
 export const isCurrentlyOpen = (params: OpeningHours): boolean => {
-  console.group(' Vérification des horaires d\'ouverture');
-  console.log(' Paramètres reçus:', params);
-  
-  // Utiliser le fuseau horaire de la Côte d'Ivoire
+  const heureOuverture = toHHMM(params.heureOuverture);
+  const heureFermeture = toHHMM(params.heureFermeture);
+  devLog(' [isCurrentlyOpen]', { heureOuverture, heureFermeture, openSunday: params.openSunday, statut: params.statut });
+
   const now = new Date();
   const ivoryCoastTime = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Abidjan' }));
   const currentHour = ivoryCoastTime.getHours();
   const currentMinutes = ivoryCoastTime.getMinutes();
-  const currentDay = ivoryCoastTime.getDay();
-  
-  console.log(` Heure actuelle (Côte d'Ivoire): ${currentHour}:${currentMinutes.toString().padStart(2, '0')}`);
-  console.log(` Heure UTC: ${now.getUTCHours()}:${now.getUTCMinutes().toString().padStart(2, '0')}`);
-  console.log(` Jour actuel: ${currentDay} (0 = Dimanche)`);
-  
-  // Vérifier si le magasin est inactif
+  const currentDay = ivoryCoastTime.getDay(); // 0 = Dimanche
+
   if (params.statut === 'inactif') {
-    console.log(' Le magasin est inactif');
-    console.groupEnd();
+    devLog(' [isCurrentlyOpen] Fermé (statut inactif)');
     return false;
   }
 
-  // Vérifier si c'est dimanche et si le magasin est fermé le dimanche
   if (currentDay === 0 && !params.openSunday) {
-    console.log(' Fermé le dimanche');
-    console.groupEnd();
+    devLog(' [isCurrentlyOpen] Fermé le dimanche (openSunday=false)');
     return false;
   }
 
-  const openTime = parseTime(params.heureOuverture);
-  const closeTime = parseTime(params.heureFermeture);
+  const openTime = parseTime(heureOuverture);
+  const closeTime = parseTime(heureFermeture);
   const currentTime = currentHour * 60 + currentMinutes;
 
-  console.log(` Heure d'ouverture: ${params.heureOuverture} (${openTime.totalMinutes} minutes)`);
-  console.log(` Heure de fermeture: ${params.heureFermeture} (${closeTime.totalMinutes} minutes)`);
-  console.log(` Heure actuelle en minutes: ${currentTime}`);
-
-  // Si l'heure de fermeture est plus petite que l'heure d'ouverture,
-  // cela signifie que la fermeture est le lendemain
-  let isOpen;
+  let isOpen: boolean;
   if (closeTime.totalMinutes < openTime.totalMinutes) {
-    // Le commerce ferme après minuit
     isOpen = currentTime >= openTime.totalMinutes || currentTime <= closeTime.totalMinutes;
   } else {
-    // Horaires normaux dans la même journée
     isOpen = currentTime >= openTime.totalMinutes && currentTime <= closeTime.totalMinutes;
   }
-  
-  console.log(` Résultat: ${isOpen ? ' OUVERT' : ' FERMÉ'}`);
-  console.groupEnd();
-  
+  devLog(' [isCurrentlyOpen]', isOpen ? 'Ouvert' : 'Fermé');
   return isOpen;
 };
 

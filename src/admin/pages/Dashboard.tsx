@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ShoppingBag, Coffee, Utensils, Calendar, TrendingUp, Users, Activity, RefreshCw } from 'lucide-react';
 import { usePbAdminStore } from '../../store/pbAdminStore';
 import { motion } from 'framer-motion';
@@ -116,30 +116,30 @@ export const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-3 sm:p-4 md:p-6">
       {/* Header élégant avec bouton de rafraîchissement */}
-      <div className="mb-12">
+      <div className="mb-6 sm:mb-8 md:mb-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <div className="flex items-center justify-center mb-4">
-            <h1 className="text-4xl font-bold text-stone-800">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3 sm:mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-stone-800">
               Tableau de bord
             </h1>
             <button
               onClick={handleRefresh}
               disabled={isRefreshing || loading}
-              className="ml-4 p-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200/50 hover:bg-amber-50 transition-all duration-300 disabled:opacity-50"
+              className="p-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200/50 hover:bg-amber-50 transition-all duration-300 disabled:opacity-50"
               title="Rafraîchir les données"
             >
               <RefreshCw className={`w-5 h-5 text-amber-600 ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
           </div>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full mb-4"></div>
-          <p className="text-xl text-stone-600 max-w-2xl mx-auto">
+          <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full mb-3 sm:mb-4"></div>
+          <p className="text-sm sm:text-base md:text-xl text-stone-600 max-w-2xl mx-auto px-2">
             Vue d'ensemble de votre centre commercial Prima Center
           </p>
           {loading && (
@@ -156,13 +156,13 @@ export const Dashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12"
       >
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-amber-200/50">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-amber-200/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-stone-600 mb-1">Total des commerces</p>
-              <p className="text-3xl font-bold text-stone-800">{totalCommerces}</p>
+              <p className="text-xs sm:text-sm font-medium text-stone-600 mb-1">Total des commerces</p>
+              <p className="text-2xl sm:text-3xl font-bold text-stone-800">{totalCommerces}</p>
               <p className="text-xs text-stone-500">Boutiques + Restaurants + Loisirs</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center">
@@ -184,11 +184,11 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-amber-200/50">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-amber-200/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-stone-600 mb-1">Commerces inactifs</p>
-              <p className="text-3xl font-bold text-red-600">{inactiveEntities}</p>
+              <p className="text-xs sm:text-sm font-medium text-stone-600 mb-1">Commerces inactifs</p>
+              <p className="text-2xl sm:text-3xl font-bold text-red-600">{inactiveEntities}</p>
               <p className="text-xs text-stone-500">Hors service</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
@@ -199,7 +199,7 @@ export const Dashboard = () => {
       </motion.div>
 
       {/* Cartes des catégories avec vraies données */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -210,19 +210,18 @@ export const Dashboard = () => {
             className="group"
           >
             <Link to={stat.path} className="block">
-              <div className={`${stat.bgColor} rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50 group-hover:border-amber-300/50 transform group-hover:-translate-y-2`}>
-                <div className="flex items-center justify-between mb-6">
-                  <div className={`w-16 h-16 ${stat.iconBg} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-                    <stat.icon className="w-8 h-8 text-white" />
+              <div className={`${stat.bgColor} rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50 group-hover:border-amber-300/50 transform group-hover:-translate-y-2`}>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 ${stat.iconBg} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                    <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
                   </div>
                   <div className="text-right">
-                    <p className="text-4xl font-bold text-stone-800 mb-1">{stat.count}</p>
-                    <p className="text-sm text-stone-600">éléments</p>
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-stone-800 mb-1">{stat.count}</p>
+                    <p className="text-xs sm:text-sm text-stone-600">éléments</p>
                   </div>
                 </div>
-                
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-amber-700 transition-colors">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-stone-800 mb-2 group-hover:text-amber-700 transition-colors">
                     {stat.title}
                   </h3>
                   <p className="text-stone-600 text-sm leading-relaxed mb-3">

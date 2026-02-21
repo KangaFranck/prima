@@ -60,7 +60,7 @@ const Hero = () => {
 
       {/* Contenu principal */}
       <div className="relative h-full z-10">
-        <div className="container mx-auto h-full px-4">
+        <div className="w-full h-full px-4 sm:px-6 md:px-8">
           <div className="h-full flex items-center">
             {/* Titre principal */}
             <div className="flex-1">

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Upload, Image as ImageIcon } from 'lucide-react';
 
 interface EntityModalProps {
@@ -33,8 +33,10 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     instagram: '',
     facebook: '',
     tiktok: '',
+    website: '',
     logo: null as File | null,
     image: null as File | null,
+    logoCarousel: null as File | null,
     // Champs spécifiques aux événements - SEULEMENT CEUX QUI EXISTENT DANS LA DB
     titre: '',
     date: '',
@@ -44,6 +46,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [logoCarouselPreview, setLogoCarouselPreview] = useState<string | null>(null);
   const [affichePreview, setAffichePreview] = useState<string | null>(null);
 
   useEffect(() => {
@@ -76,35 +79,55 @@ export const EntityModal: React.FC<EntityModalProps> = ({
           setAffichePreview(entityData.affiche);
         }
       } else {
-        setFormData({
-          nom: entityData.nom || '',
-          description: entityData.description || '',
-          horaires: entityData.horaires || '',
-          heureOuverture: entityData.heureOuverture || '',
-          heureFermeture: entityData.heureFermeture || '',
-          openSunday: entityData.openSunday || false,
-          statut: entityData.statut || 'actif',
-          universe: entityData.universe || 'Général',
-          telephone: entityData.telephone || '',
-          email: entityData.email || '',
-          instagram: entityData.instagram || '',
-          facebook: entityData.facebook || '',
-          tiktok: entityData.tiktok || '',
+        // Commerces : préremplir avec les données en base (heures en ISO, "YYYY-MM-DD HH:MM:SS" ou "HH:MM")
+        const toTime = (v: unknown): string => {
+          if (v == null) return '';
+          if (typeof v === 'string') {
+            const s = v.trim();
+            const mT = s.match(/T(\d{1,2}):(\d{2})/);
+            if (mT) return `${mT[1].padStart(2, '0')}:${mT[2]}`;
+            const mSpace = s.match(/\s(\d{1,2}):(\d{2})/);
+            if (mSpace) return `${mSpace[1].padStart(2, '0')}:${mSpace[2]}`;
+            if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(s)) return s.slice(0, 5);
+            return '';
+          }
+          if (v instanceof Date && !isNaN(v.getTime())) {
+            const h = v.getHours();
+            const m = v.getMinutes();
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+          }
+          return '';
+        };
+
+        const nextForm = {
+          nom: entityData.nom ?? '',
+          description: entityData.description ?? '',
+          horaires: entityData.horaires ?? '',
+          heureOuverture: toTime(entityData.heureOuverture) || '',
+          heureFermeture: toTime(entityData.heureFermeture) || '',
+          openSunday: !!entityData.openSunday,
+          statut: (entityData.statut === 'inactif' ? 'inactif' : 'actif') as 'actif' | 'inactif',
+          universe: entityData.universe ?? 'Général',
+          telephone: String(entityData?.telephone ?? '').trim(),
+          email: String(entityData?.email ?? '').trim(),
+          instagram: String(entityData?.instagram ?? '').trim(),
+          facebook: String(entityData?.facebook ?? '').trim(),
+          tiktok: String(entityData?.tiktok ?? '').trim(),
+          website: String(entityData?.website ?? '').trim(),
           logo: null,
           image: null,
-          // Champs non utilisés pour commerces
+          logoCarousel: null,
           titre: '',
           date: '',
           lieu: '',
           affiche: null
-        });
-        
-        if (entityData.logo) {
-          setLogoPreview(entityData.logo);
-        }
-        if (entityData.image) {
-          setImagePreview(entityData.image);
-        }
+        };
+        if (import.meta.env.DEV) console.log('EntityModal prefill commerces:', { email: nextForm.email, website: nextForm.website, instagram: nextForm.instagram, tiktok: nextForm.tiktok });
+        setFormData(nextForm);
+
+        setLogoPreview(entityData.logo && typeof entityData.logo === 'string' ? entityData.logo : null);
+        setImagePreview(entityData.image && typeof entityData.image === 'string' ? entityData.image : null);
+        setLogoCarouselPreview(entityData.logoCarousel && typeof entityData.logoCarousel === 'string' ? entityData.logoCarousel : null);
       }
     } else {
       // Reset form for new entity
@@ -122,8 +145,10 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         instagram: '',
         facebook: '',
         tiktok: '',
+        website: '',
         logo: null,
         image: null,
+        logoCarousel: null,
         titre: '',
         date: '',
         lieu: '',
@@ -131,6 +156,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       });
       setLogoPreview(null);
       setImagePreview(null);
+      setLogoCarouselPreview(null);
       setAffichePreview(null);
     }
   }, [entityData, isOpen, entityType]);
@@ -146,7 +172,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'affiche') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'logoCarousel' | 'affiche') => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData(prev => ({ ...prev, [field]: file }));
@@ -156,6 +182,8 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         setLogoPreview(previewUrl);
       } else if (field === 'image') {
         setImagePreview(previewUrl);
+      } else if (field === 'logoCarousel') {
+        setLogoCarouselPreview(previewUrl);
       } else if (field === 'affiche') {
         setAffichePreview(previewUrl);
       }
@@ -164,9 +192,10 @@ export const EntityModal: React.FC<EntityModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+    const formEl = e.currentTarget;
+
     const formDataObj = new FormData();
-    
+
     if (entityType === 'evenements') {
       // Champs spécifiques aux événements - SEULEMENT CEUX QUI EXISTENT DANS LA DB
       formDataObj.append('titre', formData.titre);
@@ -176,22 +205,29 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       formDataObj.append('statut', formData.statut);
       if (formData.affiche) formDataObj.append('affiche', formData.affiche);
     } else {
-      // Champs pour commerces
+      // Heures : priorité au DOM (source de vérité), fallback sur l'état React si le DOM est vide
+      const domHeureOuv = (formEl.querySelector('[name="heureOuverture"]') as HTMLInputElement)?.value?.trim() ?? '';
+      const domHeureFerm = (formEl.querySelector('[name="heureFermeture"]') as HTMLInputElement)?.value?.trim() ?? '';
+      const heureOuv = domHeureOuv || (formData.heureOuverture ?? '').trim() || '';
+      const heureFerm = domHeureFerm || (formData.heureFermeture ?? '').trim() || '';
+      if (import.meta.env.DEV) console.log('EntityModal submit – heures:', { dom: { domHeureOuv, domHeureFerm }, final: { heureOuv, heureFerm } });
       formDataObj.append('nom', formData.nom);
       formDataObj.append('description', formData.description);
       formDataObj.append('horaires', formData.horaires);
-      formDataObj.append('heureOuverture', formData.heureOuverture);
-      formDataObj.append('heureFermeture', formData.heureFermeture);
+      formDataObj.append('heureOuverture', heureOuv);
+      formDataObj.append('heureFermeture', heureFerm);
       formDataObj.append('openSunday', formData.openSunday.toString());
       formDataObj.append('statut', formData.statut);
-      formDataObj.append('universe', formData.universe);
+      formDataObj.append('universe', (formData.universe || 'Général').trim());
       if (formData.telephone) formDataObj.append('telephone', formData.telephone);
       if (formData.email) formDataObj.append('email', formData.email);
-      if (formData.instagram) formDataObj.append('instagram', formData.instagram);
+      if (formData.instagram && String(formData.instagram).trim()) formDataObj.append('instagram', String(formData.instagram).trim());
       if (formData.facebook) formDataObj.append('facebook', formData.facebook);
-      if (formData.tiktok) formDataObj.append('tiktok', formData.tiktok);
+      if (formData.tiktok && String(formData.tiktok).trim()) formDataObj.append('tiktok', String(formData.tiktok).trim());
+      if (formData.website) formDataObj.append('website', formData.website);
       if (formData.logo) formDataObj.append('logo', formData.logo);
       if (formData.image) formDataObj.append('image', formData.image);
+      if (formData.logoCarousel) formDataObj.append('logoCarousel', formData.logoCarousel);
     }
     
     onSubmit(formDataObj);
@@ -200,21 +236,23 @@ export const EntityModal: React.FC<EntityModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white w-full sm:rounded-2xl shadow-2xl sm:max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 shrink-0">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-800 truncate pr-2">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors shrink-0"
+            aria-label="Fermer"
           >
-            <X className="w-6 h-6 text-gray-500" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
           </button>
         </div>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto min-h-0 flex-1 max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-140px)]">
           {entityType === 'evenements' ? (
             // Formulaire pour événements - SEULEMENT LES CHAMPS QUI EXISTENT DANS LA DB
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -454,21 +492,6 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                 </select>
               </div>
 
-              {/* Universe */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Univers
-                </label>
-                <input
-                  type="text"
-                  name="universe"
-                  value={formData.universe}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                  placeholder="Ex: Mode, Sport, Culture..."
-                />
-              </div>
-
               {/* Téléphone */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -542,6 +565,21 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                 />
               </div>
 
+              {/* Site web */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Site web
+                </label>
+                <input
+                  type="url"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  placeholder="https://..."
+                />
+              </div>
+
               {/* Logo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -581,6 +619,50 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                     >
                       <Upload className="w-5 h-5 mr-2" />
                       {logoPreview ? 'Changer le logo' : 'Télécharger un logo'}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Logo carousel */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Logo carousel
+                </label>
+                <div className="flex items-center space-x-4">
+                  {logoCarouselPreview && (
+                    <div className="relative w-16 h-16">
+                      <img
+                        src={logoCarouselPreview}
+                        alt="Aperçu logo carousel"
+                        className="object-cover rounded-lg w-full h-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLogoCarouselPreview(null);
+                          setFormData(prev => ({ ...prev, logoCarousel: null }));
+                        }}
+                        className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, 'logoCarousel')}
+                      className="hidden"
+                      id="logoCarousel-upload"
+                    />
+                    <label
+                      htmlFor="logoCarousel-upload"
+                      className="cursor-pointer inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                    >
+                      <Upload className="w-5 h-5 mr-2" />
+                      {logoCarouselPreview ? 'Changer' : 'Logo carousel'}
                     </label>
                   </div>
                 </div>

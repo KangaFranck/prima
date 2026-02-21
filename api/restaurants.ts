@@ -10,7 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const restaurants = await Restaurant.find({ statut: 'actif' });
         res.status(200).json(restaurants);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erreur lors de la récupération des restaurants' });
       }
       break;
@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const restaurant = await Restaurant.create(req.body);
         res.status(201).json(restaurant);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la création du restaurant' });
       }
       break;
@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Restaurant non trouvé' });
         }
         res.status(200).json(restaurant);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la mise à jour du restaurant' });
       }
       break;
@@ -48,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Restaurant non trouvé' });
         }
         res.status(200).json({ message: 'Restaurant supprimé avec succès' });
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la suppression du restaurant' });
       }
       break;

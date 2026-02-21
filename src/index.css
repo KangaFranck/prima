@@ -8,6 +8,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Ogg Roman';
+  src: url('/fonts/Ogg-Roman.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* === Sofia Pro (corps) – fichier : public/fonts/SofiaPro-SoftLight.ttf === */
 @font-face {
@@ -62,15 +69,27 @@
 :root {
   --header-content-start: 1rem;   /* décalage commun (texte "Ouvert" + bloc logo) */
   --logo-offset: 2.5rem;          /* décalage supplémentaire du logo vers la droite --> */
-  --logo-image-pull: 0;            /* si le P visuel n’est pas au bord de l’image : ex. -0.5rem */
+  --logo-image-pull: 0;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);            /* si le P visuel n’est pas au bord de l’image : ex. -0.5rem */
 }
 
 /* Pull optionnel sur l’image du logo en header pour aligner le P visuel avec le O */
+:root {
+  --navbar-height: 112px;
+  --content-max: 1536px;
+  --content-px: 1rem;
+  --content-px-sm: 1.25rem;
+  --content-px-md: 1.5rem;
+}
+
 .header-logo img {
   margin-left: var(--logo-image-pull);
 }
 
-/* === Responsive tous navigateurs (Chrome, Firefox, Safari, Edge, mobile) === */
+/* === Reset cross-browser (Chrome, Firefox, Safari, Edge) === */
 @layer base {
   *,
   *::before,
@@ -79,32 +98,52 @@
   }
 
   html {
-    scroll-behavior: smooth;
-    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
     overflow-x: hidden;
+    scrollbar-gutter: stable;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /* iOS Safari : hauteur fenêtre correcte */
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    /* min-height cohérent : 100vh + fallbacks (Firefox/Chrome/Safari) */
     min-height: 100%;
-    min-height: -webkit-fill-available;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     @apply antialiased;
     font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
     overflow-x: hidden;
-    max-width: 100vw;
-    min-width: 0;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    /* Éviter débordement horizontal (tous navigateurs) */
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Contenu et médias toujours adaptés (video garde object-cover en section hero) */
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    isolation: isolate;
+  }
+
   img, iframe, object, embed {
     max-width: 100%;
     height: auto;
@@ -121,77 +160,74 @@
     display: block;
   }
 
-  /* Liens et boutons : zone tactile min 44px (Safari, Chrome mobile) */
-  a, button {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  /* Tables et textes longs : ne pas casser la mise en page */
   table {
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
-    display: block;
+    border-collapse: collapse;
   }
 
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Conteneur unique : même largeur et padding sur tous les navigateurs (Chrome, Edge, Safari, Firefox) */
+@layer components {
+  .content-wrap {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--content-px);
+    padding-right: var(--content-px);
+    min-width: 0;
+  }
+  @media (min-width: 640px) {
+    .content-wrap {
+      padding-left: var(--content-px-sm);
+      padding-right: var(--content-px-sm);
+    }
+  }
   @media (min-width: 768px) {
-    table {
-      display: table;
+    .content-wrap {
+      padding-left: var(--content-px-md);
+      padding-right: var(--content-px-md);
     }
   }
 }
 
-/* Conteneur de page commun : largeur max cohérente sur tous les écrans */
-@layer components {
-  .page-container {
-    width: 100%;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  @media (min-width: 640px) {
-    .page-container { padding-left: 1.5rem; padding-right: 1.5rem; }
-  }
-  @media (min-width: 768px) {
-    .page-container { padding-left: 2rem; padding-right: 2rem; }
-  }
-  @media (min-width: 1280px) {
-    .page-container { max-width: 1400px; }
-  }
-  @media (min-width: 1536px) {
-    .page-container { max-width: 1600px; }
-  }
-}
-
-/* Custom styles – Ogg Roman + Sofia Pro */
+/* Custom styles – Ogg Roman + Sofia Pro (pas de font-weight ici pour éviter conflit avec .font-bold) */
 @layer base {
-  /* Titres : Ogg Roman partout (toutes les pages + footer) */
+  /* Titres : Ogg Roman par défaut ; .font-bold / .font-ogg gardent la priorité */
   h1, h2, h3 {
     font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif;
-    font-weight: 400;
     letter-spacing: 0.02em;
     line-height: 1.19;
   }
 
-  /* Corps de texte : Sofia Pro partout */
-  * {
-    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
-  }
-
+  /* Ne pas forcer font-family sur * pour éviter d’écraser .font-ogg ; body/html ont déjà Sofia Pro */
   .prima-center {
     font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif !important;
   }
 }
 
-/* Custom animations */
 @layer utilities {
   .transition-transform {
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
+  }
+
+  /* min-height viewport : même rendu Chrome / Firefox / Safari (évite bug 100vh mobile) */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* fix flex/grid overflow Firefox : min-width: 0 sur les enfants flex */
+  .min-w-0 {
+    min-width: 0;
   }
 }
 

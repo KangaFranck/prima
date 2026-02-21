@@ -1,5 +1,6 @@
-﻿import { create } from "zustand";
+import { create } from "zustand";
 import { pb, getFileUrl } from "../services/pbClient";
+import { apiClient, useApi } from "../services/apiClient";
 
 interface Loisir {
   id: string;
@@ -8,7 +9,7 @@ interface Loisir {
   universe: string;
   image: string;
   logo?: string;
-  horaires?: string; // Simple string field for free text
+  horaires?: string;
   heureOuverture: string;
   heureFermeture: string;
   openSunday: boolean;
@@ -19,6 +20,8 @@ interface Loisir {
   tiktok?: string;
   email?: string;
   siteWeb?: string;
+  website?: string;
+  logoCarousel?: string;
   adresse?: string;
 }
 
@@ -29,28 +32,35 @@ interface LoisirStore {
   fetchLoisirs: () => Promise<void>;
 }
 
+function imgUrl(record: any, field: string): string {
+  const v = record[field];
+  if (typeof v === 'string' && v.startsWith('http')) return v;
+  return (record[field] ? getFileUrl(record, record[field]) : '') || '';
+}
+
 function mapRecordToLoisir(record: any): Loisir {
-  const logoUrl = record.logo ? getFileUrl(record, record.logo) || "" : "";
-  const imageUrl = record.image ? getFileUrl(record, record.image) || "" : "";
+  const logoUrl = imgUrl(record, 'logo');
+  const imageUrl = imgUrl(record, 'image');
+  const logoCarouselUrl = imgUrl(record, 'logoCarousel');
 
   return {
     id: record.id,
-    //  CORRECTION: Utiliser le bon champ pour le nom
     name: record.nom || record.name || "Loisir sans nom",
     description: record.description || "",
     universe: record.universe || "Autre",
     image: imageUrl || "/images/logos/default.png",
     logo: logoUrl,
+    logoCarousel: logoCarouselUrl || undefined,
+    website: record.website || record.siteWeb,
     statut: record.statut || "actif",
     heureOuverture: record.heureOuverture,
     heureFermeture: record.heureFermeture,
     openSunday: !!record.openSunday,
     telephone: record.telephone,
     email: record.email || record.mail,
-    siteWeb: record.siteWeb,
+    siteWeb: record.siteWeb || record.website,
     adresse: record.adresse,
     horaires: record.horaires,
-    // Essayer toutes les variantes possibles
     facebook: record.facebook,
     instagram: record.instagram || record.Instagram,
     tiktok: record.tiktok || record.TikTok || record.TIKTOK || record.tt || record.TT,
@@ -65,14 +75,15 @@ export const useLoisirStore = create<LoisirStore>((set, get) => ({
   fetchLoisirs: async () => {
     const state = get();
     if (state.loading) return;
-    
     set({ loading: true, error: null });
     try {
-      // Récupérer tous les loisirs
+      if (useApi()) {
+        const result = await apiClient.loisirs.list();
+        const loisirs = result.map((r: any) => mapRecordToLoisir(r)).filter((l: Loisir) => l.statut !== 'inactif');
+        set({ loisirs, loading: false });
+        return;
+      }
       const result = await pb.collection("loisirs").getFullList();
-      console.log(" Raw loisirs data:", result);
-      
-      // Filtrer côté client pour l'instant
       const loisirs = result
         .map(mapRecordToLoisir)
         .filter(loisir => loisir.statut === "actif");

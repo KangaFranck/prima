@@ -1,5 +1,6 @@
-﻿import { create } from "zustand";
+import { create } from "zustand";
 import { pb, getFileUrl } from "../services/pbClient";
+import { apiClient, useApi } from "../services/apiClient";
 
 interface Restaurant {
   id: string;
@@ -8,7 +9,7 @@ interface Restaurant {
   universe: string;
   image: string;
   logo?: string;
-  horaires?: string; // Simple string field for free text
+  horaires?: string;
   heureOuverture: string;
   heureFermeture: string;
   openSunday: boolean;
@@ -19,6 +20,8 @@ interface Restaurant {
   tiktok?: string;
   email?: string;
   siteWeb?: string;
+  website?: string;
+  logoCarousel?: string;
   adresse?: string;
 }
 
@@ -29,30 +32,37 @@ interface RestaurantStore {
   fetchRestaurants: () => Promise<void>;
 }
 
+function imgUrl(record: any, field: string): string {
+  const v = record[field];
+  if (typeof v === 'string' && v.startsWith('http')) return v;
+  return (record[field] ? getFileUrl(record, record[field]) : '') || '';
+}
+
 function mapRecordToRestaurant(record: any): Restaurant {
-  const logoUrl = record.logo ? getFileUrl(record, record.logo) || "" : "";
-  const imageUrl = record.image ? getFileUrl(record, record.image) || "" : "";
+  const logoUrl = imgUrl(record, 'logo');
+  const imageUrl = imgUrl(record, 'image');
+  const logoCarouselUrl = imgUrl(record, 'logoCarousel');
 
   return {
     id: record.id,
-    //  CORRECTION: Utiliser le bon champ pour le nom
     name: record.nom || record.name || "Restaurant sans nom",
     description: record.description || "",
     universe: record.universe || "Autre",
     image: imageUrl || "/images/logos/default.png",
     logo: logoUrl,
-    horaires: record.horaires, // Simple string field
+    logoCarousel: logoCarouselUrl || undefined,
+    website: record.website || record.siteWeb,
+    horaires: record.horaires,
     heureOuverture: record.heureOuverture || "09:00",
     heureFermeture: record.heureFermeture || "18:00",
     openSunday: !!record.openSunday,
     statut: record.statut || "actif",
     telephone: record.telephone,
-    // Essayer toutes les variantes possibles
     facebook: record.facebook,
     instagram: record.instagram || record.Instagram,
     tiktok: record.tiktok || record.TikTok || record.TIKTOK || record.tt || record.TT,
-    email: record.email || record.mail, // Try both 'email' and 'mail' fields
-    siteWeb: record.siteWeb,
+    email: record.email || record.mail,
+    siteWeb: record.siteWeb || record.website,
     adresse: record.adresse,
   };
 }
@@ -65,14 +75,15 @@ export const useRestaurantStore = create<RestaurantStore>((set, get) => ({
   fetchRestaurants: async () => {
     const state = get();
     if (state.loading) return;
-    
     set({ loading: true, error: null });
     try {
-      // Récupérer tous les restaurants
+      if (useApi()) {
+        const result = await apiClient.restaurants.list();
+        const restaurants = result.map((r: any) => mapRecordToRestaurant(r)).filter((r: Restaurant) => r.statut !== 'inactif');
+        set({ restaurants, loading: false });
+        return;
+      }
       const result = await pb.collection("restaurants").getFullList();
-      console.log(" Raw restaurants data:", result);
-      
-      //  CORRECTION: Filtrer pour masquer les restaurants "inactif"
       const restaurants = result
         .map(mapRecordToRestaurant)
         .filter(restaurant => restaurant.statut !== "inactif"); // Masquer les "inactif"

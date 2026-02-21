@@ -13,7 +13,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10">
+      <div className="content-wrap py-8 md:py-10">
         {/* Mobile : colonne unique puis icônes + logo côte à côte */}
         {/* Tablette (md) : grille 3 colonnes (MAGASINS | HORAIRE+CONTACT | Icônes) + logo en bas à droite */}
         <div className="flex flex-col gap-10 md:gap-12">
@@ -60,14 +60,14 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Colonne 3 : icônes réseaux (mobile = ligne avec logo à droite, tablette+ = colonne seule) */}
+            {/* Colonne 3 : icônes comme la maquette – symbole blanc, contour circulaire fin blanc, fond noir */}
             <div className="flex flex-row md:flex-col gap-4 items-start md:items-start w-full md:w-auto">
               <div className="flex flex-col gap-4 flex-shrink-0">
                 <a
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-transparent border border-white hover:border-white hover:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:border-white focus:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:outline-none focus:ring-2 focus:ring-white/60 transition-all duration-200"
                   aria-label="Facebook"
                 >
                   <Facebook className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -76,7 +76,7 @@ const Footer = () => {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-transparent border border-white hover:border-white hover:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:border-white focus:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:outline-none focus:ring-2 focus:ring-white/60 transition-all duration-200"
                   aria-label="Instagram"
                 >
                   <Instagram className="w-5 h-5 md:w-6 md:h-6 text-white" />
@@ -85,7 +85,7 @@ const Footer = () => {
                   href="https://tiktok.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 md:w-12 md:h-12 bg-black border-2 border-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors flex-shrink-0"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-transparent border border-white hover:border-white hover:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:border-white focus:shadow-[0_0_14px_rgba(255,255,255,0.9)] focus:outline-none focus:ring-2 focus:ring-white/60 transition-all duration-200"
                   aria-label="TikTok"
                 >
                   <svg className="w-5 h-5 md:w-6 md:h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -122,7 +122,7 @@ const Footer = () => {
       <div className="border-t border-white" />
 
       <div className="bg-black w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-5 md:py-6">
+        <div className="content-wrap py-5 md:py-6">
           <p className="font-sofia text-white text-center text-sm md:text-base">© 2025 Prima Center.</p>
         </div>
       </div>

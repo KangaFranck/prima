@@ -1,36 +1,44 @@
 import { Boutique } from '../types/admin';
-import axios from 'axios';
+import { pb, getFileUrl } from './pbClient';
+import { apiClient, useApi } from './apiClient';
 
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://prima-8fvobd0l8-primacenters-projects.vercel.app/api'
-  : 'http://localhost:3000/api';
-
-console.log('Configuration API:', {
-  API_URL,
-  NODE_ENV: import.meta.env.MODE,
-  DEV: import.meta.env.DEV,
-  PROD: import.meta.env.PROD
-});
-
-// Service pour les boutiques publiques
+/** Service public unifié sur PocketBase (plus d’appel à l’API MongoDB). */
 export const publicService = {
   async getBoutiques(): Promise<Boutique[]> {
     try {
-      const response = await axios.get(`${API_URL}/boutiques`);
-      return response.data;
+      if (useApi()) return apiClient.boutiques.list();
+      const records = await pb.collection('boutiques').getFullList();
+      return records.map((record: any) => ({
+        id: record.id,
+        nom: record.nom,
+        description: record.description ?? record.description_,
+        logo: record.logo ? getFileUrl(record, record.logo) : undefined,
+        image: record.image ? getFileUrl(record, record.image) : undefined,
+        horaires: record.horaires,
+        heureOuverture: record.heureOuverture,
+        heureFermeture: record.heureFermeture,
+        openSunday: record.openSunday,
+        statut: record.statut,
+        universe: record.universe,
+        telephone: record.telephone,
+        email: record.email,
+        instagram: record.instagram,
+        facebook: record.facebook,
+        tiktok: record.tiktok,
+        logoCarousel: record.logoCarousel ? getFileUrl(record, record.logoCarousel) : undefined,
+        website: record.website,
+        createdAt: record.created,
+        updatedAt: record.updated,
+      })) as Boutique[];
     } catch (error) {
-      console.error('Erreur lors de la récupération des boutiques:', error);
+      if (import.meta.env.DEV) console.error('Erreur lors de la récupération des boutiques:', error);
       throw error;
     }
   },
 
   async createBoutique(boutique: Boutique): Promise<Boutique> {
-    try {
-      const response = await axios.post(`${API_URL}/boutiques`, boutique);
-      return response.data;
-    } catch (error) {
-      console.error('Erreur lors de la création de la boutique:', error);
-      throw error;
-    }
-  }
-}; 
+    const { adminService } = await import('./pbAdminService');
+    return adminService.createBoutique(boutique as any) as Promise<Boutique>;
+  },
+};
+

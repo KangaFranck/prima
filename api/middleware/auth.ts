@@ -1,57 +1,45 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET doit être défini (env).');
+}
 
-interface DecodedToken {
-  userId: string;
+export interface AdminPayload {
+  adminId: string;
   email: string;
-  role: string;
+  permissions: string[];
 }
 
-export function withAuth(handler: Function) {
-  return async (req: VercelRequest, res: VercelResponse) => {
-    try {
-      const token = req.headers.authorization?.replace('Bearer ', '');
-
-      if (!token) {
-        return res.status(401).json({ error: 'Token manquant' });
-      }
-
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
-        req.user = decoded;
-        return handler(req, res);
-      } catch (error) {
-        return res.status(401).json({ error: 'Token invalide' });
-      }
-    } catch (error) {
-      return res.status(500).json({ error: 'Erreur d\'authentification' });
+declare global {
+  namespace Express {
+    interface Request {
+      user?: AdminPayload;
     }
-  };
+  }
 }
 
-export function withAdminAuth(handler: Function) {
+export function getAdminFromToken(req: VercelRequest): AdminPayload | null {
+  const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
+  if (!token) return null;
+  try {
+    return jwt.verify(token, JWT_SECRET) as AdminPayload;
+  } catch {
+    return null;
+  }
+}
+
+export function withAdminAuth(
+  handler: (req: VercelRequest, res: VercelResponse) => Promise<void>
+) {
   return async (req: VercelRequest, res: VercelResponse) => {
-    try {
-      const token = req.headers.authorization?.replace('Bearer ', '');
-
-      if (!token) {
-        return res.status(401).json({ error: 'Token manquant' });
-      }
-
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
-        if (decoded.role !== 'admin') {
-          return res.status(403).json({ error: 'Accès non autorisé' });
-        }
-        req.user = decoded;
-        return handler(req, res);
-      } catch (error) {
-        return res.status(401).json({ error: 'Token invalide' });
-      }
-    } catch (error) {
-      return res.status(500).json({ error: 'Erreur d\'authentification' });
+    const admin = getAdminFromToken(req);
+    if (!admin) {
+      res.status(401).json({ error: 'Token manquant ou invalide' });
+      return;
     }
+    (req as VercelRequest & { user?: AdminPayload }).user = admin;
+    return handler(req, res);
   };
-} 
+}

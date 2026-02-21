@@ -15,6 +15,8 @@ export interface Entity {
   instagram?: string;
   facebook?: string;
   email?: string;
+  website?: string;
+  logoCarousel?: File | string;
 }
 
 export interface Boutique extends Entity {

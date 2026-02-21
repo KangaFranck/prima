@@ -1,10 +1,13 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { pb, getFileUrl } from '../services/pbClient';
+import { apiClient, useApi } from '../services/apiClient';
 
 interface Shop {
   id: string;
   name: string;
   logo: string;
+  logoCarousel?: string;
+  website?: string;
   categories: string[];
   slug: string;
   description?: string;
@@ -21,13 +24,22 @@ interface ShopStore {
   fetchShops: () => Promise<void>;
 }
 
+function imgUrl(record: any, field: string): string {
+  const v = record[field];
+  if (typeof v === 'string' && v.startsWith('http')) return v;
+  return (record[field] ? getFileUrl(record, record[field]) : '') || '';
+}
+
 function mapRecordToShop(record: any): Shop {
-  const logoUrl = record.logo ? getFileUrl(record, record.logo) || '' : '';
+  const logoUrl = imgUrl(record, 'logo');
+  const logoCarouselUrl = imgUrl(record, 'logoCarousel');
 
   return {
     id: record.id,
     name: record.name || record.nom,
     logo: logoUrl || '/images/logos/default.png',
+    logoCarousel: logoCarouselUrl || undefined,
+    website: record.website || undefined,
     categories: record.universe ? [record.universe] : ['Autre'],
     slug: (record.name || record.nom)?.toLowerCase().replace(/\s+/g, '-') || record.id,
     description: record.description,
@@ -45,10 +57,15 @@ export const useShopStore = create<ShopStore>((set, get) => ({
 
   fetchShops: async () => {
     const state = get();
-    if (state.loading) return; // Éviter les appels multiples
-    
+    if (state.loading) return;
     set({ loading: true, error: null });
     try {
+      if (useApi()) {
+        const result = await apiClient.boutiques.list();
+        const shops = result.map((r: any) => mapRecordToShop(r)).filter((s: Shop) => s.statut !== 'inactif');
+        set({ shops, loading: false });
+        return;
+      }
       const result = await pb.collection('boutiques').getFullList();
       const shops = result.map(mapRecordToShop);
       set({ shops, loading: false });

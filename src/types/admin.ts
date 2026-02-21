@@ -9,6 +9,8 @@ export interface Boutique {
   description: string;
   image?: string;
   logo?: string;
+  logoCarousel?: string;
+  website?: string;
   statut: 'actif' | 'inactif';
   universe: string;
   createdAt?: string;
@@ -29,6 +31,8 @@ export interface Restaurant {
   openSunday: boolean;
   statut: 'actif' | 'inactif';
   logo?: string;
+  logoCarousel?: string;
+  website?: string;
   menu?: string;
   createdAt: string;
   updatedAt: string;
@@ -40,6 +44,8 @@ export interface Loisir {
   description: string;
   image: string;
   logo?: string;
+  logoCarousel?: string;
+  website?: string;
   type: string;
   level: string;
   statut: StatutLoisir;

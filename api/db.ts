@@ -1,44 +1,24 @@
-import mongoose from 'mongoose';
+/**
+ * Connexion Neon (PostgreSQL) pour l'API.
+ * Connexion paresseuse : évite un crash au chargement si .env n’est pas encore lu (vercel dev).
+ */
+import { neon, NeonQueryFunction } from '@neondatabase/serverless';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://franckkanga0707:csNtNgcYQp2raCoq@prima.l2xpx7h.mongodb.net/?retryWrites=true&w=majority&appName=prima';
+let _sql: NeonQueryFunction<false, false> | null = null;
 
-if (!MONGODB_URI) {
-  throw new Error('Veuillez définir la variable d\'environnement MONGODB_URI');
+function getSql(): NeonQueryFunction<false, false> {
+  if (!_sql) {
+    const url = process.env.DATABASE_URL;
+    if (!url) throw new Error('DATABASE_URL non défini. Vérifiez .env à la racine ou "vercel env pull".');
+    _sql = neon(url);
+  }
+  return _sql;
 }
 
-let cached = global.mongoose;
+export const sql = new Proxy(function () {} as NeonQueryFunction<false, false>, {
+  apply(_target, _thisArg, args: unknown[]) {
+    return (getSql() as (...a: unknown[]) => unknown)(...args);
+  },
+});
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('Connecté à MongoDB Atlas !');
-      return mongoose;
-    }).catch(err => {
-      console.error('Erreur de connexion à MongoDB:', err);
-      throw err;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.conn;
-}
-
-export default dbConnect; 
+export default sql;

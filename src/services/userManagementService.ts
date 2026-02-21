@@ -1,4 +1,4 @@
-﻿import { pb } from './pbClient';
+import { pb } from './pbClient';
 
 export interface User {
   id: string;
@@ -101,7 +101,7 @@ export const userManagementService = {
         role: userData.role,
         permissions: permissions,
         isActive: true
-      });
+      }, { requestKey: null });
       
       console.log(' Utilisateur créé avec succès:', newUser);
       return {
@@ -114,8 +114,9 @@ export const userManagementService = {
         createdAt: newUser.created,
         updatedAt: newUser.updated
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la création de l\'utilisateur:', error);
+      console.error('Détails validation (error.data):', error?.data);
       throw error;
     }
   },
@@ -160,7 +161,7 @@ export const userManagementService = {
       
       const updatedUser = await pb.collection('users').update(userId, {
         isActive: isActive
-      });
+      }, { requestKey: null });
       
       console.log(' Statut utilisateur mis à jour:', updatedUser);
       return {
@@ -173,8 +174,9 @@ export const userManagementService = {
         createdAt: updatedUser.created,
         updatedAt: updatedUser.updated
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la mise à jour du statut:', error);
+      console.error('Détails validation (error.data):', error?.data);
       throw error;
     }
   },

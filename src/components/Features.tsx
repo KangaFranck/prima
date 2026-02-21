@@ -55,8 +55,8 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-white w-full">
+      <div className="w-full px-4 sm:px-6 md:px-8">
         {/* En-tête de section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-6 relative inline-block">

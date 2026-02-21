@@ -45,6 +45,7 @@ interface CarouselItem {
   id: string;
   name: string;
   logo?: string;
+  logoCarousel?: string;
   image?: string;
   type: 'boutique' | 'restaurant' | 'loisir';
 }
@@ -64,11 +65,11 @@ export default function Home() {
     fetchLoisirs();
   }, [fetchShops, fetchRestaurants, fetchLoisirs]);
 
-  // Combine tous les éléments sauf les événements
+  // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base)
   const allItems: CarouselItem[] = [
-    ...shops.map(item => ({ ...item, type: 'boutique' as const })),
-    ...restaurants.map(item => ({ ...item, type: 'restaurant' as const })),
-    ...loisirs.map(item => ({ ...item, type: 'loisir' as const }))
+    ...shops.map((item) => ({ id: item.id, name: item.name, logo: item.logo, logoCarousel: item.logoCarousel, type: 'boutique' as const })),
+    ...restaurants.map((item) => ({ id: item.id, name: item.name, logo: item.logo, logoCarousel: item.logoCarousel, image: item.image, type: 'restaurant' as const })),
+    ...loisirs.map((item) => ({ id: item.id, name: item.name, logo: item.logo, logoCarousel: item.logoCarousel, image: item.image, type: 'loisir' as const }))
   ];
 
   return (
@@ -84,7 +85,7 @@ export default function Home() {
           playsInline
         />
         <div className="absolute inset-0 bg-black/60">
-          <div className="container mx-auto h-full flex flex-col">
+          <div className="w-full h-full flex flex-col px-4 sm:px-6 md:px-8">
             {/* Présentation Prima avec Logo - Parfaitement centré */}
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">
@@ -136,11 +137,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section 2: Universes - Layout alterné */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      {/* Section 2: Universes - Pleine largeur jusqu'aux bords */}
+      <section className="py-20 bg-white w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-ogg mb-4 text-gray-800">NOS UNIVERS</h2>
+            <h2 className="text-4xl font-ogg font-bold mb-4 text-gray-800">NOS UNIVERS</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Découvrez plus de 70 commerçants, des marques internationales aux enseignes locales, le tout dans un cadre moderne et convivial, au cœur de la zone 4
             </p>
@@ -171,7 +172,7 @@ export default function Home() {
                   <span className="text-sm font-sofia font-normal text-gray-500 uppercase tracking-widest">
                     {block.category}
                   </span>
-                  <h2 className="text-4xl lg:text-5xl xl:text-6xl font-ogg font-normal text-gray-900 mt-2 mb-4 tracking-tight leading-[1.19]">
+                  <h2 className="text-4xl font-ogg font-bold text-gray-800 mt-2 mb-4 tracking-wide uppercase">
                     {block.title}
                   </h2>
                   <p className="text-base lg:text-lg font-sofia text-gray-600 leading-relaxed mb-6 max-w-xl">
@@ -192,18 +193,19 @@ export default function Home() {
       </section>
 
       {/* Section 3: Carousel - LOGOS CENTRÉS SUR MOBILE */}
-      <section className="py-12 relative overflow-hidden bg-[#E5DDD3]">
-        <div className="container mx-auto px-4 relative z-10">
+      <section className="py-12 relative overflow-hidden bg-[#E5DDD3] w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8 relative z-10">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-ogg mb-4 text-gray-800">DES COMMERCES OUVERTS 7J/7</h2>
           </div>
           
-          <div className="px-4">
+          <div>
             <Swiper
               modules={[Pagination, Autoplay]}
+              loop={true}
               spaceBetween={16}
               slidesPerView={1}
-              centeredSlides={true} // Centrer les slides sur mobile
+              centeredSlides={true}
               breakpoints={{
                 480: {
                   slidesPerView: 1.2,
@@ -233,8 +235,8 @@ export default function Home() {
               }}
               pagination={{
                 clickable: true,
-                bulletClass: 'swiper-pagination-bullet custom-bullet',
-                bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active'
+                bulletClass: 'swiper-pagination-bullet custom-bullet !bg-gray-400',
+                bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active !bg-black !opacity-100'
               }}
               autoplay={{
                 delay: 3000,
@@ -248,10 +250,10 @@ export default function Home() {
                     to={`/${item.type}s/${item.id}`}
                     className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
                   >
-                    <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto"> {/* mx-auto pour centrer */}
-                      {(item.logo || item.image) ? (
+                    <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
+                      {(item.logoCarousel || item.logo || item.image) ? (
                         <img
-                          src={item.logo || item.image}
+                          src={item.logoCarousel || item.logo || item.image}
                           alt={item.name}
                           className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                         />

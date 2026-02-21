@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { pb, getFileUrl } from "../services/pbClient";
+import { apiClient, useApi } from "../services/apiClient";
 
 interface Boutique {
   _id: string;
@@ -8,7 +9,7 @@ interface Boutique {
   universe: string;
   image: string;
   logo?: string;
-  horaires?: string; // Simple string field for free text
+  horaires?: string;
   heureOuverture: string;
   heureFermeture: string;
   openSunday: boolean;
@@ -29,28 +30,33 @@ interface BoutiqueStore {
   fetchBoutiques: () => Promise<void>;
 }
 
+function imgUrl(record: any, field: string): string {
+  const v = record[field];
+  if (typeof v === 'string' && v.startsWith('http')) return v;
+  return (record[field] ? getFileUrl(record, record[field]) : '') || '';
+}
+
 function mapRecordToBoutique(record: any): Boutique {
-  const logoUrl = record.logo ? getFileUrl(record, record.logo) || "" : "";
-  const imageUrl = record.image ? getFileUrl(record, record.image) || "" : "";
+  const logoUrl = imgUrl(record, 'logo');
+  const imageUrl = imgUrl(record, 'image');
 
   return {
     _id: record.id,
     nom: record.nom || record.name,
-    description: record.description || record.description_ || "", // Essayer les deux variantes
+    description: record.description || record.description_ || "",
     universe: record.universe || "Autre",
     image: imageUrl || "/images/logos/default.png",
     logo: logoUrl,
-    horaires: record.horaires, // Simple string field
+    horaires: record.horaires,
     heureOuverture: record.heureOuverture || "09:00",
     heureFermeture: record.heureFermeture || "18:00",
     openSunday: !!record.openSunday,
     statut: record.statut || "actif",
     telephone: record.telephone,
-    // Essayer toutes les variantes possibles
     facebook: record.facebook,
     instagram: record.instagram || record.Instagram,
     tiktok: record.tiktok || record.TikTok || record.TIKTOK || record.tt || record.TT,
-    email: record.email || record.mail, // Try both 'email' and 'mail' fields
+    email: record.email || record.mail,
     siteWeb: record.siteWeb,
     adresse: record.adresse,
   };
@@ -64,43 +70,17 @@ export const useBoutiqueStore = create<BoutiqueStore>((set, get) => ({
   fetchBoutiques: async () => {
     const state = get();
     if (state.loading) return;
-    
     set({ loading: true, error: null });
     try {
-      // Récupérer toutes les boutiques
+      if (useApi()) {
+        const result = await apiClient.boutiques.list();
+        const activeBoutiques = result.map((r: any) => mapRecordToBoutique(r)).filter((b: Boutique) => b.statut !== "inactif");
+        set({ boutiques: activeBoutiques, loading: false });
+        return;
+      }
       const result = await pb.collection("boutiques").getFullList();
-      console.log(" RAW BOUTIQUES DATA:");
-      console.log("Total boutiques:", result.length);
-      
-      // DEBUG: Voir chaque boutique et son statut
-      result.forEach((boutique, index) => {
-        console.log(` Boutique ${index + 1}:`, {
-          id: boutique.id,
-          nom: boutique.nom,
-          statut: boutique.statut,
-          statutType: typeof boutique.statut,
-          statutValue: JSON.stringify(boutique.statut),
-          description: boutique.description || boutique.description_ || "Aucune description"
-        });
-      });
-      
-      // DEBUG: Voir les valeurs uniques de statut
-      const statutValues = result.map(b => b.statut);
-      console.log(" TOUS LES STATUTS:", statutValues);
-      console.log(" STATUTS UNIQUES:", [...new Set(statutValues)]);
-      
-      // Mapper les boutiques
       const mappedBoutiques = result.map(mapRecordToBoutique);
-      console.log(" BOUTIQUES MAPPÉES:", mappedBoutiques.map(b => ({ nom: b.nom, statut: b.statut, description: b.description })));
-      
-      // DEBUG: Tester le filtrage
-      const activeBoutiques = mappedBoutiques.filter(boutique => {
-        const isNotInactive = boutique.statut !== "inactif";
-        console.log(` ${boutique.nom}: statut="${boutique.statut}", !== "inactif" = ${isNotInactive}`);
-        return isNotInactive;
-      });
-      
-      console.log(` Boutiques visibles après filtrage: ${activeBoutiques.length}`);
+      const activeBoutiques = mappedBoutiques.filter(b => b.statut !== "inactif");
       set({ boutiques: activeBoutiques, loading: false });
     } catch (error) {
       console.error("Error fetching boutiques:", error);

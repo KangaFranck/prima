@@ -124,7 +124,7 @@ const EventDetail = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="w-full px-4 sm:px-6 md:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Colonne principale - Description */}
           <div className="lg:col-span-2">
@@ -238,8 +238,8 @@ const EventDetail = () => {
       </div>
 
       {/* Section autres événements */}
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
+      <div className="bg-white py-16 w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres événements</h2>
             <div className="w-24 h-1 bg-black mx-auto"></div>

@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { useShopStore } from '../store/shopStore';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Link } from 'react-router-dom';
-import { isCurrentlyOpen } from '../utils/timeUtils';
-
 const Boutiques = () => {
   const { shops, loading, error, fetchShops } = useShopStore();
 
@@ -55,60 +53,49 @@ const Boutiques = () => {
         </div>
       </div>
 
-      <div className="bg-[#f5f3ef] py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {shops.map((shop) => {
-              const isOpen = isCurrentlyOpen({
-                heureOuverture: shop.heureOuverture,
-                heureFermeture: shop.heureFermeture,
-                openSunday: shop.openSunday,
-                statut: shop.statut
-              });
-              return (
+      <div className="bg-[#f5f3ef] py-20 w-full">
+        <div className="w-full px-4 sm:px-6 md:px-8">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
+            {shops.map((shop) => (
                 <Link
                   key={shop.id}
                   to={`/boutiques/${shop.id}`}
-                  className="group block w-full aspect-square relative overflow-hidden bg-white border border-gray-300 hover:bg-gray-200 transition-colors duration-300"
+                  className="group block w-full max-w-[140px] mx-auto aspect-[3/4] relative overflow-hidden bg-transparent transition-transform duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-400"
                 >
-                  <div className="w-full h-full relative">
-                    {/* Logo centré */}
-                    <div className="absolute inset-0 flex items-center justify-center p-4">
-                      {shop.logo ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    {/* Par défaut : logo carousel (sans fond) ; au survol : logo (avec fond) */}
+                    <div className="flex-1 w-full flex items-center justify-center min-h-0 relative">
+                      {shop.logoCarousel && shop.logo ? (
+                        <>
+                          <img
+                            src={shop.logoCarousel}
+                            alt={shop.name}
+                            className="max-w-full max-h-full w-auto h-auto object-contain object-center absolute inset-0 m-auto transition-opacity duration-300 group-hover:opacity-0"
+                          />
+                          <img
+                            src={shop.logo}
+                            alt={shop.name}
+                            className="max-w-full max-h-full w-auto h-auto object-contain object-center absolute inset-0 m-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                          />
+                        </>
+                      ) : (shop.logoCarousel || shop.logo) ? (
                         <img
-                          src={shop.logo}
+                          src={shop.logoCarousel || shop.logo}
                           alt={shop.name}
-                          className="max-w-full max-h-full object-contain"
+                          className="max-w-full max-h-full w-auto h-auto object-contain object-center"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-2xl font-sofia font-light text-gray-400">{shop.name.charAt(0)}</span>
-                        </div>
+                        <span className="text-2xl font-sofia font-light text-neutral-400">{shop.name.charAt(0)}</span>
                       )}
                     </div>
-                    
-                    {/* Texte en bas */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                      <h3 className="text-gray-900 font-sofia font-medium text-sm mb-2 text-left">
+                    <div className="mt-3 text-center flex-shrink-0">
+                      <h3 className="text-neutral-800 font-sofia font-medium text-sm">
                         {shop.name}
                       </h3>
-                      <div className="text-left">
-                        <span className={`text-xs font-sofia font-medium px-2 py-1 rounded ${
-                          isOpen
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {isOpen ? 'Ouvert' : 'Fermé'}
-                        </span>
-                      </div>
                     </div>
-                    
-                    {/* Overlay noir clair au survol */}
-                    <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
                 </Link>
-              );
-            })}
+            ))}
           </div>
         </div>
       </div>

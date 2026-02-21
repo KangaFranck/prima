@@ -10,7 +10,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
     case 'GET':
       try {
         const { type, actif } = req.query;
-        let query: any = {};
+        const query: Record<string, unknown> = {};
         
         if (type) {
           query.type = type;
@@ -28,7 +28,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
           .sort({ dateDebut: -1 });
 
         res.status(200).json(evenements);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erreur lors de la récupération des événements' });
       }
       break;
@@ -37,7 +37,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const evenement = await Evenement.create(req.body);
         res.status(201).json(evenement);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la création de l\'événement' });
       }
       break;
@@ -53,7 +53,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Événement non trouvé' });
         }
         res.status(200).json(evenement);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la mise à jour de l\'événement' });
       }
       break;
@@ -66,7 +66,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Événement non trouvé' });
         }
         res.status(200).json({ message: 'Événement supprimé avec succès' });
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la suppression de l\'événement' });
       }
       break;

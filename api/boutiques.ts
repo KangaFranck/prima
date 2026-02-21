@@ -10,7 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const boutiques = await Boutique.find({ statut: 'actif' });
         res.status(200).json(boutiques);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erreur lors de la récupération des boutiques' });
       }
       break;
@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const boutique = await Boutique.create(req.body);
         res.status(201).json(boutique);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la création de la boutique' });
       }
       break;

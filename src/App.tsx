@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Application Prima Center
  * 
  * Structure principale de l'application avec :
@@ -52,7 +52,7 @@ const PublicLayout = () => {
   const [isTopInfoBarVisible, setIsTopInfoBarVisible] = React.useState(true);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50">
+    <div className="min-h-screen bg-white">
       <TopInfoBar isVisible={isTopInfoBarVisible} onClose={() => setIsTopInfoBarVisible(false)} />
       <Navbar />
       <div className="pt-20">

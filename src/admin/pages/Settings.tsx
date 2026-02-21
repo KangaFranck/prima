@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Save, Eye, EyeOff, Mail, Lock, User as UserIcon, Users, Settings as SettingsIcon } from 'lucide-react';
 import { userSyncService, UserUpdateData } from '../../services/userSyncService';
 import { pb } from '../../services/pbClient';
@@ -76,7 +76,7 @@ export const UserSettings = () => {
 
     try {
       // Vérifier l'état de connexion avant de continuer
-      if (!pb.authStore.isValid && !localStorage.getItem('pb_user')) {
+      if (!pb.authStore.isValid && !sessionStorage.getItem('pb_user')) {
         setMessage({ type: 'error', text: 'Session expirée. Veuillez vous reconnecter.' });
         return;
       }
@@ -154,27 +154,27 @@ export const UserSettings = () => {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 min-h-screen">
+    <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl border border-amber-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-6 text-white">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-amber-100 overflow-hidden mb-4 sm:mb-6 md:mb-8">
+          <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-4 sm:p-6 text-white">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <SettingsIcon className="w-6 h-6" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                <SettingsIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">Paramètres du compte</h1>
-                <p className="text-amber-100">Gérez vos informations et les utilisateurs</p>
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold">Paramètres du compte</h1>
+                <p className="text-amber-100 text-sm sm:text-base">Gérez vos informations et les utilisateurs</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-2xl shadow-xl border border-amber-100 overflow-hidden mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-amber-100 overflow-hidden mb-4 sm:mb-6 md:mb-8">
+          <div className="border-b border-gray-200 overflow-x-auto">
+            <nav className="flex space-x-4 sm:space-x-8 px-3 sm:px-6 min-w-0">
               <button
                 onClick={() => setActiveTab('profile')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${

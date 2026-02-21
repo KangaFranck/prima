@@ -3,26 +3,14 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  const isProduction = mode === 'production';
-  
+  loadEnv(mode, process.cwd(), '');
   return {
     plugins: [react()],
-    define: {
-      'import.meta.env.VITE_API_URL': JSON.stringify(isProduction 
-        ? 'https://prima-five.vercel.app/api'
-        : 'http://localhost:3000/api'
-      ),
-    },
+    // Ne pas écraser VITE_API_URL : utiliser .env / .env.development / .env.production
     server: {
       host: true,
-      port: 3000,
-      proxy: {
-        '/api': {
-          target: 'http://localhost:3000',
-          changeOrigin: true,
-        },
-      },
+      port: 5173,
+      // Port 5173 pour que vercel dev ecoute sur le port principal et route /api. les requêtes /api doivent aller vers l’API (souvent 3000).
     },
     base: '/',
     publicDir: 'public',

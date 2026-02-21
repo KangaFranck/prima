@@ -1,4 +1,4 @@
-﻿import { pb } from './pbClient';
+import { pb } from './pbClient';
 
 export interface UserUpdateData {
   email?: string;
@@ -24,11 +24,10 @@ export const userSyncService = {
       let currentUser = pb.authStore.model;
       
       if (!currentUser) {
-        // Essayer de récupérer depuis le localStorage
-        const storedUser = localStorage.getItem('pb_user');
+        const storedUser = sessionStorage.getItem('pb_user');
         if (storedUser) {
           currentUser = JSON.parse(storedUser);
-          console.log('Utilisateur récupéré depuis localStorage:', currentUser);
+          console.log('Utilisateur récupéré depuis la session:', currentUser);
         }
       }
       
@@ -58,7 +57,7 @@ export const userSyncService = {
       
       // Mettre à jour l'utilisateur dans la collection users
       if (Object.keys(updatePayload).length > 0) {
-        const updatedUser = await pb.collection('users').update(currentUser.id, updatePayload);
+        const updatedUser = await pb.collection('users').update(currentUser.id, updatePayload, { requestKey: null });
         console.log(' Utilisateur synchronisé avec succès:', updatedUser);
         
         // Mettre à jour le store local
@@ -71,8 +70,9 @@ export const userSyncService = {
       }
       
       return currentUser;
-    } catch (error) {
+    } catch (error: any) {
       console.error(' Erreur lors de la synchronisation:', error);
+      console.error('Détails validation (error.data):', error?.data);
       throw error;
     }
   },
@@ -84,15 +84,14 @@ export const userSyncService = {
       let currentUser = pb.authStore.model;
       
       if (!currentUser) {
-        // Essayer depuis le localStorage
-        const storedUser = localStorage.getItem('pb_user');
+        const storedUser = sessionStorage.getItem('pb_user');
         if (storedUser) {
           currentUser = JSON.parse(storedUser);
         }
       }
-      
+
       if (!currentUser) {
-        console.warn('Aucun utilisateur trouvé dans le store ou localStorage');
+        console.warn('Aucun utilisateur trouvé dans le store ou la session');
         return null;
       }
       
@@ -141,7 +140,7 @@ export const userSyncService = {
           passwordConfirm: 'admin123',
           name: 'Administrateur Prima Center',
           role: 'admin'
-        });
+        }, { requestKey: null });
         
         console.log(' Utilisateur admin créé:', adminUser);
         return adminUser;

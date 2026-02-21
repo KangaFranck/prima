@@ -71,8 +71,8 @@ const StatItem: React.FC<StatItemProps> = ({ end, label, suffix = '', duration =
 
 const Stats = () => {
   return (
-    <div className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="py-16 bg-white w-full">
+      <div className="w-full px-4 sm:px-6 md:px-8">
         <h2 className="text-4xl font-sofia font-bold text-center mb-12">Prima Center en chiffres</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <StatItem 

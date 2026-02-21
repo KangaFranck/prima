@@ -13,7 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       await dbConnect();
       return res.status(200).json({ message: 'Connexion à la base de données réussie' });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Erreur de connexion à la base de données' });
     }
   }
@@ -46,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           prenom: admin.prenom
         }
       });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Erreur lors de la création de l\'administrateur' });
     }
   }
@@ -89,7 +89,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           prenom: user.prenom
         }
       });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Erreur lors de la connexion' });
     }
   }

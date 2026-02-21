@@ -10,7 +10,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
     case 'GET':
       try {
         const { type } = req.query;
-        let query: any = { statut: 'actif' };
+        const query: Record<string, unknown> = { statut: 'actif' };
         
         if (type) {
           query.type = type;
@@ -18,7 +18,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
 
         const infos = await Info.find(query).sort({ ordre: 1 });
         res.status(200).json(infos);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: 'Erreur lors de la récupération des informations' });
       }
       break;
@@ -27,7 +27,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         const info = await Info.create(req.body);
         res.status(201).json(info);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la création de l\'information' });
       }
       break;
@@ -43,7 +43,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Information non trouvée' });
         }
         res.status(200).json(info);
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la mise à jour de l\'information' });
       }
       break;
@@ -56,7 +56,7 @@ async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(404).json({ error: 'Information non trouvée' });
         }
         res.status(200).json({ message: 'Information supprimée avec succès' });
-      } catch (error) {
+      } catch {
         res.status(400).json({ error: 'Erreur lors de la suppression de l\'information' });
       }
       break;

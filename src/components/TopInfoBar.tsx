@@ -25,7 +25,7 @@ export default function TopInfoBar() {
           transition: 'transform 0.3s ease'
         }}
       >
-        <div className="container mx-auto px-4">
+        <div className="content-wrap">
           <div className="h-10 flex items-center justify-between">
             <div className="text-sm pl-[var(--header-content-start)]">
               Ouvert 7J/7 de 09h00 – 00h00

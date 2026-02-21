@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Pencil, Trash, Search, X } from 'lucide-react';
 import { EntityModal } from '../components/EntityModal';
 import { Evenement } from '../../types/entity';
@@ -112,27 +112,27 @@ export const Evenements = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-stone-50 p-3 sm:p-4 md:p-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-stone-800 mb-2">Gestion des Événements</h1>
-            <p className="text-stone-600">Gérez vos événements et manifestations</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-800 mb-1 sm:mb-2">Gestion des Événements</h1>
+            <p className="text-sm sm:text-base text-stone-600">Gérez vos événements et manifestations</p>
           </div>
           <button
             onClick={handleAdd}
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="flex items-center justify-center px-4 py-3 sm:px-6 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
-            <Plus className="w-5 h-5 mr-2" />
+            <Plus className="w-5 h-5 mr-2 shrink-0" />
             Ajouter un événement
           </button>
         </div>
       </div>
 
       {/* Barre de recherche */}
-      <div className="mb-8">
-        <div className="relative max-w-md">
+      <div className="mb-4 sm:mb-6 md:mb-8">
+        <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
@@ -160,24 +160,24 @@ export const Evenements = () => {
       </div>
 
       {/* Tableau des événements */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-amber-200/50">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-amber-200/50">
+        <div className="overflow-x-auto -mx-3 sm:mx-0">
+          <table className="min-w-[600px] sm:min-w-full divide-y divide-gray-200">
             <thead className="bg-gradient-to-r from-amber-50 to-amber-100">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
                   Titre
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
                   Lieu
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
                   Statut
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-stone-700 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -213,7 +213,7 @@ export const Evenements = () => {
                       {evenement.statut || 'planifié'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEdit(evenement)}
