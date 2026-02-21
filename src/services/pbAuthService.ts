@@ -28,7 +28,7 @@ export const pbAuthService = {
   async login(email: string, password: string): Promise<AuthResponse> {
     try {
       if (useApi()) {
-        if (import.meta.env.DEV) console.log('🔐 Connexion API', email);
+        if (import.meta.env.DEV) console.log('🔐 Connexion API (Neon)', email);
         const authData = await apiClient.auth.login(email, password);
         const userRecord: User = {
           ...authData.record,
