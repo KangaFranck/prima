@@ -25,7 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(204).end();
   }
 
-  const path = (req.query.path as string) || '';
+  const path = ((req.query.path as string) || '').replace(/\/$/, '').trim();
   const segments = path.split('/').filter(Boolean);
   const [resource, id] = segments;
 
@@ -53,7 +53,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // ---- Auth login ----
-    if (path === 'auth/login' && req.method === 'POST') {
+    if (path === 'auth/login') {
+      if (req.method !== 'POST') {
+        res.setHeader('Allow', 'POST');
+        return res.status(405).json({ error: 'Méthode non autorisée. Utilisez POST.' });
+      }
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
       const { email, password } = body;
       if (!email || !password) {
