@@ -1,31 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "public": true,
-  "framework": null,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build",
-        "outputDirectory": "dist",
-        "installCommand": "npm install"
-      }
-    },
-    { "src": "api/routes.ts", "use": "@vercel/node" },
-    { "src": "api/debug.ts", "use": "@vercel/node" },
-    { "src": "api/login.ts", "use": "@vercel/node" },
-    { "src": "api/auth/login.ts", "use": "@vercel/node" },
-    { "src": "api/health.js", "use": "@vercel/node" }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/health", "destination": "/api/health" },
-    { "source": "/api/debug", "destination": "/api/debug" },
-    { "source": "/api/routes", "destination": "/api/routes" },
-    { "source": "/api/auth/login", "destination": "/api/auth/login" },
-    { "source": "/api/login", "destination": "/api/login" },
-    { "source": "/api/(.*)", "destination": "/api/routes?path=$1" },
+    { "source": "/api/(.*)", "destination": "/api/index?path=$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
