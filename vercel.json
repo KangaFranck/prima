@@ -12,17 +12,13 @@
         "installCommand": "npm install"
       }
     },
-    {
-      "src": "api/routes.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/debug.ts",
-      "use": "@vercel/node"
-    }
+    { "src": "api/routes.ts", "use": "@vercel/node" },
+    { "src": "api/debug.ts", "use": "@vercel/node" },
+    { "src": "api/auth/login.ts", "use": "@vercel/node" }
   ],
   "rewrites": [
     { "source": "/api/debug", "destination": "/api/debug" },
+    { "source": "/api/auth/login", "destination": "/api/auth/login" },
     { "source": "/api/(.*)", "destination": "/api/routes?path=$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],

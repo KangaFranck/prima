@@ -4,11 +4,10 @@ Quand le login admin renvoie **405** en production malgré le code, la cause est
 
 **Si `/api/debug` affiche la page du site (footer) au lieu du JSON :** le fallback SPA prenait toute l’URL. Le `vercel.json` utilise maintenant `rewrites` pour que `/api/*` aille d’abord à la fonction API. **Redéploie** (Redeploy sur Vercel) puis réessaie `/api/debug`.
 
-**Si `/api/debug` renvoie 404 NOT_FOUND :** les fonctions API ne sont pas trouvées par Vercel.
-- **Solution appliquée dans le repo :** le `vercel.json` n’utilise **plus** la config legacy `builds`. Vercel détecte automatiquement le dossier **api/** à la racine et déploie chaque fichier (api/debug.ts, api/routes.ts) comme fonction. Conserver uniquement **buildCommand**, **outputDirectory**, **rewrites** et **headers**.
-- Vérifier que le **projet Vercel** est relié au bon repo et que **Root Directory** est vide (ou `.`).
-- **Settings** → **General** → **Framework Preset** = **Vite** (ou laisser la détection auto).
-- Après modification du `vercel.json` : **Redeploy** → **Clear cache and redeploy**, puis réessayer après 2–3 min.
+**Si `/api/debug` ou `/api/auth/login` renvoie 404 NOT_FOUND :**
+- **Solution appliquée :** le fichier **api/auth/login.ts** est ajouté explicitement dans **builds** de `vercel.json`, et une **rewrite** envoie `/api/auth/login` vers cette fonction. Ainsi la route est exposée directement (doc Vercel : un fichier dans `api/` = une route).
+- Vérifier que **Root Directory** est vide (ou `.`) dans Vercel → Settings → General.
+- Après push : **Redeploy** → **Clear cache and redeploy**, puis réessayer après 2–3 min.
 
 ---
 
