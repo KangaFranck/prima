@@ -4,7 +4,7 @@ import { X, Upload, Image as ImageIcon } from 'lucide-react';
 interface EntityModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: FormData) => void | Promise<void>;
   title: string;
   entityData?: any;
   entityType: 'loisirs' | 'boutiques' | 'restaurants' | 'evenements';
@@ -48,6 +48,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [logoCarouselPreview, setLogoCarouselPreview] = useState<string | null>(null);
   const [affichePreview, setAffichePreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (entityData) {
@@ -190,8 +191,9 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const formEl = e.currentTarget;
 
     const formDataObj = new FormData();
@@ -229,8 +231,13 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       if (formData.image) formDataObj.append('image', formData.image);
       if (formData.logoCarousel) formDataObj.append('logoCarousel', formData.logoCarousel);
     }
-    
-    onSubmit(formDataObj);
+
+    setSubmitting(true);
+    try {
+      await Promise.resolve(onSubmit(formDataObj));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -726,10 +733,13 @@ export const EntityModal: React.FC<EntityModalProps> = ({
           </button>
           <button
             type="submit"
-            onClick={handleSubmit}
-            className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+            onClick={() => {}}
+            disabled={submitting}
+            className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {entityData ? 'Modifier' : 'Créer'}
+            {submitting
+              ? (entityData ? 'Enregistrement…' : 'Création en cours… (patientez jusqu’à 1 min)')
+              : (entityData ? 'Modifier' : 'Créer')}
           </button>
         </div>
       </div>
