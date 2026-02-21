@@ -236,13 +236,35 @@ export const adminService = {
       devLog('Boutique créée:', record?.id);
       return record ? mapBoutiqueRecord(record) : record;
     } catch (error: any) {
+      // #region agent log
+      const errPayload = {
+        location: 'pbAdminService.ts:createBoutique catch',
+        message: 'createBoutique error',
+        data: {
+          errorName: error?.constructor?.name,
+          errorMessage: error?.message,
+          status: error?.status,
+          cause: (error as { cause?: { message?: string } })?.cause?.message,
+          hostname: typeof window !== 'undefined' ? window.location.hostname : '',
+        },
+        timestamp: Date.now(),
+        hypothesisId: 'network-or-coldstart',
+      };
+      console.error('createBoutique error payload', errPayload);
+      fetch('http://127.0.0.1:7242/ingest/1e8956d4-3852-4ddb-880e-25dd6e28173d', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(errPayload) }).catch(() => {});
+      // #endregion
       console.error('❌ Erreur lors de la création de la boutique:', error);
       console.error('Code d\'erreur:', error?.status);
       console.error('Détails complets PocketBase (error.data):', JSON.stringify(error?.data ?? {}, null, 2));
-      if (error?.status === 0 || error?.message?.includes('fetch') || error?.message?.includes('Failed to fetch')) {
-        throw new Error(useApi()
-          ? 'API injoignable ou erreur réseau. Vérifiez que l’API tourne (npm run api) et que R2 est configuré si vous uploadez des images.'
-          : 'PocketBase est injoignable. Lancez-le avec : npm run pb:serve (dans un autre terminal).');
+      const isNetworkError = error?.status === 0 || error?.message?.includes('fetch') || error?.message?.includes('Failed to fetch') || (error?.message && /ERR_HTTP2|network|injoignable/i.test(error.message));
+      if (isNetworkError) {
+        const onRender = typeof window !== 'undefined' && /\.onrender\.com$/i.test(window.location.hostname);
+        const apiMsg = useApi()
+          ? (onRender
+            ? 'API injoignable ou erreur réseau. Sur un hébergement gratuit, le serveur peut s’endormir après inactivité et mettre jusqu’à 1 minute à répondre. Réessayez dans 1 minute (un seul clic sur Créer).'
+            : 'API injoignable ou erreur réseau. Vérifiez que l’API tourne (npm run api) et que R2 est configuré si vous uploadez des images.')
+          : 'PocketBase est injoignable. Lancez-le avec : npm run pb:serve (dans un autre terminal).';
+        throw new Error(apiMsg);
       }
       throw error;
     }
