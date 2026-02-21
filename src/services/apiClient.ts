@@ -101,7 +101,7 @@ export interface AuthResponse {
 export const apiClient = {
   auth: {
     async login(email: string, password: string): Promise<AuthResponse> {
-      const url = apiPath('login');
+      const url = apiPath('auth/login');
       const body = JSON.stringify({ email, password });
       const res = await fetch(url, {
         method: 'POST',
@@ -205,6 +205,9 @@ export function useApi(): boolean {
   if (typeof window !== 'undefined') {
     const isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
     if (!isLocal) return true; // En prod (ex. vercel.app) : toujours l'API
+    // En local : n'utiliser l'API que si VITE_API_URL est défini (ex. vercel dev).
+    // Sinon PocketBase est utilisé comme avant l'introduction d'apiClient.
+    return Boolean(baseURL);
   }
-  return Boolean(baseURL) || import.meta.env.DEV;
+  return Boolean(baseURL);
 }
