@@ -16,8 +16,11 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-/** Construit l'URL de l'API. Si VITE_API_URL est défini (dev 2 serveurs), l'utiliser ; sinon toujours /api/ (même origine). */
+/** Construit l'URL de l'API. Sur Render (onrender.com) : toujours même origine. Sinon VITE_API_URL si défini, sinon /api/. */
 function apiPath(segment: string): string {
+  if (typeof window !== 'undefined' && /\.onrender\.com$/i.test(window.location.hostname)) {
+    return `/api/${segment}`;
+  }
   const base = baseURL.replace(/\/$/, '');
   if (base) return `${base}/api/${segment}`;
   return `/api/${segment}`;
