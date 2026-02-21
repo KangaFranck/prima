@@ -101,7 +101,7 @@ export interface AuthResponse {
 export const apiClient = {
   auth: {
     async login(email: string, password: string): Promise<AuthResponse> {
-      const url = apiPath('auth/login');
+      const url = apiPath('login');
       const body = JSON.stringify({ email, password });
       const res = await fetch(url, {
         method: 'POST',
