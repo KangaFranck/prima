@@ -5,8 +5,15 @@
 
 import type { Boutique, Restaurant, Loisir, Evenement } from '../types/admin';
 
-// En dev sans URL : requête relative (même host que la page = vercel dev). En prod : même domaine ou VITE_API_URL.
-const baseURL = (import.meta.env.VITE_API_URL as string) || '';
+// En dev sans URL : requête relative. En local (localhost), fallback sur le port 3002 (npm run api) pour éviter PocketBase 8090.
+function getBaseURL(): string {
+  const fromEnv = (import.meta.env.VITE_API_URL as string) || '';
+  if (fromEnv) return fromEnv;
+  if (typeof window !== 'undefined' && /localhost|127\.0\.0\.1/.test(window.location.hostname)) {
+    return 'http://localhost:3002';
+  }
+  return '';
+}
 
 /** Cache données publiques : pas d’expiration par temps, vidé uniquement quand l’admin modifie les données. */
 const dataCache = new Map<string, unknown>();
@@ -16,12 +23,12 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-/** Construit l'URL de l'API. Sur Render (onrender.com) : toujours même origine. Sinon VITE_API_URL si défini, sinon /api/. */
+/** Construit l'URL de l'API. Sur Render ou Vercel : même origine (/api/...). Sinon VITE_API_URL si défini, sinon /api/. */
 function apiPath(segment: string): string {
-  if (typeof window !== 'undefined' && /\.onrender\.com$/i.test(window.location.hostname)) {
+  if (typeof window !== 'undefined' && (/\.onrender\.com$/i.test(window.location.hostname) || /\.vercel\.app$/i.test(window.location.hostname))) {
     return `/api/${segment}`;
   }
-  const base = baseURL.replace(/\/$/, '');
+  const base = getBaseURL().replace(/\/$/, '');
   if (base) return `${base}/api/${segment}`;
   return `/api/${segment}`;
 }
@@ -199,14 +206,19 @@ export const apiClient = {
   },
 };
 
-/** true si le front doit utiliser l’API (Neon/R2) au lieu de PocketBase */
-export function useApi(): boolean {
-  if (typeof window !== 'undefined') {
-    const isLocal = /localhost|127\.0\.0\.1/.test(window.location.hostname);
-    if (!isLocal) return true; // En prod (ex. vercel.app) : toujours l'API
-    // En local : n'utiliser l'API que si VITE_API_URL est défini (ex. vercel dev).
-    // Sinon PocketBase est utilisé comme avant l'introduction d'apiClient.
-    return Boolean(baseURL);
+/** Toujours true : le front n'utilise que l'API Node (Neon + R2), jamais PocketBase. l’API */
+/** Récupère l'URL de la miniature (cover) d'un post/reel Instagram via l'API oEmbed. Retourne null en cas d'erreur. */
+export async function getInstagramThumbnail(postUrl: string): Promise<string | null> {
+  if (!/instagram\.com\/(p|reel)\//i.test(postUrl)) return null;
+  try {
+    const segment = `instagram-oembed?url=${encodeURIComponent(postUrl)}`;
+    const data = await request<{ thumbnail_url?: string | null }>(segment);
+    return data.thumbnail_url ?? null;
+  } catch {
+    return null;
   }
-  return Boolean(baseURL);
+}
+
+export function useApi(): boolean {
+  return true;
 }

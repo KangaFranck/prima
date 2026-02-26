@@ -26,7 +26,7 @@ function loadEnv() {
 }
 loadEnv();
 
-const PORT = Number(process.env.API_PORT || process.env.PORT) || 3001;
+const PORT = Number(process.env.API_PORT || process.env.PORT) || 3002;
 let handler: (req: any, res: any) => Promise<void>;
 
 function parsePath(pathname: string) {

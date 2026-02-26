@@ -57,19 +57,18 @@ export const Restaurants = () => {
 
       const imageFile = formData.get('image') as File;
       if (imageFile && imageFile.size > 0) {
-        console.log('Image File détectée:', imageFile.name, imageFile.type, imageFile.size);
         restaurant.image = imageFile;
       } else if (selectedRestaurant?.image) {
-        console.log('Utilisation de l\'image existante');
         restaurant.image = selectedRestaurant.image;
       }
 
-      const logoCarouselFile = formData.get('logoCarousel') as File;
-      if (logoCarouselFile && logoCarouselFile.size > 0) {
-        restaurant.logoCarousel = logoCarouselFile;
+      const image2File = formData.get('image2') as File;
+      if (image2File && image2File.size > 0) {
+        restaurant.image2 = image2File;
       } else if (selectedRestaurant?.logoCarousel) {
         restaurant.logoCarousel = selectedRestaurant.logoCarousel;
       }
+
 
       console.log('Objet restaurant final:', {
         ...restaurant,

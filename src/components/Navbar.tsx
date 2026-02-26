@@ -236,7 +236,7 @@ const Navbar = () => {
         <div className="content-wrap">
           <div className="flex items-center h-24 md:h-28 relative min-w-0">
             {/* Logo : même décalage que le texte "Ouvert" (variable --header-content-start) */}
-            <Link to="/" className="absolute left-[calc(var(--header-content-start)+var(--logo-offset))] header-logo" onClick={handleLogoClick}>
+            <Link to="/" className="absolute left-[calc(var(--header-content-start)+var(--logo-offset))] top-[53%] -translate-y-1/2 header-logo" onClick={handleLogoClick}>
               <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" />
             </Link>
 

@@ -2,9 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { formatDate } from '../utils/date';
 import { useEvenementStore } from '../store/evenementStore';
-import GoldStar from '../components/GoldStar';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Calendar, MapPin, Clock } from 'lucide-react';
+import { Calendar, MapPin, Clock, Facebook, Instagram, Plus } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function toDateStr(d: string): string {
@@ -21,78 +20,122 @@ const todayStr = () => {
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
 };
 
-function EventCard({
+function addToCalendar(e: React.MouseEvent, evenement: { id: string; title: string; date: string; description?: string; lieu?: string; heure?: string }) {
+  e.preventDefault();
+  e.stopPropagation();
+  const d = evenement.date ? new Date(evenement.date) : new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const start = `${y}${m}${day}T100000Z`;
+  const end = `${y}${m}${day}T210000Z`;
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(evenement.title)}&dates=${start}/${end}&details=${encodeURIComponent(evenement.description || '')}&location=${encodeURIComponent(evenement.lieu || '')}`;
+  window.open(url, '_blank');
+}
+
+function shareUrl(path: string): string {
+  if (typeof window === 'undefined') return '';
+  return window.location.origin + path;
+}
+
+/** Carte événement style Bal Harbour : image à gauche, infos à droite (titre, lieu, date/heure, Ajouter au calendrier, Partager) */
+function EventRow({
   evenement,
-  size = 'normal',
-  onClick,
+  index,
+  onSeeMore,
 }: {
-  evenement: { id: string; title: string; date: string; image: string; lieu?: string; heure?: string };
-  size?: 'featured' | 'normal';
-  onClick: () => void;
+  evenement: { id: string; title: string; date: string; image: string; lieu?: string; heure?: string; description?: string };
+  index: number;
+  onSeeMore: () => void;
 }) {
-  const isFeatured = size === 'featured';
+  const isReversed = index % 2 === 1;
+  const eventPath = `/evenements/${evenement.id}`;
+  const url = shareUrl(eventPath);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`bg-white shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer group border border-gray-100 ${isFeatured ? 'max-w-4xl mx-auto' : ''}`}
-      style={{
-        aspectRatio: isFeatured ? '21/9' : '4/3',
-        minHeight: isFeatured ? '320px' : '280px',
-        minWidth: isFeatured ? undefined : '260px',
-      }}
-      onClick={onClick}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl mx-auto mb-12 lg:mb-16`}
     >
-      <div className="relative w-full h-full">
-        {evenement.image ? (
-          <img
-            src={evenement.image}
-            alt={evenement.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#F8F7F4] to-gray-200 flex items-center justify-center">
-            <Calendar className="w-12 h-12 text-gray-400" />
+      <div className="lg:w-[55%] aspect-[4/3] lg:aspect-auto lg:min-h-[360px] flex-shrink-0">
+        <button type="button" onClick={onSeeMore} className="block w-full h-full text-left">
+          {evenement.image ? (
+            <img
+              src={evenement.image}
+              alt={evenement.title}
+              className="w-full h-full object-cover hover:opacity-95 transition-opacity"
+            />
+          ) : (
+            <div className="w-full h-full bg-[#F8F7F4] flex items-center justify-center">
+              <Calendar className="w-16 h-16 text-gray-300" />
+            </div>
+          )}
+        </button>
+      </div>
+      <div className="flex-1 flex flex-col justify-center p-6 md:p-8 lg:p-10">
+        <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
+          Prochain événement
+        </p>
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
+          {evenement.title}
+        </h2>
+        {evenement.lieu && (
+          <div className="flex items-start gap-2 text-gray-600 mb-2">
+            <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-gray-500" />
+            <span className="font-sofia text-sm md:text-base">{evenement.lieu}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute top-2 right-2">
-          <GoldStar />
+        <div className="flex items-center gap-2 text-gray-600 mb-6">
+          <Clock className="w-4 h-4 shrink-0 text-gray-500" />
+          <span className="font-sofia text-sm md:text-base">
+            {formatDate(evenement.date)}
+            {evenement.heure ? ` — ${evenement.heure}` : ''}
+          </span>
         </div>
-        <div className="absolute top-2 left-2">
-          <div className="bg-white/90 backdrop-blur-sm px-2 py-1">
-            <div className="flex items-center space-x-1 text-black">
-              <Calendar className="w-3 h-3" />
-              <span className="text-xs font-medium">{formatDate(evenement.date)}</span>
-            </div>
-          </div>
+        <div className="flex flex-wrap items-center gap-3 mt-auto">
+          <button
+            type="button"
+            onClick={(e) => addToCalendar(e, evenement)}
+            className="inline-flex items-center gap-2 px-5 py-3 bg-black text-white font-sofia font-medium text-sm hover:bg-gray-800 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Ajouter au calendrier
+          </button>
+          <button
+            type="button"
+            onClick={onSeeMore}
+            className="inline-flex items-center gap-2 px-5 py-3 border-2 border-gray-800 text-gray-800 font-sofia font-medium text-sm hover:bg-gray-800 hover:text-white transition-colors"
+          >
+            En savoir plus
+          </button>
         </div>
-        <div className={`absolute bottom-0 left-0 right-0 ${isFeatured ? 'p-8' : 'p-6'}`}>
-          <h3 className={`text-white font-bold drop-shadow-lg line-clamp-2 ${isFeatured ? 'text-2xl md:text-3xl mb-4' : 'text-lg mb-3'}`}>
-            {evenement.title}
-          </h3>
-          <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-white/90 mb-3">
-            {evenement.heure && (
-              <div className="flex items-center space-x-1">
-                <Clock className="w-3 h-3 shrink-0" />
-                <span>{evenement.heure}</span>
-              </div>
-            )}
-            {evenement.lieu && (
-              <div className="flex items-center space-x-1 min-w-0">
-                <MapPin className="w-3 h-3 shrink-0" />
-                <span className="truncate">{evenement.lieu}</span>
-              </div>
-            )}
-          </div>
-          <div className="flex items-center text-white font-medium group-hover:text-white/80 transition-colors">
-            <span className={isFeatured ? 'text-lg' : 'text-base'}>En savoir plus</span>
-            <ArrowRight className={`ml-2 group-hover:translate-x-1 transition-transform ${isFeatured ? 'w-6 h-6' : 'w-5 h-5'}`} />
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-2">Partager</p>
+          <div className="flex gap-2">
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+              aria-label="Partager sur Facebook"
+            >
+              <Facebook className="w-4 h-4" />
+            </a>
+            <a
+              href={`https://www.instagram.com/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }
 
@@ -140,92 +183,67 @@ const ActusEvents = () => {
 
   const isEmpty = evenements.length === 0;
 
+  const allUpcoming = featured ? [featured, ...upcoming] : upcoming;
+
   return (
-    <div className="min-h-screen bg-[#F8F7F4]">
-      <div className="relative min-h-[calc(100vh-var(--navbar-height))] mt-[var(--navbar-height)] bg-[#F8F7F4] pb-16">
-        <div className="w-full px-4 sm:px-6 md:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+    <div className="min-h-screen bg-white w-full max-w-full min-w-0 overflow-x-hidden">
+      <div className="relative min-h-[calc(100vh-var(--navbar-height))] pb-16">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center pt-16 mb-16"
+            className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16"
           >
-            <div className="flex-1 h-0.5 bg-gray-300" />
-            <h1 className="text-[35px] sm:text-[45px] md:text-[55px] lg:text-[65px] font-ogg font-semibold text-gray-600 leading-[0.9] tracking-wider uppercase px-8">
-              Les événements
-            </h1>
-            <div className="flex-1 h-0.5 bg-gray-300" />
-          </motion.div>
+            Prochains événements
+          </motion.h1>
 
           {isEmpty ? (
-            <div className="text-center py-16">
-              <div className="w-24 h-24 bg-black flex items-center justify-center mx-auto mb-6">
-                <Calendar className="w-12 h-12 text-white" />
+            <div className="text-center py-20">
+              <div className="w-20 h-20 bg-gray-100 flex items-center justify-center mx-auto mb-6 rounded-full">
+                <Calendar className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-2xl font-bold text-black mb-4">Aucun événement à afficher</h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                D'autres événements seront bientôt ajoutés. Revenez plus tard pour découvrir nos prochains événements !
+              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucun événement à afficher</h3>
+              <p className="text-gray-500 max-w-md mx-auto font-sofia">
+                D'autres événements seront bientôt ajoutés. Revenez plus tard !
               </p>
             </div>
           ) : (
             <>
-              {/* Événement central / à la une (le prochain à venir) — plus grand */}
-              {featured && (
-                <section className="mb-14">
-                  <EventCard
-                    evenement={featured}
-                    size="featured"
-                    onClick={() => navigate(`/evenements/${featured.id}`)}
-                  />
-                </section>
-              )}
+              {allUpcoming.map((evenement, index) => (
+                <EventRow
+                  key={evenement.id}
+                  evenement={evenement}
+                  index={index}
+                  onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
+                />
+              ))}
 
-              {/* Événements à venir (reste des futurs) */}
-              {upcoming.length > 0 && (
-                <section className="mb-14">
-                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-700 uppercase tracking-wider mb-6">
-                    Événements à venir
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {upcoming.map((evenement) => (
-                      <EventCard
-                        key={evenement.id}
-                        evenement={evenement}
-                        size="normal"
-                        onClick={() => navigate(`/evenements/${evenement.id}`)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Événements passés */}
               {past.length > 0 && (
-                <section>
-                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-700 uppercase tracking-wider mb-6">
+                <section className="mt-16 pt-12 border-t border-gray-200">
+                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
                     Événements passés
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {past.map((evenement) => (
-                      <EventCard
+                  <div className="space-y-8">
+                    {past.map((evenement, index) => (
+                      <EventRow
                         key={evenement.id}
                         evenement={evenement}
-                        size="normal"
-                        onClick={() => navigate(`/evenements/${evenement.id}`)}
+                        index={allUpcoming.length + index}
+                        onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
                       />
                     ))}
                   </div>
                 </section>
               )}
 
-              {/* Si aucun à venir ni passés (données sans date valide) */}
               {!featured && upcoming.length === 0 && past.length === 0 && evenements.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {evenements.map((evenement) => (
-                    <EventCard
+                <div className="space-y-12">
+                  {evenements.map((evenement, index) => (
+                    <EventRow
                       key={evenement.id}
                       evenement={evenement}
-                      size="normal"
-                      onClick={() => navigate(`/evenements/${evenement.id}`)}
+                      index={index}
+                      onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
                     />
                   ))}
                 </div>

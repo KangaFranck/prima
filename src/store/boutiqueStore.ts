@@ -9,6 +9,7 @@ interface Boutique {
   universe: string;
   image: string;
   logo?: string;
+  logoCarousel?: string;
   horaires?: string;
   heureOuverture: string;
   heureFermeture: string;
@@ -39,6 +40,7 @@ function imgUrl(record: any, field: string): string {
 function mapRecordToBoutique(record: any): Boutique {
   const logoUrl = imgUrl(record, 'logo');
   const imageUrl = imgUrl(record, 'image');
+  const logoCarouselUrl = imgUrl(record, 'logoCarousel');
 
   return {
     _id: record.id,
@@ -47,6 +49,7 @@ function mapRecordToBoutique(record: any): Boutique {
     universe: record.universe || "Autre",
     image: imageUrl || "/images/logos/default.png",
     logo: logoUrl,
+    logoCarousel: logoCarouselUrl || undefined,
     horaires: record.horaires,
     heureOuverture: record.heureOuverture || "09:00",
     heureFermeture: record.heureFermeture || "18:00",

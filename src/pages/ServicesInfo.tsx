@@ -74,34 +74,23 @@ export default function ServicesInfo() {
   ];
 
   return (
-    <div className="min-h-screen bg-white antialiased">
-      {/* Hero Section avec ajustement pour la navbar */}
-      <section className="relative h-[75vh] mt-[76px] overflow-hidden flex items-center justify-center will-change-transform">
-        <img 
+    <div className="min-h-screen bg-white antialiased w-full max-w-full min-w-0 overflow-x-hidden">
+      {/* Hero : même style que Boutiques / Restaurants / Loisirs, taille augmentée (décalage navbar géré par le layout) */}
+      <section className="relative h-[85vh] min-h-[480px] max-h-[900px] w-full overflow-hidden">
+        <img
           src="/images/electronique.jpg"
           alt="Services et Informations"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-black/30 backdrop-filter">
-          <div className="relative z-10 text-center w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-20">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-[45px] sm:text-[60px] md:text-[75px] lg:text-[90px] font-sofia font-extralight text-white leading-[0.9] tracking-wider uppercase mb-4 [-webkit-font-smoothing:antialiased] [text-rendering:optimizeLegibility]"
-            >
-              Services & Informations
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-[16px] sm:text-[20px] md:text-[24px] lg:text-[28px] font-sofia font-extralight text-white [-webkit-font-smoothing:antialiased]"
-            >
-              Tout ce dont vous avez besoin pour votre visite
-            </motion.p>
-          </div>
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute bottom-6 left-4 md:left-8 lg:left-12 right-4 md:right-8 lg:right-12">
+          <h1 className="text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
+            Services & Informations
+          </h1>
+          <p className="mt-2 text-sm sm:text-base md:text-lg font-sofia font-light text-white/95 drop-shadow-sm">
+            Tout ce dont vous avez besoin pour votre visite
+          </p>
         </div>
       </section>
 

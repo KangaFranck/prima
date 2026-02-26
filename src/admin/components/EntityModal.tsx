@@ -36,7 +36,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     website: '',
     logo: null as File | null,
     image: null as File | null,
-    logoCarousel: null as File | null,
+    image2: null as File | null,
     // Champs spécifiques aux événements - SEULEMENT CEUX QUI EXISTENT DANS LA DB
     titre: '',
     date: '',
@@ -46,7 +46,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [logoCarouselPreview, setLogoCarouselPreview] = useState<string | null>(null);
+  const [image2Preview, setImage2Preview] = useState<string | null>(null);
   const [affichePreview, setAffichePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -117,7 +117,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
           website: String(entityData?.website ?? '').trim(),
           logo: null,
           image: null,
-          logoCarousel: null,
+          image2: null,
           titre: '',
           date: '',
           lieu: '',
@@ -128,7 +128,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
 
         setLogoPreview(entityData.logo && typeof entityData.logo === 'string' ? entityData.logo : null);
         setImagePreview(entityData.image && typeof entityData.image === 'string' ? entityData.image : null);
-        setLogoCarouselPreview(entityData.logoCarousel && typeof entityData.logoCarousel === 'string' ? entityData.logoCarousel : null);
+        setImage2Preview(entityData.logoCarousel && typeof entityData.logoCarousel === 'string' ? entityData.logoCarousel : null);
       }
     } else {
       // Reset form for new entity
@@ -149,7 +149,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         website: '',
         logo: null,
         image: null,
-        logoCarousel: null,
+        image2: null,
         titre: '',
         date: '',
         lieu: '',
@@ -157,7 +157,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       });
       setLogoPreview(null);
       setImagePreview(null);
-      setLogoCarouselPreview(null);
+      setImage2Preview(null);
       setAffichePreview(null);
     }
   }, [entityData, isOpen, entityType]);
@@ -173,21 +173,15 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'logoCarousel' | 'affiche') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'image2' | 'affiche') => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData(prev => ({ ...prev, [field]: file }));
-      
       const previewUrl = URL.createObjectURL(file);
-      if (field === 'logo') {
-        setLogoPreview(previewUrl);
-      } else if (field === 'image') {
-        setImagePreview(previewUrl);
-      } else if (field === 'logoCarousel') {
-        setLogoCarouselPreview(previewUrl);
-      } else if (field === 'affiche') {
-        setAffichePreview(previewUrl);
-      }
+      if (field === 'logo') setLogoPreview(previewUrl);
+      else if (field === 'image') setImagePreview(previewUrl);
+      else if (field === 'image2') setImage2Preview(previewUrl);
+      else if (field === 'affiche') setAffichePreview(previewUrl);
     }
   };
 
@@ -229,7 +223,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       if (formData.website) formDataObj.append('website', formData.website);
       if (formData.logo) formDataObj.append('logo', formData.logo);
       if (formData.image) formDataObj.append('image', formData.image);
-      if (formData.logoCarousel) formDataObj.append('logoCarousel', formData.logoCarousel);
+      if (formData.image2) formDataObj.append('image2', formData.image2);
     }
 
     setSubmitting(true);
@@ -259,7 +253,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         </div>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto min-h-0 flex-1 max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-140px)]">
+        <form id="entity-modal-form" onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto min-h-0 flex-1 max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-140px)]">
           {entityType === 'evenements' ? (
             // Formulaire pour événements - SEULEMENT LES CHAMPS QUI EXISTENT DANS LA DB
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -631,61 +625,17 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                 </div>
               </div>
 
-              {/* Logo carousel */}
+              {/* Image de couverture 1 - Obligatoire */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Logo carousel
-                </label>
-                <div className="flex items-center space-x-4">
-                  {logoCarouselPreview && (
-                    <div className="relative w-16 h-16">
-                      <img
-                        src={logoCarouselPreview}
-                        alt="Aperçu logo carousel"
-                        className="object-cover rounded-lg w-full h-full"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLogoCarouselPreview(null);
-                          setFormData(prev => ({ ...prev, logoCarousel: null }));
-                        }}
-                        className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e, 'logoCarousel')}
-                      className="hidden"
-                      id="logoCarousel-upload"
-                    />
-                    <label
-                      htmlFor="logoCarousel-upload"
-                      className="cursor-pointer inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-                    >
-                      <Upload className="w-5 h-5 mr-2" />
-                      {logoCarouselPreview ? 'Changer' : 'Logo carousel'}
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Image principale - Obligatoire */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Image principale <span className="text-red-500">*</span>
+                  Image de couverture <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center space-x-4">
                   {imagePreview && (
                     <div className="relative w-32 h-32">
                       <img
                         src={imagePreview}
-                        alt="Aperçu de l'image"
+                        alt="Aperçu image de couverture"
                         className="object-cover rounded-lg w-full h-full"
                       />
                       <button
@@ -696,7 +646,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                         }}
                         className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                       >
-                        
+                        ×
                       </button>
                     </div>
                   )}
@@ -713,7 +663,51 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                       className="cursor-pointer inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
                     >
                       <Upload className="w-5 h-5 mr-2" />
-                      {imagePreview ? 'Changer l\'image' : 'Télécharger une image'}
+                      {imagePreview ? 'Changer l\'image de couverture' : 'Télécharger l\'image de couverture'}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image de couverture 2 - Optionnelle */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Image de couverture 2 <span className="text-gray-400 font-normal">(optionnelle)</span>
+                </label>
+                <div className="flex items-center space-x-4">
+                  {image2Preview && (
+                    <div className="relative w-32 h-32">
+                      <img
+                        src={image2Preview}
+                        alt="Aperçu image de couverture 2"
+                        className="object-cover rounded-lg w-full h-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImage2Preview(null);
+                          setFormData(prev => ({ ...prev, image2: null }));
+                        }}
+                        className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, 'image2')}
+                      className="hidden"
+                      id="image2-upload"
+                    />
+                    <label
+                      htmlFor="image2-upload"
+                      className="cursor-pointer inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                    >
+                      <Upload className="w-5 h-5 mr-2" />
+                      {image2Preview ? 'Changer' : 'Télécharger (optionnel)'}
                     </label>
                   </div>
                 </div>
@@ -733,7 +727,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
           </button>
           <button
             type="submit"
-            onClick={() => {}}
+            form="entity-modal-form"
             disabled={submitting}
             className="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >

@@ -61,16 +61,14 @@ export const Boutiques = () => {
 
       const imageFile = formData.get('image') as File;
       if (imageFile && imageFile.size > 0) {
-        console.log('Image File détectée:', imageFile.name, imageFile.type, imageFile.size);
         boutique.image = imageFile;
       } else if (selectedBoutique?.image) {
-        console.log('Utilisation de l\'image existante');
         boutique.image = selectedBoutique.image;
       }
 
-      const logoCarouselFile = formData.get('logoCarousel') as File;
-      if (logoCarouselFile && logoCarouselFile.size > 0) {
-        boutique.logoCarousel = logoCarouselFile;
+      const image2File = formData.get('image2') as File;
+      if (image2File && image2File.size > 0) {
+        boutique.image2 = image2File;
       } else if (selectedBoutique?.logoCarousel) {
         boutique.logoCarousel = selectedBoutique.logoCarousel;
       }

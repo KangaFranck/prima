@@ -105,11 +105,13 @@ const server = createServer(async (req, res) => {
       res.end(JSON.stringify({ error: 'Image trop volumineuse. Réduisez la taille (max 5 Mo) ou enregistrez sans image.' }));
       return;
     }
+    const query: Record<string, string> = { path };
+    url.searchParams.forEach((v, k) => { query[k] = v; });
     const vercelReq = {
       method: req.method,
       headers: req.headers,
       url: req.url,
-      query: { path },
+      query,
       body: undefined as unknown,
     };
     if (req.method === 'POST' || req.method === 'PUT') {
