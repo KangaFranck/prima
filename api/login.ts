@@ -3,11 +3,11 @@
  * Route à un seul segment pour éviter 404 sur Vercel avec /api/auth/login.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from './db.js';
+import { sql } from './db';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET || '';
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((s) => s.trim().replace(/\/$/, ''))
@@ -28,6 +28,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if ((req.method || '').toUpperCase() === 'OPTIONS') {
     return res.status(204).end();
+  }
+
+  if (!JWT_SECRET) {
+    console.error('Login: JWT_SECRET manquant (variables d\'environnement Vercel)');
+    return res.status(503).json({ error: 'Service non configuré. Définissez JWT_SECRET sur Vercel.' });
   }
 
   if ((req.method || '').toUpperCase() !== 'POST') {
