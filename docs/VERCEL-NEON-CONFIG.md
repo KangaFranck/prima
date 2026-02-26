@@ -43,7 +43,32 @@ Une fois déployé :
 
 ---
 
-## 3. Pourquoi ça marche sur Render et pas sur Vercel ?
+## 3. Pourquoi l’erreur « API 404 » peut persister ?
+
+Plusieurs causes possibles :
+
+1. **Fonction non déployée**  
+   Si le build de la fonction `api/login.ts` échoue (par ex. import `./db` non résolu), Vercel ne déploie pas la route `/api/login` → le navigateur reçoit 404. Le projet utilise maintenant un **fichier `api/login.ts` autonome** (sans import local, connexion Neon directe) pour éviter ce cas.
+
+2. **Modifs non déployées**  
+   Les changements dans `vercel.json` ou `api/login.ts` ne sont pris en compte qu’après un **push** vers la branche connectée à Vercel et un **nouveau déploiement**. Vérifie que le dernier déploiement correspond bien à ton dernier commit.
+
+3. **Variables d’environnement manquantes**  
+   Sans `DATABASE_URL` ou `JWT_SECRET`, la fonction peut planter au premier accès à la BDD ou au JWT ; selon la config, tu peux voir 404, 500 ou 503. Définis ces variables dans **Vercel → Settings → Environment Variables** puis redéploie.
+
+4. **Framework Preset = Vite → les API ne sont pas déployées**  
+   Si le projet est en **Framework Preset « Vite »**, Vercel ne déploie que le front (build Vite → `dist/`) et **ignore le dossier `api/`**. Résultat : `/api/health` et `/api/login` renvoient **404** même si tout fonctionne en local.  
+   **Correction** : le `vercel.json` du projet contient maintenant **`"framework": null`** pour forcer le preset « Other » et que Vercel utilise toute la config (dont `builds` avec `api/health.js`, `api/login.ts`, `api/index.ts`). Après un **nouveau déploiement**, les routes API doivent répondre.  
+   Si besoin, tu peux aussi le faire à la main : **Vercel** → ton projet → **Settings** → **General** → **Framework Preset** → choisir **« Other »** → **Save** → **Redeploy**.
+
+5. **Vérifier dans le dashboard Vercel**  
+   - **Deployments** → dernier déploiement → onglet **Functions** : les fonctions `api/health`, `api/login`, `api/index` doivent apparaître.  
+   - Si elles n’apparaissent pas, le build des API a échoué : regarde les **logs de build**.  
+   - Si elles apparaissent mais que tu as encore 404, regarde les **logs d’exécution** de la fonction au moment de la requête.
+
+---
+
+## 4. Pourquoi ça marche sur Render et pas sur Vercel ?
 
 - **Render** : tu as défini les variables dans le dashboard (ou dans un fichier d’env), donc l’API les a au démarrage.
 - **Vercel** : les variables ne sont **pas** lues depuis ton `.env` en production. Il faut les saisir dans **Vercel → Settings → Environment Variables**. Sans ça, `process.env.DATABASE_URL` est vide et l’API ne peut pas se connecter à Neon.
@@ -52,7 +77,7 @@ En résumé : **même code, même base Neon** ; la seule différence est la **co
 
 ---
 
-## 4. Récap
+## 5. Récap
 
 1. Ajouter **DATABASE_URL** et **JWT_SECRET** (et éventuellement **ALLOWED_ORIGINS** et R2) dans Vercel → Settings → Environment Variables.
 2. Redéployer le projet.
