@@ -10,10 +10,10 @@ const APropos = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-white antialiased"
+      className="min-h-screen bg-white antialiased w-full max-w-full min-w-0 overflow-x-hidden"
     >
       {/* Section Notre Histoire */}
-      <section className="pt-[var(--navbar-height)] py-16 md:py-24 bg-[#FFFEF2] w-full">
+      <section className="py-16 md:py-24 bg-[#FFFEF2] w-full">
         <div className="w-full px-4 sm:px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div 

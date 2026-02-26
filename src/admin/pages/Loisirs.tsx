@@ -57,19 +57,18 @@ export const Loisirs = () => {
 
       const imageFile = formData.get('image') as File;
       if (imageFile && imageFile.size > 0) {
-        console.log('Image File détectée:', imageFile.name, imageFile.type, imageFile.size);
         loisir.image = imageFile;
       } else if (selectedLoisir?.image) {
-        console.log('Utilisation de l\'image existante');
         loisir.image = selectedLoisir.image;
       }
 
-      const logoCarouselFile = formData.get('logoCarousel') as File;
-      if (logoCarouselFile && logoCarouselFile.size > 0) {
-        loisir.logoCarousel = logoCarouselFile;
+      const image2File = formData.get('image2') as File;
+      if (image2File && image2File.size > 0) {
+        loisir.image2 = image2File;
       } else if (selectedLoisir?.logoCarousel) {
         loisir.logoCarousel = selectedLoisir.logoCarousel;
       }
+
 
       console.log('Objet loisir final:', {
         ...loisir,

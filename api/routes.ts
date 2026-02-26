@@ -48,6 +48,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
+  // GET /api/instagram-oembed — miniature (cover) d'un post/reel Instagram
+  if (path === 'instagram-oembed' && req.method === 'GET') {
+    const postUrl = (req.query.url as string) || '';
+    if (!postUrl || !/instagram\.com\/(p|reel)\//i.test(postUrl)) {
+      return res.status(400).json({ error: 'URL Instagram post/reel requise (paramètre url).' });
+    }
+    try {
+      const fetchUrl = `https://api.instagram.com/oembed?url=${encodeURIComponent(postUrl)}`;
+      const r = await fetch(fetchUrl);
+      if (!r.ok) {
+        const t = await r.text();
+        return res.status(r.status).json({ error: 'Instagram oEmbed indisponible', detail: t.slice(0, 200) });
+      }
+      const data = (await r.json()) as { thumbnail_url?: string; title?: string };
+      return res.status(200).json({ thumbnail_url: data.thumbnail_url || null, title: data.title || null });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return res.status(502).json({ error: 'Erreur lors de la récupération de la miniature Instagram', detail: msg });
+    }
+  }
+
   // GET /api/health — vérifie Neon + R2 (réécrit en /api/routes?path=health)
   if (path === 'health' && req.method === 'GET') {
     const result: { ok: boolean; api: string; database: string | { error: string }; r2: string | { error: string } } = {

@@ -52,10 +52,10 @@ const PublicLayout = () => {
   const [isTopInfoBarVisible, setIsTopInfoBarVisible] = React.useState(true);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white w-full max-w-full min-w-0">
       <TopInfoBar isVisible={isTopInfoBarVisible} onClose={() => setIsTopInfoBarVisible(false)} />
       <Navbar />
-      <div className="pt-20">
+      <div className="pt-[var(--navbar-height)] w-full max-w-full min-w-0 overflow-x-hidden">
         <Routes>
           <Route index element={<Home />} />
           <Route path="boutiques" element={<Boutiques />} />

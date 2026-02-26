@@ -89,7 +89,7 @@
   margin-left: var(--logo-image-pull);
 }
 
-/* === Reset cross-browser (Chrome, Firefox, Safari, Edge) === */
+/* === Reset cross-navigateurs (Chrome, Firefox, Safari, Edge) – une seule base robuste === */
 @layer base {
   *,
   *::before,
@@ -101,18 +101,20 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
     overflow-x: hidden;
-    scrollbar-gutter: stable;
+    overflow-y: auto;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scrollbar-gutter: stable;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
-    /* min-height cohérent : 100vh + fallbacks (Firefox/Chrome/Safari) */
     min-height: 100%;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     min-height: 100dvh;
   }
 
@@ -121,22 +123,35 @@
     padding: 0;
     width: 100%;
     max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     min-height: 100%;
     min-height: 100vh;
-    min-height: 100dvh;
     min-height: -webkit-fill-available;
+    min-height: 100dvh;
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    -webkit-padding-start: env(safe-area-inset-left, 0);
+    -webkit-padding-end: env(safe-area-inset-right, 0);
     @apply antialiased;
     font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+    -ms-overflow-style: scrollbar;
   }
 
   #root {
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     min-height: 100%;
     min-height: 100vh;
     min-height: 100dvh;
@@ -144,7 +159,10 @@
     isolation: isolate;
   }
 
-  img, iframe, object, embed {
+  img,
+  iframe,
+  object,
+  embed {
     max-width: 100%;
     height: auto;
     vertical-align: middle;
@@ -152,7 +170,8 @@
 
   img {
     display: block;
-    height: auto;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   video {
@@ -164,9 +183,11 @@
     width: 100%;
     max-width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
   }
 
-  a, button {
+  a,
+  button {
     -webkit-tap-highlight-color: transparent;
   }
 }
@@ -205,6 +226,11 @@
     line-height: 1.19;
   }
 
+  /* Si .font-sofia est sur un h1/h2/h3, forcer Sofia Pro (sinon la règle ci-dessus l’emporte) */
+  h1.font-sofia, h2.font-sofia, h3.font-sofia {
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif !important;
+  }
+
   /* Ne pas forcer font-family sur * pour éviter d’écraser .font-ogg ; body/html ont déjà Sofia Pro */
   .prima-center {
     font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif !important;
@@ -218,16 +244,30 @@
     transition-duration: 150ms;
   }
 
-  /* min-height viewport : même rendu Chrome / Firefox / Safari (évite bug 100vh mobile) */
+  /* min-height viewport : même rendu Chrome / Firefox / Safari (évite bug 100vh mobile / barre d’adresse iOS) */
   .min-h-screen {
     min-height: 100vh;
-    min-height: 100dvh;
     min-height: -webkit-fill-available;
+    min-height: 100dvh;
   }
 
-  /* fix flex/grid overflow Firefox : min-width: 0 sur les enfants flex */
+  /* fix flex/grid overflow Firefox/Safari/Chrome : min-width: 0 sur les enfants flex */
   .min-w-0 {
     min-width: 0;
+  }
+
+  /* Responsive : éviter débordement horizontal sur tous navigateurs */
+  .responsive-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Casser les mots longs (URLs, noms) pour éviter overflow */
+  .break-words-safe {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
   }
 }
 

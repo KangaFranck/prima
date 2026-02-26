@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
-import { Calendar, Clock, MapPin, Phone, Mail, Sparkles, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { formatDate } from '../../utils/date';
 
@@ -14,25 +14,20 @@ const EventDetail = () => {
     fetchEvenements();
   }, [fetchEvenements]);
 
-  // Fonction pour ajouter l'événement au calendrier
   const addToCalendar = () => {
     if (!evenement) return;
-
-    // Formatage des dates pour l'URL du calendrier
-    const formatDateForCalendar = (dateString: string) => {
-      const date = new Date(dateString);
-      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    };
-
-    const startDate = formatDateForCalendar(evenement.dateDebut);
-    const endDate = formatDateForCalendar(evenement.dateFin || evenement.dateDebut);
-
-    // Création de l'URL Google Calendar
-    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(evenement.title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(evenement.description || '')}&location=${encodeURIComponent(evenement.lieu || '')}`;
-
-    // Ouverture du lien dans un nouvel onglet
-    window.open(googleCalendarUrl, '_blank');
+    const dateStr = evenement.date || new Date().toISOString();
+    const d = new Date(dateStr);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const start = `${y}${m}${day}T100000Z`;
+    const end = `${y}${m}${day}T210000Z`;
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(evenement.title)}&dates=${start}/${end}&details=${encodeURIComponent(evenement.description || '')}&location=${encodeURIComponent(evenement.lieu || '')}`;
+    window.open(url, '_blank');
   };
+
+  const shareUrlFull = typeof window !== 'undefined' ? window.location.href : '';
 
   if (loading) {
     return (
@@ -62,177 +57,93 @@ const EventDetail = () => {
   const otherEvenements = evenements.filter(e => e.id !== id).slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#F8F7F4]" style={{ paddingTop: '120px' }}>
-      {/* Hero Section - Grande image */}
-      <div className="relative h-[70vh] overflow-hidden">
-        {evenement.image ? (
-          <img
-            src={evenement.image}
-            alt={evenement.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#F8F7F4] to-gray-200 flex items-center justify-center">
-            <div className="text-center">
-              <Calendar className="w-32 h-32 text-gray-400 mx-auto mb-6" />
-              <span className="text-6xl font-bold text-gray-500">{evenement.title.charAt(0)}</span>
+    <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
+      {/* Layout style Bal Harbour : image à gauche, infos à droite */}
+      <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
+        {/* Colonne image */}
+        <div className="lg:w-[55%] flex-shrink-0">
+          {evenement.image ? (
+            <img
+              src={evenement.image}
+              alt={evenement.title}
+              className="w-full h-full object-cover min-h-[320px] lg:min-h-[480px]"
+            />
+          ) : (
+            <div className="w-full min-h-[320px] lg:min-h-[480px] bg-[#F8F7F4] flex items-center justify-center">
+              <Calendar className="w-20 h-20 text-gray-300" />
             </div>
-          </div>
-        )}
-        
-        {/* Overlay sombre */}
-        <div className="absolute inset-0 bg-black/40"></div>
-        
-        {/* Contenu overlay */}
-        <div className="absolute inset-0 flex items-end">
-          <div className="w-full p-8 lg:p-16">
-            <div className="max-w-4xl mx-auto">
-              {/* Date et lieu */}
-              <div className="flex items-center space-x-6 mb-6">
-                <div className="bg-white/90 backdrop-blur-sm px-4 py-2">
-                  <div className="flex items-center space-x-2 text-black">
-                    <Calendar className="w-5 h-5" />
-                    <span className="font-medium">{formatDate(evenement.date)}</span>
-                  </div>
-                </div>
-                {evenement.heure && (
-                  <div className="bg-white/90 backdrop-blur-sm px-4 py-2">
-                    <div className="flex items-center space-x-2 text-black">
-                      <Clock className="w-5 h-5" />
-                      <span className="font-medium">{evenement.heure}</span>
-                    </div>
-                  </div>
-                )}
-                {evenement.lieu && (
-                  <div className="bg-white/90 backdrop-blur-sm px-4 py-2">
-                    <div className="flex items-center space-x-2 text-black">
-                      <MapPin className="w-5 h-5" />
-                      <span className="font-medium">{evenement.lieu}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Titre principal */}
-              <h1 className="text-5xl lg:text-7xl font-ogg text-white mb-6 leading-tight">
-                {evenement.title}
-              </h1>
-              
-            </div>
-          </div>
+          )}
         </div>
-      </div>
 
-      {/* Contenu principal */}
-      <div className="w-full px-4 sm:px-6 md:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Colonne principale - Description */}
-          <div className="lg:col-span-2">
-            <div className="bg-white p-8 lg:p-12">
-              <h2 className="text-3xl font-ogg text-black mb-6">À propos de cet événement</h2>
-              
-              {evenement.description ? (
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-700 leading-relaxed text-lg mb-8">
-                    {evenement.description}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-gray-500 text-lg">Aucune description disponible pour le moment.</p>
-              )}
+        {/* Colonne infos */}
+        <div className="flex-1 flex flex-col p-6 md:p-8 lg:p-10 lg:py-14">
+          <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
+            Prochain événement
+          </p>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
+            {evenement.title}
+          </h1>
+          {evenement.lieu && (
+            <div className="flex items-start gap-2 text-gray-600 mb-2">
+              <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-gray-500" />
+              <span className="font-sofia text-sm md:text-base">{evenement.lieu}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 text-gray-600 mb-6">
+            <Clock className="w-4 h-4 shrink-0 text-gray-500" />
+            <span className="font-sofia text-sm md:text-base">
+              {formatDate(evenement.date)}
+              {evenement.heure ? ` — ${evenement.heure}` : ''}
+            </span>
+          </div>
 
-              {/* Informations détaillées */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                <div className="bg-[#F8F7F4] p-6">
-                  <h3 className="text-xl font-bold text-black mb-4">Informations pratiques</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center text-gray-700">
-                      <Calendar className="w-5 h-5 text-black mr-3" />
-                      <span className="font-medium">Date: {formatDate(evenement.date)}</span>
-                    </div>
-                    
-                    {evenement.heure && (
-                      <div className="flex items-center text-gray-700">
-                        <Clock className="w-5 h-5 text-black mr-3" />
-                        <span className="font-medium">Heure: {evenement.heure}</span>
-                      </div>
-                    )}
-                    
-                    {evenement.lieu && (
-                      <div className="flex items-center text-gray-700">
-                        <MapPin className="w-5 h-5 text-black mr-3" />
-                        <span className="font-medium">Lieu: {evenement.lieu}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+          {evenement.description && (
+            <div className="font-sofia text-gray-700 leading-relaxed mb-8 whitespace-pre-line">
+              {evenement.description}
+            </div>
+          )}
 
-                <div className="bg-[#F8F7F4] p-6">
-                  <h3 className="text-xl font-bold text-black mb-4">Contact</h3>
-                  <div className="space-y-4">
-                    <a href="tel:+22507880080" className="flex items-center text-gray-700 hover:text-black transition-colors">
-                      <Phone className="w-5 h-5 text-black mr-3" />
-                      <span className="font-medium">+225 07 88 00 80</span>
-                    </a>
-                    <a href="mailto:info@primacenter.ci" className="flex items-center text-gray-700 hover:text-black transition-colors">
-                      <Mail className="w-5 h-5 text-black mr-3" />
-                      <span className="font-medium">info@primacenter.ci</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
+          <button
+            type="button"
+            onClick={addToCalendar}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-sofia font-medium text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto justify-center mb-8"
+          >
+            <Plus className="w-4 h-4" />
+            Ajouter au calendrier
+          </button>
+
+          <div className="pt-6 border-t border-gray-200">
+            <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-3">Partager</p>
+            <div className="flex gap-2">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrlFull)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                aria-label="Partager sur Facebook"
+              >
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          {/* Sidebar - Informations rapides */}
-          <div className="lg:col-span-1">
-            <div className="bg-white p-8 lg:p-12 sticky top-8">
-              <h3 className="text-2xl font-bold text-black mb-6">Détails de l'événement</h3>
-              
-              <div className="space-y-6">
-                {/* Date */}
-                <div className="border-b border-gray-200 pb-4">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <Calendar className="w-6 h-6 text-black" />
-                    <span className="font-bold text-black">Date</span>
-                  </div>
-                  <p className="text-gray-700 text-lg">{formatDate(evenement.date)}</p>
-                </div>
-
-                {/* Heure */}
-                {evenement.heure && (
-                  <div className="border-b border-gray-200 pb-4">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <Clock className="w-6 h-6 text-black" />
-                      <span className="font-bold text-black">Heure</span>
-                    </div>
-                    <p className="text-gray-700 text-lg">{evenement.heure}</p>
-                  </div>
-                )}
-
-                {/* Lieu */}
-                {evenement.lieu && (
-                  <div className="border-b border-gray-200 pb-4">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <MapPin className="w-6 h-6 text-black" />
-                      <span className="font-bold text-black">Lieu</span>
-                    </div>
-                    <p className="text-gray-700 text-lg">{evenement.lieu}</p>
-                  </div>
-                )}
-
-                {/* Actions */}
-                <div className="space-y-4">
-                  <button 
-                    onClick={addToCalendar}
-                    className="w-full border-2 border-black text-black py-4 font-bold text-lg hover:bg-black hover:text-white transition-colors flex items-center justify-center"
-                  >
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Ajouter au calendrier
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <h3 className="text-sm font-sofia font-semibold text-gray-700 mb-2">Contact</h3>
+            <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black">
+              <Phone className="w-4 h-4" /> +225 07 88 00 80
+            </a>
+            <a href="mailto:info@primacenter.ci" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black mt-1">
+              <Mail className="w-4 h-4" /> info@primacenter.ci
+            </a>
           </div>
         </div>
       </div>

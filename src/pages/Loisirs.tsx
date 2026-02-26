@@ -56,32 +56,26 @@ const Loisirs = () => {
   );
 
   return (
-    <div className="min-h-screen antialiased">
-      {/* Hero Section */}
-      <div className="relative h-[75vh] will-change-transform">
-        <img 
-          src="/images/sections/loisirs-hero-2.jpg"
-          alt="Loisirs Prima Center"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-black/30 backdrop-filter">
-          <div className="absolute bottom-8 left-4 md:left-8 lg:left-12 w-5/6 md:w-2/3 lg:w-1/2">
-            <h1 className="text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] font-ogg text-white leading-[0.9] tracking-wider mb-2 [-webkit-font-smoothing:antialiased] [text-rendering:optimizeLegibility]">
+    <div className="min-h-screen antialiased w-full max-w-full min-w-0 overflow-x-hidden">
+      {/* Hero réduit : image pleine largeur + titre en overlay (décalage navbar géré par le layout) */}
+      <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
+        <img
+            src="/images/sections/loisirs-hero-2.jpg"
+            alt="Loisirs Prima Center"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute bottom-6 left-4 md:left-8 lg:left-12">
+            <h1 className="text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
               Loisirs
             </h1>
-            <p className="text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] font-sofia font-extralight text-white [-webkit-font-smoothing:antialiased]">
-              Votre espace bien-être et sport
-            </p>
-          </div>
-          {/* Ligne horizontale qui s'étend jusqu'à l'extrême droite */}
-          <div className="absolute bottom-8 left-4 md:left-8 lg:left-12 right-0 h-0.5 bg-white mt-16"></div>
         </div>
       </div>
 
       {/* Grille des loisirs */}
       <div className="bg-[#f5f3ef] py-20 w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="w-full min-w-0 px-4 sm:px-6 md:px-8">
           <motion.div 
             variants={containerVariants}
             initial="hidden"
@@ -93,30 +87,16 @@ const Loisirs = () => {
                 <Link
                   key={loisir.id}
                   to={`/loisirs/${loisir.id}`}
-                  className="group block w-full max-w-[140px] mx-auto aspect-[3/4] relative overflow-hidden bg-transparent transition-transform duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-400"
+                  className="group block w-full max-w-[200px] sm:max-w-[220px] mx-auto aspect-square relative overflow-hidden bg-transparent transition-transform duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-400"
                 >
                   <motion.div
                     variants={itemVariants}
                     className="w-full h-full flex flex-col items-center justify-center p-4"
                   >
-                    {/* Par défaut : logo carousel (sans fond) ; au survol : logo (avec fond) */}
                     <div className="flex-1 w-full flex items-center justify-center min-h-0 relative">
-                      {loisir.logoCarousel && loisir.logo ? (
-                        <>
-                          <img
-                            src={loisir.logoCarousel}
-                            alt={loisir.name}
-                            className="max-w-full max-h-full w-auto h-auto object-contain object-center absolute inset-0 m-auto transition-opacity duration-300 group-hover:opacity-0"
-                          />
-                          <img
-                            src={loisir.logo}
-                            alt={loisir.name}
-                            className="max-w-full max-h-full w-auto h-auto object-contain object-center absolute inset-0 m-auto opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                          />
-                        </>
-                      ) : (loisir.logoCarousel || loisir.logo) ? (
+                      {(loisir.logo || loisir.image) ? (
                         <img
-                          src={loisir.logoCarousel || loisir.logo}
+                          src={loisir.logo || loisir.image}
                           alt={loisir.name}
                           className="max-w-full max-h-full w-auto h-auto object-contain object-center"
                         />
@@ -125,7 +105,7 @@ const Loisirs = () => {
                       )}
                     </div>
                     <div className="mt-3 text-center flex-shrink-0">
-                      <h3 className="text-neutral-800 font-sofia font-medium text-sm">
+                      <h3 className="text-neutral-800 font-sofia font-medium text-sm uppercase break-words">
                         {loisir.name}
                       </h3>
                     </div>

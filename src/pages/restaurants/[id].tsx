@@ -13,6 +13,7 @@ function toDetailData(r: {
   description: string;
   image: string;
   logo?: string;
+  logoCarousel?: string;
   horaires?: string;
   heureOuverture: string;
   heureFermeture: string;
@@ -30,6 +31,7 @@ function toDetailData(r: {
   return {
     name: r.name,
     image: r.image,
+    image2: r.logoCarousel,
     logo: r.logo,
     description: r.description || undefined,
     adresse: r.adresse,

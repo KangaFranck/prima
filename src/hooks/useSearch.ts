@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { pb, getFileUrl } from '../services/pbClient';
+import { apiClient } from '../services/apiClient';
 
 interface SearchResult {
   id: string;
@@ -13,6 +13,11 @@ interface SearchResult {
   image?: string;
 }
 
+function matchesQuery(query: string, ...fields: (string | undefined)[]): boolean {
+  const q = query.toLowerCase();
+  return fields.some((f) => f?.toLowerCase().includes(q));
+}
+
 export const useSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -21,175 +26,74 @@ export const useSearch = () => {
 
   useEffect(() => {
     const debounceTimer = setTimeout(async () => {
-      setIsLoading(true);
       const query = searchQuery.toLowerCase().trim();
-
-      console.log('🔍 Recherche pour:', query);
-
       if (query.length < 2) {
         setResults([]);
         setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
       try {
+        const [boutiques, restaurants, loisirs] = await Promise.all([
+          apiClient.boutiques.list(),
+          apiClient.restaurants.list(),
+          apiClient.loisirs.list(),
+        ]);
+
         const searchResults: SearchResult[] = [];
 
-        // Recherche dans les boutiques
-        try {
-          console.log('🔍 Recherche dans les boutiques...');
-          
-          const allBoutiques = await pb.collection('boutiques').getFullList({
-            sort: 'nom'
-          });
-          
-          const boutiques = allBoutiques.filter(boutique => {
-            const isActive = boutique.statut !== 'inactif';
-            const matchesQuery = 
-              boutique.nom?.toLowerCase().includes(query) ||
-              boutique.universe?.toLowerCase().includes(query) ||
-              boutique.description?.toLowerCase().includes(query);
-            
-            return isActive && matchesQuery;
-          });
-          
-          console.log('✅ Boutiques trouvées:', boutiques.length);
-
-          boutiques.forEach(boutique => {
-            // Utiliser le logo au lieu de l'image
-            const logoUrl = boutique.logo ? getFileUrl(boutique, boutique.logo) : null;
-            
-            console.log('🔍 Boutique:', {
-              nom: boutique.nom,
-              logo: boutique.logo,
-              logoUrl: logoUrl,
-              hasLogo: !!boutique.logo
-            });
-            
+        boutiques
+          .filter((b) => b.statut !== 'inactif' && matchesQuery(query, b.nom, b.universe, b.description))
+          .forEach((b) => {
             searchResults.push({
-              id: boutique.id,
-              name: boutique.nom,
+              id: b.id,
+              name: b.nom,
               type: 'boutique',
-              description: boutique.description,
-              universe: boutique.universe,
-              image: logoUrl || '/images/logos/default.png'
+              description: b.description,
+              universe: b.universe,
+              image: b.logo || b.image || '/images/logos/default.png',
             });
           });
-        } catch (error) {
-          console.error('❌ Erreur lors de la recherche dans les boutiques:', error);
-        }
 
-        // Recherche dans les restaurants
-        try {
-          console.log('🔍 Recherche dans les restaurants...');
-          
-          const allRestaurants = await pb.collection('restaurants').getFullList({
-            sort: 'nom'
-          });
-          
-          const restaurants = allRestaurants.filter(restaurant => {
-            const isActive = restaurant.statut !== 'inactif';
-            const matchesQuery = 
-              restaurant.nom?.toLowerCase().includes(query) ||
-              restaurant.universe?.toLowerCase().includes(query) ||
-              restaurant.description?.toLowerCase().includes(query);
-            
-            return isActive && matchesQuery;
-          });
-          
-          console.log('✅ Restaurants trouvés:', restaurants.length);
-
-          restaurants.forEach(restaurant => {
-            // Utiliser le logo au lieu de l'image
-            const logoUrl = restaurant.logo ? getFileUrl(restaurant, restaurant.logo) : null;
-            
-            console.log('🔍 Restaurant:', {
-              nom: restaurant.nom,
-              logo: restaurant.logo,
-              logoUrl: logoUrl,
-              hasLogo: !!restaurant.logo
-            });
-            
+        restaurants
+          .filter((r) => r.statut !== 'inactif' && matchesQuery(query, r.nom, r.universe, r.description))
+          .forEach((r) => {
             searchResults.push({
-              id: restaurant.id,
-              name: restaurant.nom,
+              id: r.id,
+              name: r.nom,
               type: 'restaurant',
-              description: restaurant.description,
-              universe: restaurant.universe,
-              image: logoUrl || '/images/logos/default.png'
+              description: r.description,
+              universe: r.universe,
+              cuisine: r.cuisine,
+              image: r.logo || r.image || '/images/logos/default.png',
             });
           });
-        } catch (error) {
-          console.error('❌ Erreur lors de la recherche dans les restaurants:', error);
-        }
 
-        // Recherche dans les loisirs
-        try {
-          console.log('🔍 Recherche dans les loisirs...');
-          
-          const allLoisirs = await pb.collection('loisirs').getFullList({
-            sort: 'nom'
-          });
-          
-          const loisirs = allLoisirs.filter(loisir => {
-            const isActive = loisir.statut !== 'inactif';
-            const matchesQuery = 
-              loisir.nom?.toLowerCase().includes(query) ||
-              loisir.universe?.toLowerCase().includes(query) ||
-              loisir.description?.toLowerCase().includes(query);
-            
-            return isActive && matchesQuery;
-          });
-          
-          console.log('✅ Loisirs trouvés:', loisirs.length);
-
-          loisirs.forEach(loisir => {
-            // Utiliser le logo au lieu de l'image
-            const logoUrl = loisir.logo ? getFileUrl(loisir, loisir.logo) : null;
-            
-            console.log('🔍 Loisir:', {
-              nom: loisir.nom,
-              logo: loisir.logo,
-              logoUrl: logoUrl,
-              hasLogo: !!loisir.logo
-            });
-            
+        loisirs
+          .filter((l) => l.statut !== 'inactif' && matchesQuery(query, l.nom, l.universe, l.description))
+          .forEach((l) => {
             searchResults.push({
-              id: loisir.id,
-              name: loisir.nom,
+              id: l.id,
+              name: l.nom,
               type: 'loisir',
-              description: loisir.description,
-              universe: loisir.universe,
-              image: logoUrl || '/images/logos/default.png'
+              description: l.description,
+              universe: l.universe,
+              image: l.logo || l.image || '/images/logos/default.png',
             });
           });
-        } catch (error) {
-          console.error('❌ Erreur lors de la recherche dans les loisirs:', error);
-        }
 
-        console.log('🎯 Total des résultats trouvés:', searchResults.length);
-        console.log('📋 Résultats finaux:', searchResults.map(r => ({ 
-          name: r.name, 
-          type: r.type, 
-          image: r.image,
-          hasImage: !!r.image 
-        })));
-
-        // Trier les résultats par pertinence (nom exact en premier)
-        const sortedResults = searchResults.sort((a, b) => {
-          const aExactMatch = a.name.toLowerCase() === query;
-          const bExactMatch = b.name.toLowerCase() === query;
-          
-          if (aExactMatch && !bExactMatch) return -1;
-          if (!aExactMatch && bExactMatch) return 1;
-          
-          // Puis par ordre alphabétique
+        const sorted = searchResults.sort((a, b) => {
+          const aExact = a.name.toLowerCase() === query;
+          const bExact = b.name.toLowerCase() === query;
+          if (aExact && !bExact) return -1;
+          if (!aExact && bExact) return 1;
           return a.name.localeCompare(b.name);
         });
 
-        setResults(sortedResults);
+        setResults(sorted);
       } catch (error) {
-        console.error('❌ Erreur générale lors de la recherche:', error);
+        if (import.meta.env.DEV) console.error('Erreur recherche:', error);
         setResults([]);
       } finally {
         setIsLoading(false);
@@ -201,24 +105,15 @@ export const useSearch = () => {
 
   const handleResultClick = async (result: SearchResult) => {
     try {
-      // Navigation selon le type de résultat
       const path = `/${result.type}s/${result.id}`;
-      console.log('🧭 Navigation vers:', path);
       await navigate(path);
       setSearchQuery('');
       setResults([]);
       return true;
-    } catch (error) {
-      console.error('❌ Erreur lors de la navigation:', error);
+    } catch {
       return false;
     }
   };
 
-  return { 
-    searchQuery, 
-    setSearchQuery, 
-    results, 
-    isLoading, 
-    handleResultClick 
-  };
-}; 
+  return { searchQuery, setSearchQuery, results, isLoading, handleResultClick };
+};

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { Boutique, Restaurant, Loisir } from '../types/entity';
 import { Evenement } from '../types/Evenement';
-import { boutiqueService } from '../services/adminService';
 
 interface FitnessCenter {
   id: string;
