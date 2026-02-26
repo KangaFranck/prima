@@ -58,7 +58,7 @@ Plusieurs causes possibles :
 
 4. **Framework Preset = Vite → les API ne sont pas déployées**  
    Si le projet est en **Framework Preset « Vite »**, Vercel ne déploie que le front (build Vite → `dist/`) et **ignore le dossier `api/`**. Résultat : `/api/health` et `/api/login` renvoient **404** même si tout fonctionne en local.  
-   **Correction** : le `vercel.json` du projet contient maintenant **`"framework": null`** pour forcer le preset « Other » et que Vercel utilise toute la config (dont `builds` avec `api/health.js`, `api/login.ts`, `api/index.ts`). Après un **nouveau déploiement**, les routes API doivent répondre.  
+   **Correction** : le `vercel.json` contient **`"framework": null`** et **plus de tableau `builds`** : Vercel détecte alors automatiquement le dossier `api/` et déploie chaque fichier (`api/health.js`, `api/login.ts`, `api/index.ts`) comme fonction. Après un **nouveau déploiement**, les routes API doivent répondre.  
    Si besoin, tu peux aussi le faire à la main : **Vercel** → ton projet → **Settings** → **General** → **Framework Preset** → choisir **« Other »** → **Save** → **Redeploy**.
 
 5. **Vérifier dans le dashboard Vercel**  
@@ -82,5 +82,15 @@ En résumé : **même code, même base Neon** ; la seule différence est la **co
 1. Ajouter **DATABASE_URL** et **JWT_SECRET** (et éventuellement **ALLOWED_ORIGINS** et R2) dans Vercel → Settings → Environment Variables.
 2. Redéployer le projet.
 3. Tester `/api/health` puis la connexion sur `/admin` (ou la page de login admin).
+
+---
+
+## 6. Si /api/health renvoie encore 404 — checklist
+
+1. **Vercel** → projet **prima-kanga** → **Settings** → **General** → **Framework Preset** doit être **« Other »** (pas Vite). Si c’est « Vite », le changer en « Other », **Save**, puis **Redeploy**.
+2. **Deployments** → dernier déploiement → onglet **Building** : dans les logs, vérifier qu’il n’y a pas d’erreur et que les fichiers `api/` sont pris en compte.
+3. **Deployments** → dernier déploiement → onglet **Functions** (ou **Output** selon l’interface) : les fonctions `api/health`, `api/login`, `api/index` doivent apparaître. Si la liste est vide, les API n’ont pas été déployées.
+4. Vérifier que l’URL testée est bien celle du projet déployé (ex. si le déploiement est sur **prima-six-eta.vercel.app**, tester cette URL et pas une autre).
+5. Après toute modification de **vercel.json** ou du preset : **Redeploy** (Deployments → … → Redeploy), ou push un commit pour déclencher un nouveau déploiement.
 
 Si après ça le login admin échoue encore, regarder les **logs** dans Vercel (Functions → sélectionner la fonction → Logs) pour voir l’erreur exacte (connexion refusée, timeout, etc.).
