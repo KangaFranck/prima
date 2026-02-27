@@ -24,8 +24,8 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
    - **Branch** : `main` ou `master` selon ta branche par défaut.
    - **Root Directory** : laisser **vide**.
    - **Runtime** : **Node**.
-   - **Build Command** : `npm install && npm run build`
-   - **Start Command** : `npm run start`
+   - **Build Command** : `npm install && npm run build` (sans `echo` ni autre texte).
+   - **Start Command** : `npm start` (sans `echo` — un `echo` avec apostrophe peut faire planter le démarrage).
 5. **Environment** (variables d’environnement) — **Add Environment Variable** :
    - `DATABASE_URL` = ton URL Neon (PostgreSQL), ex. `postgresql://user:pass@host/db?sslmode=require`
    - `JWT_SECRET` = une chaîne secrète (ex. `prima_secret_xxx`)
@@ -38,6 +38,12 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
    - Login admin : même origine, pas de CORS.
 
 **Option Blueprint :** le fichier `render.yaml` à la racine du repo peut être utilisé par Render pour pré-remplir la config (Blueprint → New Blueprint Instance → repo prima).
+
+### Si « Application exited early » sur Render
+
+- Vérifie que **Start Command** est exactement `npm start` (ou `npm run start`), sans `echo "Démarrage..."` ni autre commande : les guillemets ou apostrophes peuvent casser l’exécution.
+- Vérifie que les variables **DATABASE_URL**, **JWT_SECRET** et **ALLOWED_ORIGINS** sont bien définies dans Environment.
+- Les paquets `tsx` et `@vercel/node` sont en `dependencies` pour que le serveur démarre correctement en production.
 
 ---
 
