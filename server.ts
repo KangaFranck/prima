@@ -161,12 +161,12 @@ const server = createServer(async (req, res) => {
   res.end('Not found');
 });
 
-server.listen(PORT, async () => {
+server.listen(PORT, '0.0.0.0', async () => {
   try {
     const mod = await import('./server/routes.ts');
     apiHandler = mod.default;
-    console.log(`Serveur Prima Center: http://localhost:${PORT}`);
-    console.log(`  API: http://localhost:${PORT}/api/health`);
+    console.log(`Serveur Prima Center: http://0.0.0.0:${PORT}`);
+    console.log(`  API: http://0.0.0.0:${PORT}/api/health`);
   } catch (err) {
     console.error('Erreur au chargement de l\'API:', err);
     process.exit(1);

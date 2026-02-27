@@ -15,6 +15,8 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
 
 ## Render (étape par étape)
 
+**Important :** Dans Render, les commandes Build et Start se règlent dans le **dashboard** (Settings du service). Si tu as mis des `echo "..."` dans ces champs, supprime-les : utilise **uniquement** les commandes ci-dessous, sinon l’app peut afficher « Application exited early ».
+
 1. Va sur **[render.com](https://render.com)** et connecte ton compte **GitHub**.
 2. **New +** → **Web Service**.
 3. Connecte le repo **KangaFranck/prima** (s’il n’apparaît pas, autorise Render à accéder au repo).
@@ -24,7 +26,7 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
    - **Branch** : `main` ou `master` selon ta branche par défaut.
    - **Root Directory** : laisser **vide**.
    - **Runtime** : **Node**.
-   - **Build Command** : `npm install && npm run build` (sans `echo` ni autre texte).
+   - **Build Command** : `npm install --include=dev && npm run build` (obligatoire pour installer Vite/TypeScript en devDependencies ; sans `echo`).
    - **Start Command** : `npm start` (sans `echo` — un `echo` avec apostrophe peut faire planter le démarrage).
 5. **Environment** (variables d’environnement) — **Add Environment Variable** :
    - `DATABASE_URL` = ton URL Neon (PostgreSQL), ex. `postgresql://user:pass@host/db?sslmode=require`
@@ -38,6 +40,10 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
    - Login admin : même origine, pas de CORS.
 
 **Option Blueprint :** le fichier `render.yaml` à la racine du repo peut être utilisé par Render pour pré-remplir la config (Blueprint → New Blueprint Instance → repo prima).
+
+### Si « vite: not found » ou build échoué sur Render
+
+- Utilise **Build Command** : `npm install --include=dev && npm run build`. Sans `--include=dev`, Render peut ignorer les devDependencies (Vite, TypeScript, etc.) et le build échoue.
 
 ### Si « Application exited early » sur Render
 
