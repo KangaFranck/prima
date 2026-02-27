@@ -85,15 +85,7 @@ En résumé : **même code, même base Neon** ; la seule différence est la **co
 
 ---
 
-## 6. Limite « 12 Serverless Functions » (plan Hobby)
-
-Sur le **plan Hobby**, Vercel n’autorise **pas plus de 12 fonctions** par déploiement. Si chaque fichier dans `api/` est déployé comme fonction, on dépasse vite la limite et le build échoue avec : *"No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan"*.
-
-**Ce qui a été fait dans le projet** : tout le code partagé (routes, db, middleware, lib, etc.) a été déplacé dans le dossier **`server/`** à la racine. Il ne reste dans **`api/`** que les **3 points d’entrée** : `api/health.js`, `api/login.ts`, `api/index.ts`. On garde **3 fonctions** (api/health.js, api/login.ts, api/index.ts) : avec une seule fonction + rewrite, Vercel peut renvoyer 404 pour /api/login avant d’appliquer le rewrite. Les fichiers dédiés garantissent que /api/health et /api/login répondent. Le fichier `api/index.ts` importe le handler depuis `../server/routes` (et le build inclut le dossier `server/` via la config si besoin).
-
----
-
-## 7. Si /api/health renvoie encore 404 — checklist
+## 6. Si /api/health renvoie encore 404 — checklist
 
 1. **Vercel** → projet **prima-kanga** → **Settings** → **General** → **Framework Preset** doit être **« Other »** (pas Vite). Si c’est « Vite », le changer en « Other », **Save**, puis **Redeploy**.
 2. **Deployments** → dernier déploiement → onglet **Building** : dans les logs, vérifier qu’il n’y a pas d’erreur et que les fichiers `api/` sont pris en compte.

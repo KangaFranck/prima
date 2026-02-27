@@ -23,9 +23,9 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-/** Construit l'URL de l'API. Sur Render ou Vercel : même origine (/api/...). Sinon VITE_API_URL si défini, sinon /api/. */
+/** Construit l'URL de l'API. Sur Render, Railway ou Vercel : même origine (/api/...). Sinon VITE_API_URL si défini, sinon /api/. */
 function apiPath(segment: string): string {
-  if (typeof window !== 'undefined' && (/\.onrender\.com$/i.test(window.location.hostname) || /\.vercel\.app$/i.test(window.location.hostname))) {
+  if (typeof window !== 'undefined' && (/\.onrender\.com$/i.test(window.location.hostname) || /\.railway\.app$/i.test(window.location.hostname) || /\.vercel\.app$/i.test(window.location.hostname))) {
     return `/api/${segment}`;
   }
   const base = getBaseURL().replace(/\/$/, '');

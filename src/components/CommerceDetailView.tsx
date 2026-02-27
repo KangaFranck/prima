@@ -162,11 +162,11 @@ export function CommerceDetailView({
               {name}
             </h1>
             {description ? (
-              <div className="mt-4">
+              <div className="mt-4 min-w-0 overflow-hidden">
                 <h2 className="font-sofia font-bold text-xs uppercase tracking-widest text-neutral-900 mb-1.5">
                   Description
                 </h2>
-                <p className="font-sofia text-base leading-relaxed text-neutral-700 whitespace-pre-line md:text-lg">
+                <p className="font-sofia text-base leading-relaxed text-neutral-700 whitespace-pre-line break-words md:text-lg">
                   {description}
                 </p>
               </div>

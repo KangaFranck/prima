@@ -43,14 +43,20 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
 
 ## Railway
 
+Le fichier **`railway.json`** à la racine configure déjà le démarrage (`npm run start`) et un healthcheck sur `/api/health`. Un seul serveur Node sert le front (depuis `dist/`) et l’API (`/api/*`), comme sur Render.
+
 1. Va sur [railway.app](https://railway.app), connecte GitHub.
-2. **New Project** → **Deploy from GitHub repo** → choisis `KangaFranck/prima`.
+2. **New Project** → **Deploy from GitHub repo** → choisis ton repo (ex. `KangaFranck/prima`).
 3. Paramètres du service :
    - **Root Directory** : laisser vide.
-   - **Build Command** : `npm install && npm run build`
-   - **Start Command** : `npm run start`
-   - **Variables** : `DATABASE_URL`, `JWT_SECRET`, `ALLOWED_ORIGINS` (URL Railway sans slash final), + R2 si besoin.
-4. Déploie ; URL du type `https://xxx.up.railway.app`.
+   - **Build Command** : `npm install && npm run build` (obligatoire pour générer `dist/`).
+   - **Start Command** : `npm run start` (déjà défini dans `railway.json`, tu peux le laisser ou le saisir à la main).
+   - **Variables d’environnement** (Settings → Variables) :
+     - `DATABASE_URL` = ton URL Neon (PostgreSQL)
+     - `JWT_SECRET` = ta clé secrète JWT
+     - `ALLOWED_ORIGINS` = l’URL du déploiement Railway **sans slash final** (ex. `https://prima-center-production.up.railway.app`). Tu peux la remplir après le premier déploiement.
+     - Si tu utilises les uploads : variables R2 comme en local.
+4. Déploie ; l’URL sera du type `https://xxx.up.railway.app`. Teste `/api/health` puis la page de connexion admin.
 
 ---
 

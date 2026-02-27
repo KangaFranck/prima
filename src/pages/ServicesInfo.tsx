@@ -132,7 +132,7 @@ export default function ServicesInfo() {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 gap-8 items-center"
           >
-            {/* Cadre beige ; carte seule floutée en #b8956e */}
+            {/* Carte Google Maps sans flou ni voile */}
             <div className="h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg bg-[#f5f3ef] p-2 md:p-3">
               <div className="relative w-full h-full rounded-md overflow-hidden">
                 <iframe
@@ -145,10 +145,6 @@ export default function ServicesInfo() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   className="w-full h-full"
-                />
-                <div
-                  className="absolute inset-0 bg-[#b8956e] mix-blend-multiply opacity-40 backdrop-blur-sm pointer-events-none rounded-md"
-                  aria-hidden
                 />
               </div>
             </div>
