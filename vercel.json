@@ -12,8 +12,6 @@
         "installCommand": "npm install"
       }
     },
-    { "src": "api/health.js", "use": "@vercel/node" },
-    { "src": "api/login.ts", "use": "@vercel/node" },
     { "src": "api/index.ts", "use": "@vercel/node", "config": { "includeFiles": "server/**" } }
   ],
   "rewrites": [
