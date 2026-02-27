@@ -68,8 +68,14 @@ const MIMES: Record<string, string> = {
 };
 
 function serveStatic(pathname: string, res: ServerResponse): boolean {
-  if (pathname.includes('..')) return false;
-  const file = pathname === '/' || pathname === '' ? 'index.html' : pathname.slice(1);
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    decoded = pathname;
+  }
+  if (decoded.includes('..')) return false;
+  const file = decoded === '/' || decoded === '' ? 'index.html' : decoded.slice(1);
   const filePath = join(distDir, file);
   if (!filePath.startsWith(distDir)) return false;
   try {
