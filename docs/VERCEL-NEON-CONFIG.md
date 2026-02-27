@@ -58,7 +58,7 @@ Plusieurs causes possibles :
 
 4. **Framework Preset = Vite → les API ne sont pas déployées**  
    Si le projet est en **Framework Preset « Vite »**, Vercel ne déploie que le front (build Vite → `dist/`) et **ignore le dossier `api/`**. Résultat : `/api/health` et `/api/login` renvoient **404** même si tout fonctionne en local.  
-   **Correction** : le `vercel.json` contient **`"framework": null`** et **plus de tableau `builds`** : Vercel détecte alors automatiquement le dossier `api/` et déploie chaque fichier (`api/health.js`, `api/login.ts`, `api/index.ts`) comme fonction. Après un **nouveau déploiement**, les routes API doivent répondre.  
+   **Correction** : le `vercel.json` contient **`"framework": null`** et le tableau **`builds`** qui déclare explicitement le build static (package.json) et les fonctions API (api/health.js, api/login.ts, api/index.ts). **Ne pas retirer `builds`** — sans lui, le déploiement Vercel échoue. Dans le dashboard Vercel, mettre **Framework Preset = « Other »** pour que cette config soit bien appliquée, puis redéployer.  
    Si besoin, tu peux aussi le faire à la main : **Vercel** → ton projet → **Settings** → **General** → **Framework Preset** → choisir **« Other »** → **Save** → **Redeploy**.
 
 5. **Vérifier dans le dashboard Vercel**  
@@ -85,7 +85,15 @@ En résumé : **même code, même base Neon** ; la seule différence est la **co
 
 ---
 
-## 6. Si /api/health renvoie encore 404 — checklist
+## 6. Limite « 12 Serverless Functions » (plan Hobby)
+
+Sur le **plan Hobby**, Vercel n’autorise **pas plus de 12 fonctions** par déploiement. Si chaque fichier dans `api/` est déployé comme fonction, on dépasse vite la limite et le build échoue avec : *"No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan"*.
+
+**Ce qui a été fait dans le projet** : tout le code partagé (routes, db, middleware, lib, etc.) a été déplacé dans le dossier **`server/`** à la racine. Il ne reste dans **`api/`** que les **3 points d’entrée** : `api/health.js`, `api/login.ts`, `api/index.ts`. Seules ces 3 fonctions sont déployées. Le fichier `api/index.ts` importe le handler depuis `../server/routes` (et le build inclut le dossier `server/` via la config si besoin).
+
+---
+
+## 7. Si /api/health renvoie encore 404 — checklist
 
 1. **Vercel** → projet **prima-kanga** → **Settings** → **General** → **Framework Preset** doit être **« Other »** (pas Vite). Si c’est « Vite », le changer en « Other », **Save**, puis **Redeploy**.
 2. **Deployments** → dernier déploiement → onglet **Building** : dans les logs, vérifier qu’il n’y a pas d’erreur et que les fichiers `api/` sont pris en compte.

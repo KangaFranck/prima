@@ -90,7 +90,7 @@ const server = createServer(async (req, res) => {
 
   try {
     if (!handler) {
-      const mod = await import('../api/routes');
+      const mod = await import('../server/routes');
       handler = mod.default;
     }
     await handler(vercelReq as any, vercelRes as any);
@@ -117,7 +117,7 @@ server.on('error', (err: NodeJS.ErrnoException) => {
 });
 
 server.listen(PORT, async () => {
-  const mod = await import('../api/routes');
+  const mod = await import('../server/routes');
   handler = mod.default;
   console.log(`API locale (Neon + R2): http://localhost:${PORT}`);
   console.log(`  Health: http://localhost:${PORT}/api/health`);

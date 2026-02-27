@@ -1,9 +1,9 @@
 /**
  * POST /api/login — Login admin (Neon + JWT).
- * Route à un seul segment pour éviter 404 sur Vercel avec /api/auth/login.
+ * Fichier autonome : pas d'import local (./db) pour éviter 404 au build/runtime Vercel.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sql } from './db';
+import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -35,6 +35,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ error: 'Service non configuré. Définissez JWT_SECRET sur Vercel.' });
   }
 
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    console.error('Login: DATABASE_URL manquant (variables d\'environnement Vercel)');
+    return res.status(503).json({ error: 'Base de données non configurée. Définissez DATABASE_URL sur Vercel.' });
+  }
+
   if ((req.method || '').toUpperCase() !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Méthode non autorisée. Utilisez POST.' });
@@ -47,6 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Email et mot de passe requis' });
     }
 
+    const sql = neon(databaseUrl);
     const rows = await sql`SELECT id, email, password_hash, name, permissions FROM admins WHERE email = ${email} LIMIT 1`;
     const admin = rows[0] as { id: string; email: string; password_hash: string; name?: string; permissions?: string[] } | undefined;
     if (!admin) {
