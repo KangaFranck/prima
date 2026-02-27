@@ -58,7 +58,7 @@ Plusieurs causes possibles :
 
 4. **Framework Preset = Vite → les API ne sont pas déployées**  
    Si le projet est en **Framework Preset « Vite »**, Vercel ne déploie que le front (build Vite → `dist/`) et **ignore le dossier `api/`**. Résultat : `/api/health` et `/api/login` renvoient **404** même si tout fonctionne en local.  
-   **Correction** : le `vercel.json` contient **`"framework": null`** et le tableau **`builds`** qui déclare explicitement le build static (package.json) et les fonctions API (api/health.js, api/login.ts, api/index.ts). **Ne pas retirer `builds`** — sans lui, le déploiement Vercel échoue. Dans le dashboard Vercel, mettre **Framework Preset = « Other »** pour que cette config soit bien appliquée, puis redéployer.  
+   **Correction** : le `vercel.json` contient **`"framework": null`** et le tableau **`builds`** (build static + 3 fonctions API). **À éviter** : (1) ne pas mettre `buildCommand` / `outputDirectory` à la racine quand on utilise `builds` (Vercel les ignore et ça peut prêter à confusion) ; (2) ne pas ajouter de rewrite du type `{ "source": "/api/health", "destination": "/api/health" }` — ça crée une boucle ; Vercel route déjà vers la fonction si le fichier existe. Dans le dashboard, mettre **Framework Preset = « Other »** puis redéployer.  
    Si besoin, tu peux aussi le faire à la main : **Vercel** → ton projet → **Settings** → **General** → **Framework Preset** → choisir **« Other »** → **Save** → **Redeploy**.
 
 5. **Vérifier dans le dashboard Vercel**  
