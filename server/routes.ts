@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { sql } from './db.ts';
 import { getAdminFromToken, withAdminAuth } from './middleware/auth.ts';
-import { rowToBoutique, rowToRestaurant, rowToLoisir, rowToEvenement, toTimePg } from './lib/mappers.ts';
+import { rowToBoutique, rowToRestaurant, rowToLoisir, rowToEvenement, rowToService, toTimePg } from './lib/mappers.ts';
 import { uploadToR2, checkR2 } from './lib/r2.ts';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -160,8 +160,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })(req, res);
     }
 
-    // ---- Public GET: boutiques, restaurants, loisirs, evenements ----
-    if (req.method === 'GET' && ['boutiques', 'restaurants', 'loisirs', 'evenements'].includes(resource)) {
+    // ---- Public GET: boutiques, restaurants, loisirs, services, evenements ----
+    if (req.method === 'GET' && ['boutiques', 'restaurants', 'loisirs', 'services', 'evenements'].includes(resource)) {
       let rows: Record<string, unknown>[];
       if (resource === 'boutiques') {
         rows = id ? await sql`SELECT * FROM boutiques WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM boutiques ORDER BY created_at DESC`;
@@ -169,10 +169,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         rows = id ? await sql`SELECT * FROM restaurants WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM restaurants ORDER BY created_at DESC`;
       } else if (resource === 'loisirs') {
         rows = id ? await sql`SELECT * FROM loisirs WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM loisirs ORDER BY created_at DESC`;
+      } else if (resource === 'services') {
+        rows = id ? await sql`SELECT * FROM services WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM services ORDER BY created_at DESC`;
       } else {
         rows = id ? await sql`SELECT * FROM evenements WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM evenements ORDER BY created_at DESC`;
       }
-      const m = resource === 'boutiques' ? rowToBoutique : resource === 'restaurants' ? rowToRestaurant : resource === 'loisirs' ? rowToLoisir : rowToEvenement;
+      const m = resource === 'boutiques' ? rowToBoutique : resource === 'restaurants' ? rowToRestaurant : resource === 'loisirs' ? rowToLoisir : resource === 'services' ? rowToService : rowToEvenement;
       if (id) {
         if (rows.length === 0) return res.status(404).json({ error: 'Non trouvé' });
         return res.status(200).json(m(rows[0]));
@@ -289,6 +291,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       if (req.method === 'DELETE' && id) {
         await sql`DELETE FROM loisirs WHERE id = ${id}`;
+        return res.status(200).json({ ok: true });
+      }
+    }
+
+    if (resource === 'services') {
+      if (req.method === 'POST') {
+        const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+        const imagesJson = Array.isArray(b.images) ? JSON.stringify(b.images) : '[]';
+        const reseauxJson = b.reseauxSociaux && typeof b.reseauxSociaux === 'object' ? JSON.stringify(b.reseauxSociaux) : '{}';
+        const [inserted] = await sql`
+          INSERT INTO services (nom, type, description, horaires, telephone, email, adresse, logo, images, statut, ouvert_le_dimanche, reseaux_sociaux)
+          VALUES (${b.nom || ''}, ${b.type ?? null}, ${b.description ?? null}, ${b.horaires ?? null}, ${b.telephone ?? null}, ${b.email ?? null}, ${b.adresse ?? null}, ${b.logo ?? null}, ${imagesJson}::jsonb, ${b.statut || 'actif'}, ${!!b.ouvertLeDimanche}, ${reseauxJson}::jsonb)
+          RETURNING *
+        `;
+        return res.status(201).json(rowToService((inserted as Record<string, unknown>)!));
+      }
+      if (req.method === 'PUT' && id) {
+        const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+        const imagesVal = Array.isArray(b.images) ? b.images : undefined;
+        const reseauxVal = b.reseauxSociaux && typeof b.reseauxSociaux === 'object' ? b.reseauxSociaux : undefined;
+        const imagesStr = imagesVal !== undefined ? JSON.stringify(imagesVal) : null;
+        const reseauxStr = reseauxVal !== undefined ? JSON.stringify(reseauxVal) : null;
+        await sql`
+          UPDATE services SET
+            nom = COALESCE(${b.nom ?? null}, nom),
+            type = COALESCE(${b.type ?? null}, type),
+            description = COALESCE(${b.description ?? null}, description),
+            horaires = COALESCE(${b.horaires ?? null}, horaires),
+            telephone = COALESCE(${b.telephone ?? null}, telephone),
+            email = COALESCE(${b.email ?? null}, email),
+            adresse = COALESCE(${b.adresse ?? null}, adresse),
+            logo = COALESCE(${b.logo ?? null}, logo),
+            images = COALESCE((${imagesStr})::jsonb, images),
+            statut = COALESCE(${b.statut ?? null}, statut),
+            ouvert_le_dimanche = COALESCE(${b.ouvertLeDimanche !== undefined ? !!b.ouvertLeDimanche : null}, ouvert_le_dimanche),
+            reseaux_sociaux = COALESCE((${reseauxStr})::jsonb, reseaux_sociaux)
+          WHERE id = ${id}
+        `;
+        const [row] = await sql`SELECT * FROM services WHERE id = ${id}`;
+        if (!row) return res.status(404).json({ error: 'Non trouvé' });
+        return res.status(200).json(rowToService(row as Record<string, unknown>));
+      }
+      if (req.method === 'DELETE' && id) {
+        await sql`DELETE FROM services WHERE id = ${id}`;
         return res.status(200).json({ ok: true });
       }
     }

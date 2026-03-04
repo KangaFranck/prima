@@ -119,6 +119,28 @@ export function rowToEvenement(r: Record<string, unknown>) {
   };
 }
 
+export function rowToService(r: Record<string, unknown>) {
+  const reseaux = r.reseaux_sociaux as Record<string, string> | undefined;
+  const images = Array.isArray(r.images) ? r.images : (typeof r.images === 'string' ? (() => { try { return JSON.parse(r.images as string); } catch { return []; } })() : []);
+  return {
+    id: r.id,
+    nom: r.nom ?? '',
+    type: r.type ?? undefined,
+    description: r.description ?? undefined,
+    horaires: r.horaires ?? undefined,
+    telephone: r.telephone ?? undefined,
+    email: r.email ?? undefined,
+    adresse: r.adresse ?? undefined,
+    logo: publicImageUrl(r.logo) ?? (r.logo as string) ?? undefined,
+    images,
+    statut: r.statut ?? 'actif',
+    ouvertLeDimanche: Boolean(r.ouvert_le_dimanche),
+    reseauxSociaux: reseaux ?? {},
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+  };
+}
+
 /** Convertit heure "HH:MM" ou "HH:MM:SS" en valeur TIME Postgres (string "HH:MM:00") */
 export function toTimePg(v: unknown): string {
   if (v == null || v === '') return '09:00:00';
