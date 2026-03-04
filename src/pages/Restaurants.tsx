@@ -75,7 +75,7 @@ const Restaurants = () => {
 
       {/* Grille des restaurants */}
       <div className="bg-[#f5f3ef] py-20 w-full">
-        <div className="w-full min-w-0 px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <motion.div 
             variants={containerVariants}
             initial="hidden"

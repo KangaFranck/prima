@@ -49,7 +49,7 @@ const Boutiques = () => {
       </div>
 
       <div className="bg-[#f5f3ef] py-20 w-full">
-        <div className="w-full min-w-0 px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
             {shops.map((shop) => (
                 <Link

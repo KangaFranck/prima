@@ -65,28 +65,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Alignement barre d'info + logo : même décalage depuis le conteneur */
+/* Marge unique : body, header, corps de page et footer partent tous du même bord gauche (alignement parfait) */
 :root {
-  --header-content-start: 1rem;   /* décalage commun (texte "Ouvert" + bloc logo) */
-  --logo-offset: 2.5rem;          /* décalage supplémentaire du logo vers la droite --> */
+  --header-content-start: 1rem;
+  --logo-offset: 2.5rem;
   --logo-image-pull: 0;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
-  --safe-area-right: env(safe-area-inset-right, 0px);            /* si le P visuel n’est pas au bord de l’image : ex. -0.5rem */
-}
-
-/* Pull optionnel sur l’image du logo en header pour aligner le P visuel avec le O */
-:root {
+  --safe-area-right: env(safe-area-inset-right, 0px);
   --navbar-height: 112px;
   --content-max: 1536px;
-  --content-px: 1rem;
-  --content-px-sm: 1.25rem;
-  --content-px-md: 1.5rem;
+  /* Marge page : même valeur pour header, body, footer (point de départ côté gauche) */
+  --page-margin: 1.5rem;
+  --page-margin-sm: 2rem;
+  --page-margin-md: 2.5rem;
+  --content-px: var(--page-margin);
+  --content-px-sm: var(--page-margin-sm);
+  --content-px-md: var(--page-margin-md);
+}
+@media (min-width: 640px) {
+  :root {
+    --content-px: var(--page-margin-sm);
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --content-px: var(--page-margin-md);
+  }
 }
 
+/* Logo navbar : aucun décalage propre, il respecte la marge du conteneur (.content-wrap) */
+.header-logo {
+  margin-left: 0;
+  padding-left: 0;
+}
 .header-logo img {
-  margin-left: var(--logo-image-pull);
+  margin-left: 0;
+}
+
+/* Navbar : forcer la marge du contenu (logo, menu) = même padding que TopInfoBar et Footer */
+header .content-wrap {
+  padding-left: calc(var(--content-px) + var(--safe-area-left));
+  padding-right: calc(var(--content-px) + var(--safe-area-right));
+  -webkit-padding-start: calc(var(--content-px) + var(--safe-area-left));
+  -webkit-padding-end: calc(var(--content-px) + var(--safe-area-right));
+}
+@media (min-width: 640px) {
+  header .content-wrap {
+    padding-left: calc(var(--content-px-sm) + var(--safe-area-left));
+    padding-right: calc(var(--content-px-sm) + var(--safe-area-right));
+    -webkit-padding-start: calc(var(--content-px-sm) + var(--safe-area-left));
+    -webkit-padding-end: calc(var(--content-px-sm) + var(--safe-area-right));
+  }
+}
+@media (min-width: 768px) {
+  header .content-wrap {
+    padding-left: calc(var(--content-px-md) + var(--safe-area-left));
+    padding-right: calc(var(--content-px-md) + var(--safe-area-right));
+    -webkit-padding-start: calc(var(--content-px-md) + var(--safe-area-left));
+    -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
+  }
 }
 
 /* === Reset cross-navigateurs (Chrome, Firefox, Safari, Edge) – une seule base robuste === */
@@ -192,27 +231,57 @@
   }
 }
 
-/* Conteneur unique : même largeur et padding sur tous les navigateurs (Chrome, Edge, Safari, Firefox) */
+/* Comme Bal Harbour : fonds (header, body, footer) en pleine largeur ; seule la marge du contenu (texte, logos, liens) est alignée */
 @layer components {
+  /* Conteneur du contenu : marge gauche/droite identique partout (header, body, footer). Les backgrounds ne sont pas touchés. */
   .content-wrap {
     width: 100%;
     max-width: var(--content-max);
     margin-left: auto;
     margin-right: auto;
-    padding-left: var(--content-px);
-    padding-right: var(--content-px);
+    padding-left: calc(var(--content-px) + var(--safe-area-left));
+    padding-right: calc(var(--content-px) + var(--safe-area-right));
     min-width: 0;
+    -webkit-padding-start: calc(var(--content-px) + var(--safe-area-left));
+    -webkit-padding-end: calc(var(--content-px) + var(--safe-area-right));
   }
   @media (min-width: 640px) {
     .content-wrap {
-      padding-left: var(--content-px-sm);
-      padding-right: var(--content-px-sm);
+      padding-left: calc(var(--content-px-sm) + var(--safe-area-left));
+      padding-right: calc(var(--content-px-sm) + var(--safe-area-right));
+      -webkit-padding-start: calc(var(--content-px-sm) + var(--safe-area-left));
+      -webkit-padding-end: calc(var(--content-px-sm) + var(--safe-area-right));
     }
   }
   @media (min-width: 768px) {
     .content-wrap {
-      padding-left: var(--content-px-md);
-      padding-right: var(--content-px-md);
+      padding-left: calc(var(--content-px-md) + var(--safe-area-left));
+      padding-right: calc(var(--content-px-md) + var(--safe-area-right));
+      -webkit-padding-start: calc(var(--content-px-md) + var(--safe-area-left));
+      -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
+    }
+  }
+  /* Même marge horizontale que .content-wrap, sans max-width (sections pleine largeur) */
+  .content-edge {
+    padding-left: calc(var(--content-px) + var(--safe-area-left));
+    padding-right: calc(var(--content-px) + var(--safe-area-right));
+    -webkit-padding-start: calc(var(--content-px) + var(--safe-area-left));
+    -webkit-padding-end: calc(var(--content-px) + var(--safe-area-right));
+  }
+  @media (min-width: 640px) {
+    .content-edge {
+      padding-left: calc(var(--content-px-sm) + var(--safe-area-left));
+      padding-right: calc(var(--content-px-sm) + var(--safe-area-right));
+      -webkit-padding-start: calc(var(--content-px-sm) + var(--safe-area-left));
+      -webkit-padding-end: calc(var(--content-px-sm) + var(--safe-area-right));
+    }
+  }
+  @media (min-width: 768px) {
+    .content-edge {
+      padding-left: calc(var(--content-px-md) + var(--safe-area-left));
+      padding-right: calc(var(--content-px-md) + var(--safe-area-right));
+      -webkit-padding-start: calc(var(--content-px-md) + var(--safe-area-left));
+      -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
     }
   }
 }

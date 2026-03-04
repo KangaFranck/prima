@@ -13,7 +13,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-black text-white w-full">
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10">
+      <div className="content-wrap py-8 md:py-10">
         {/* Grille pleine largeur : colonnes de gauche à droite + bloc icônes + logo alignés à droite */}
         <div className="flex flex-col md:grid md:grid-cols-[1fr_1fr_auto] md:gap-x-10 lg:gap-x-16 gap-8">
           {/* Colonne 1 : MAGASINS */}
@@ -104,7 +104,7 @@ const Footer = () => {
       <div className="border-t border-white w-full" />
 
       <div className="bg-black w-full">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-5 md:py-6">
+        <div className="content-wrap py-5 md:py-6">
           <p className="font-sofia text-white text-center text-sm md:text-base">© 2025 Prima Center.</p>
         </div>
       </div>

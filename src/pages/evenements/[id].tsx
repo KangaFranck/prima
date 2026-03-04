@@ -150,7 +150,7 @@ const EventDetail = () => {
 
       {/* Section autres événements */}
       <div className="bg-white py-16 w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres événements</h2>
             <div className="w-24 h-1 bg-black mx-auto"></div>

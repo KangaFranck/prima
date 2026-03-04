@@ -233,12 +233,13 @@ const Navbar = () => {
           width: '100%',
         } as React.CSSProperties}
       >
+        {/* Même conteneur que TopInfoBar et Footer : content-wrap = marge identique */}
         <div className="content-wrap">
-          <div className="flex items-center h-24 md:h-28 relative min-w-0">
-            {/* Logo : même décalage que le texte "Ouvert" (variable --header-content-start) */}
-            <Link to="/" className="absolute left-[calc(var(--header-content-start)+var(--logo-offset))] top-[53%] -translate-y-1/2 header-logo" onClick={handleLogoClick}>
-              <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" />
-            </Link>
+          <div className="flex items-center h-24 md:h-28 relative min-w-0 gap-6">
+            {/* Logo : même marge gauche que "Ouvert" et footer */}
+              <Link to="/" className="flex-shrink-0 flex items-center header-logo" onClick={handleLogoClick}>
+                <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" align="left" />
+              </Link>
 
             {/* Menu desktop : à partir de lg (1024px) pour garder le hamburger sur iPad */}
             <nav className="hidden lg:flex items-center justify-center flex-1 space-x-8">

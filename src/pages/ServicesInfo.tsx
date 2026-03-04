@@ -96,7 +96,7 @@ export default function ServicesInfo() {
 
       {/* Services Grid - pleine largeur */}
       <section className="py-20 bg-white w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ export default function ServicesInfo() {
 
       {/* Contact Section - pleine largeur */}
       <section className="py-20 bg-white w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -187,7 +187,7 @@ export default function ServicesInfo() {
 
       {/* Newsletter Section - pleine largeur */}
       <section className="py-20 bg-white w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <div className="max-w-4xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

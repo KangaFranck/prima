@@ -188,7 +188,7 @@ const ActusEvents = () => {
   return (
     <div className="min-h-screen bg-white w-full max-w-full min-w-0 overflow-x-hidden">
       <div className="relative min-h-[calc(100vh-var(--navbar-height))] pb-16">
-        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

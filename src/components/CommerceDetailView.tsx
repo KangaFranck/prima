@@ -115,9 +115,9 @@ export function CommerceDetailView({
     : null;
   return (
     <div className="min-h-screen bg-white w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Barre retour */}
+      {/* Barre retour : même marge que navbar/footer */}
       <div className="border-b border-neutral-100">
-        <div className="mx-auto flex max-w-6xl items-center px-4 py-3 md:px-8">
+        <div className="content-wrap flex items-center py-3">
           <Link
             to={listPath}
             className="inline-flex items-center gap-2 font-sofia text-sm text-neutral-600 hover:text-neutral-900"
@@ -141,7 +141,8 @@ export function CommerceDetailView({
           ) : null}
         </div>
       ) : null}
-      <div className="mx-auto max-w-5xl w-full min-w-0 px-4 pt-12 pb-10 md:px-8 md:pt-16 md:pb-14">
+      <div className="content-wrap pt-12 pb-10 md:pt-16 md:pb-14">
+        <div className="max-w-5xl mx-auto w-full min-w-0">
         {/* Bloc principal : Logo à gauche, Titre + description à droite (style Africafé) */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12 xl:gap-16">
           {/* Logo : bloc carré invisible (transparent) pour s’accorder au design */}
@@ -360,6 +361,7 @@ export function CommerceDetailView({
             <ArrowLeft className="h-4 w-4" />
             Retour à {listLabel}
           </Link>
+        </div>
         </div>
       </div>
     </div>

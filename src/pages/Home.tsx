@@ -21,21 +21,21 @@ const universeBlocks = [
   {
     category: 'Shopping',
     title: 'Boutiques',
-    description: 'Découvrez nos boutiques de mode et accessoires',
+    description: 'Mode, beauté, technologie et équipement du quotidien : une offre complète pensée pour tous les besoins.',
     image: '/images/sections/boutiques.jpg',
     link: '/boutiques'
   },
   {
     category: 'Gastronomie',
     title: 'Restaurants',
-    description: 'Une expérience culinaire unique',
+    description: 'Restaurants, cafés, pâtisseries et glaciers pour toutes les envies et tous les moments de la journée.',
     image: '/images/sections/restaurants.jpg',
     link: '/restaurants'
   },
   {
     category: 'Lifestyle',
     title: 'Loisir',
-    description: 'Votre espace bien-être et sport',
+    description: 'Cinéma et espaces de jeux pour enfants et adultes.',
     image: '/images/sections/loisir.jpg',
     link: '/loisirs'
   }
@@ -84,7 +84,7 @@ export default function Home() {
           playsInline
         />
         <div className="absolute inset-0 bg-black/60">
-          <div className="w-full h-full flex flex-col px-4 sm:px-6 md:px-8">
+          <div className="w-full h-full flex flex-col content-edge">
             {/* Présentation Prima avec Logo - Parfaitement centré */}
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">
@@ -97,14 +97,14 @@ export default function Home() {
                   />
                 </div>
                 <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-12 md:-mt-14 lg:-mt-16 xl:-mt-18">
-                  Un espace unique où shopping, loisirs et gastronomie se rencontrent
+                  Un lieu conçu pour simplifier votre quotidien : shopping, divertissement, restauration, services et bien-être au cœur de la Zone 4.
                 </p>
               </div>
             </div>
 
             {/* Mini vidéos en bas */}
-            <div className="absolute bottom-0 left-0 right-0 pb-16">
-              <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto px-4">
+            <div className="absolute bottom-0 left-0 right-0 pb-16 content-edge">
+              <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
                 {[
                   { src: video1, title: 'Découvrez Prima' },
                   { src: video2, title: 'Nos espaces' },
@@ -136,13 +136,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section 2: Universes - Pleine largeur jusqu'aux bords */}
+      {/* Section 2: Universes - même alignement que navbar/footer */}
       <section className="py-20 bg-white w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-ogg font-bold mb-4 text-gray-800">NOS UNIVERS</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Découvrez plus de 70 commerçants, des marques internationales aux enseignes locales, le tout dans un cadre moderne et convivial, au cœur de la zone 4
+              Découvrez plus de 70 enseignes, des marques internationales aux adresses locales, reconnues pour leur qualité et leur savoir-faire.
             </p>
           </div>
           
@@ -191,9 +191,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section 3: Carousel - LOGOS CENTRÉS SUR MOBILE */}
+      {/* Section 3: Carousel - même alignement que navbar/footer */}
       <section className="py-12 relative overflow-hidden bg-[#E5DDD3] w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8 relative z-10">
+        <div className="content-wrap relative z-10">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-ogg mb-4 text-gray-800">DES COMMERCES OUVERTS 7J/7</h2>
           </div>

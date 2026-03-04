@@ -19,7 +19,7 @@ export default function TopInfoBar() {
   return (
     <TopInfoBarContext.Provider value={isVisible}>
       <div 
-        className="fixed w-full bg-black text-white z-50"
+        className="fixed left-0 right-0 w-full bg-black text-white z-50"
         style={{
           transform: `translateY(${isVisible ? '0' : '-100%'})`,
           transition: 'transform 0.3s ease'
@@ -27,7 +27,7 @@ export default function TopInfoBar() {
       >
         <div className="content-wrap">
           <div className="h-10 flex items-center justify-between">
-            <div className="text-sm pl-[var(--header-content-start)]">
+            <div className="text-sm">
               Ouvert 7J/7 de 09h00 – 00h00
             </div>
             <div className="flex items-center space-x-4">

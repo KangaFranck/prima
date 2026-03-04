@@ -14,7 +14,7 @@ const APropos = () => {
     >
       {/* Section Notre Histoire */}
       <section className="py-16 md:py-24 bg-[#FFFEF2] w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div 
               initial={{ x: -50, opacity: 0 }}
@@ -54,7 +54,7 @@ const APropos = () => {
 
       {/* Section Nos Valeurs */}
       <section className="py-16 md:py-24 bg-[#E5DDD3]/10 w-full">
-        <div className="w-full px-4 sm:px-6 md:px-8">
+        <div className="content-wrap">
           <motion.h2 
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}

@@ -44,7 +44,7 @@ const Shops = () => {
 
   return (
     <div className="py-24 bg-gray-50 perspective-1000">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="content-wrap">
         <h2 className="text-5xl font-bold text-center text-black mb-6">
           Nos Catégories de Boutiques
         </h2>
