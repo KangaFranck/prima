@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+/* === Ogg Roman (titres) – fichier : public/fonts/Ogg-Roman.otf === */
+@font-face {
+  font-family: 'Ogg Roman';
+  src: url('/fonts/Ogg-Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Ogg Roman';
+  src: url('/fonts/Ogg-Roman.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* === Sofia Pro (corps) – fichier : public/fonts/SofiaPro-SoftLight.ttf === */
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/SofiaPro-SoftLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/SofiaPro-SoftLight.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback : si les fichiers ne sont pas encore présents, Playfair + Source Sans 3 restent utilisés via les règles plus bas */
+/* Les polices Neue Montreal seront réactivées une fois que nous aurons les fichiers corrects */
+/* @font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Regular.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Medium.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Bold.woff2') format('woff2'),
+       url('../public/fonts/NeueMontreal-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Alignement barre d'info + logo : même décalage depuis le conteneur */
+:root {
+  --header-content-start: 1rem;   /* décalage commun (texte "Ouvert" + bloc logo) */
+  --logo-offset: 2.5rem;          /* décalage supplémentaire du logo vers la droite --> */
+  --logo-image-pull: 0;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);            /* si le P visuel n’est pas au bord de l’image : ex. -0.5rem */
+}
+
+/* Pull optionnel sur l’image du logo en header pour aligner le P visuel avec le O */
+:root {
+  --navbar-height: 112px;
+  --content-max: 1536px;
+  --content-px: 1rem;
+  --content-px-sm: 1.25rem;
+  --content-px-md: 1.5rem;
+}
+
+.header-logo img {
+  margin-left: var(--logo-image-pull);
+}
+
+/* === Reset cross-navigateurs (Chrome, Firefox, Safari, Edge) – une seule base robuste === */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    -webkit-padding-start: env(safe-area-inset-left, 0);
+    -webkit-padding-end: env(safe-area-inset-right, 0);
+    @apply antialiased;
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    -ms-overflow-style: scrollbar;
+  }
+
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    isolation: isolate;
+  }
+
+  img,
+  iframe,
+  object,
+  embed {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  img {
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Conteneur unique : même largeur et padding sur tous les navigateurs (Chrome, Edge, Safari, Firefox) */
+@layer components {
+  .content-wrap {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--content-px);
+    padding-right: var(--content-px);
+    min-width: 0;
+  }
+  @media (min-width: 640px) {
+    .content-wrap {
+      padding-left: var(--content-px-sm);
+      padding-right: var(--content-px-sm);
+    }
+  }
+  @media (min-width: 768px) {
+    .content-wrap {
+      padding-left: var(--content-px-md);
+      padding-right: var(--content-px-md);
+    }
+  }
+}
+
+/* Custom styles – Ogg Roman + Sofia Pro (pas de font-weight ici pour éviter conflit avec .font-bold) */
+@layer base {
+  /* Titres : Ogg Roman par défaut ; .font-bold / .font-ogg gardent la priorité */
+  h1, h2, h3 {
+    font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif;
+    letter-spacing: 0.02em;
+    line-height: 1.19;
+  }
+
+  /* Si .font-sofia est sur un h1/h2/h3, forcer Sofia Pro (sinon la règle ci-dessus l’emporte) */
+  h1.font-sofia, h2.font-sofia, h3.font-sofia {
+    font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif !important;
+  }
+
+  /* Ne pas forcer font-family sur * pour éviter d’écraser .font-ogg ; body/html ont déjà Sofia Pro */
+  .prima-center {
+    font-family: 'Ogg Roman', 'Playfair Display', Georgia, serif !important;
+  }
+}
+
+@layer utilities {
+  .transition-transform {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* min-height viewport : même rendu Chrome / Firefox / Safari (évite bug 100vh mobile / barre d’adresse iOS) */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+  }
+
+  /* fix flex/grid overflow Firefox/Safari/Chrome : min-width: 0 sur les enfants flex */
+  .min-w-0 {
+    min-width: 0;
+  }
+
+  /* Responsive : éviter débordement horizontal sur tous navigateurs */
+  .responsive-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Casser les mots longs (URLs, noms) pour éviter overflow */
+  .break-words-safe {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}

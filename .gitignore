@@ -2,9 +2,22 @@
 .env
 .env.*
 !.env.example
+.env.local
+.env.development
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+.env.migration
+.env*.local
 
 # Dépendances
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Fichiers uploadés
 uploads/
@@ -13,13 +26,39 @@ uploads/
 dist/
 build/
 .vite/
+.next
+.nuxt/
 
 # Logs et cache
 *.log
+logs/
 .cache/
+.parcel-cache/
 
 # IDE / OS
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# PocketBase
+pocketbase/pb_data/
+pocketbase/pb_migrations/
+
+# Vercel / déploiement
+.vercel
+.local
+
+# Divers
+tmp/
+temp/
+*.backup
+*.tmp
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
