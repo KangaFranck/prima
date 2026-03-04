@@ -141,8 +141,8 @@ const EventDetail = () => {
             <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black">
               <Phone className="w-4 h-4" /> +225 07 88 00 80
             </a>
-            <a href="mailto:info@primacenter.ci" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black mt-1">
-              <Mail className="w-4 h-4" /> info@primacenter.ci
+            <a href="mailto:communicationprimacenter@gmail.com" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black mt-1">
+              <Mail className="w-4 h-4" /> communicationprimacenter@gmail.com
             </a>
           </div>
         </div>

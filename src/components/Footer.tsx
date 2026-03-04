@@ -50,7 +50,7 @@ const Footer = () => {
                 CONTACT
               </h3>
               <div className="space-y-1.5 md:space-y-2 text-gray-300 font-sofia text-sm md:text-base">
-                <p>info@primacenter.ci</p>
+                <p>communicationprimacenter@gmail.com</p>
                 <p>+225 07 88 00 80</p>
                 <p>Marcory Zone 4, Abidjan</p>
               </div>

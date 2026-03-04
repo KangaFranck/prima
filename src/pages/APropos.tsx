@@ -13,7 +13,7 @@ const APropos = () => {
       className="min-h-screen bg-white antialiased w-full max-w-full min-w-0 overflow-x-hidden"
     >
       {/* Section Notre Histoire */}
-      <section className="py-16 md:py-24 bg-[#FFFEF2] w-full">
+      <section className="py-16 md:py-24 bg-white w-full">
         <div className="content-wrap">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div 

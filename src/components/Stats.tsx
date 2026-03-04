@@ -59,12 +59,12 @@ const StatItem: React.FC<StatItemProps> = ({ end, label, suffix = '', duration =
     <div ref={counterRef} className="text-center">
       {icon && <div className="mb-4">{icon}</div>}
       <div className="flex items-center justify-center">
-        <span className="text-5xl font-bold text-gray-900 font-sofia">
+        <span className="text-5xl font-bold text-gray-900 font-ogg">
           {count}
         </span>
-        <span className="text-5xl font-bold text-gray-900 font-sofia ml-1">{suffix}</span>
+        <span className="text-5xl font-bold text-gray-900 font-ogg ml-1">{suffix}</span>
       </div>
-      <p className="text-gray-600 mt-2 font-sofia text-lg">{label}</p>
+      <p className="text-gray-600 mt-2 font-ogg text-lg">{label}</p>
     </div>
   );
 };
@@ -73,7 +73,7 @@ const Stats = () => {
   return (
     <div className="py-16 bg-white w-full">
       <div className="content-wrap">
-        <h2 className="text-4xl font-sofia font-bold text-center mb-12">Prima Center en chiffres</h2>
+        <h2 className="text-4xl font-ogg font-bold text-center mb-12 text-gray-900">Prima Center en chiffres</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <StatItem 
             end={70} 

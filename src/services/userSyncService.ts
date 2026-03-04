@@ -128,7 +128,7 @@ export const userSyncService = {
     try {
       console.log('=== VÉRIFICATION ET CRÉATION UTILISATEUR ADMIN ===');
       
-      const adminEmail = 'admin@primacenter.fr';
+      const adminEmail = 'communicationprimacenter@gmail.com';
       const userExists = await this.checkUserExists(adminEmail);
       
       if (!userExists) {

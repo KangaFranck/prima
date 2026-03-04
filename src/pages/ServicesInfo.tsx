@@ -66,7 +66,7 @@ export default function ServicesInfo() {
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
-      info: "contact@primacenter.fr"
+      info: "communicationprimacenter@gmail.com"
     }
   ];
 

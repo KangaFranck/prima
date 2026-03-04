@@ -147,9 +147,9 @@ export const Services = () => {
         {filteredServices.map((service) => (
           <div key={service.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-amber-100 hover:border-amber-300 transform hover:-translate-y-2">
             <div className="relative h-48 overflow-hidden">
-              {(service.logo || service.images?.[0]) ? (
+              {(service.images?.[0] || service.logo) ? (
                 <img
-                  src={service.logo || service.images?.[0]}
+                  src={service.images?.[0] || service.logo}
                   alt={service.nom}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -164,8 +164,9 @@ export const Services = () => {
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              {/* Logo dans le coin uniquement s'il est distinct de l'image de couverture (évite double affichage) */}
               <div className="absolute top-4 right-4 w-16 h-16 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-2 flex items-center justify-center">
-                {service.logo ? (
+                {service.logo && service.images?.[0] ? (
                   <img src={service.logo} alt={service.nom} className="max-w-full max-h-full object-contain" />
                 ) : (
                   <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
