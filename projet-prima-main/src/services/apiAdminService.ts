@@ -7,18 +7,49 @@
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const API_BASE = API_URL ? API_URL.replace(/\/api$/, '') : '';
 
+/** Réveille le serveur Render (gratuit) après inactivité : ping /api/health puis attend quelques secondes. */
+async function wakeUpServer(): Promise<void> {
+  if (!API_BASE) return;
+  try {
+    const r = await fetch(`${API_BASE}/api/health`, { method: 'GET' });
+    if (r.ok) return;
+  } catch {
+    /* premier appel peut échouer si le serveur dort */
+  }
+  await new Promise((resolve) => setTimeout(resolve, 3500));
+  try {
+    await fetch(`${API_BASE}/api/health`, { method: 'GET' });
+  } catch {
+    /* on laisse le prochain appel réessayer */
+  }
+}
+
+/** Exécute fetch et en cas d'échec réseau réveille le serveur puis réessaie une fois. */
+async function fetchWithRetry(url: string, options: RequestInit): Promise<Response> {
+  try {
+    const res = await fetch(url, options);
+    if (res.ok || res.status < 500) return res;
+    throw new Error(`HTTP ${res.status}`);
+  } catch (err) {
+    await wakeUpServer();
+    return fetch(url, options);
+  }
+}
+
 function idOf(record: any) {
   return record?.id || record?._id?.toString?.() || record?._id;
 }
 
 function toBoutique(record: any) {
   if (!record) return null;
+  const logoUrl = record.logo ? (record.logo.startsWith('http') ? record.logo : `${API_BASE}/uploads/${record.logo}`) : null;
+  const imageUrl = record.images?.[0] ? (record.images[0].startsWith('http') ? record.images[0] : `${API_BASE}/uploads/${record.images[0]}`) : logoUrl;
   return {
     id: idOf(record),
     nom: record.nom,
     description: record.description ?? '',
-    logo: record.logo ? `${API_BASE}/uploads/${record.logo}` : null,
-    image: record.images?.[0] ? `${API_BASE}/uploads/${record.images[0]}` : (record.logo ? `${API_BASE}/uploads/${record.logo}` : null),
+    logo: logoUrl,
+    image: imageUrl,
     horaires: typeof record.horaires === 'string' ? record.horaires : (Array.isArray(record.horaires) ? record.horaires.map((h: any) => `${h.jour}: ${h.heureOuverture}-${h.heureFermeture}`).join(', ') : ''),
     heureOuverture: record.horaires?.[0]?.heureOuverture ?? '',
     heureFermeture: record.horaires?.[0]?.heureFermeture ?? '',
@@ -37,12 +68,14 @@ function toBoutique(record: any) {
 
 function toRestaurant(record: any) {
   if (!record) return null;
+  const logoUrl = record.logo ? (record.logo.startsWith('http') ? record.logo : `${API_BASE}/uploads/${record.logo}`) : null;
+  const imageUrl = record.images?.[0] ? (record.images[0].startsWith('http') ? record.images[0] : `${API_BASE}/uploads/${record.images[0]}`) : logoUrl;
   return {
     id: idOf(record),
     nom: record.nom,
     description: record.description ?? '',
-    logo: record.logo ? `${API_BASE}/uploads/${record.logo}` : null,
-    image: record.images?.[0] ? `${API_BASE}/uploads/${record.images[0]}` : (record.logo ? `${API_BASE}/uploads/${record.logo}` : null),
+    logo: logoUrl,
+    image: imageUrl,
     horaires: record.horaires ?? '',
     heureOuverture: '',
     heureFermeture: '',
@@ -61,12 +94,14 @@ function toRestaurant(record: any) {
 
 function toLoisir(record: any) {
   if (!record) return null;
+  const logoUrl = record.logo ? (record.logo.startsWith('http') ? record.logo : `${API_BASE}/uploads/${record.logo}`) : null;
+  const imageUrl = record.images?.[0] ? (record.images[0].startsWith('http') ? record.images[0] : `${API_BASE}/uploads/${record.images[0]}`) : logoUrl;
   return {
     id: idOf(record),
     nom: record.nom,
     description: record.description ?? '',
-    logo: record.logo ? `${API_BASE}/uploads/${record.logo}` : null,
-    image: record.images?.[0] ? `${API_BASE}/uploads/${record.images[0]}` : (record.logo ? `${API_BASE}/uploads/${record.logo}` : null),
+    logo: logoUrl,
+    image: imageUrl,
     horaires: record.horaires ?? '',
     heureOuverture: '',
     heureFermeture: '',
@@ -86,7 +121,7 @@ function toLoisir(record: any) {
 export const apiAdminService = {
   async getBoutiques() {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/boutiques`);
+    const response = await fetchWithRetry(`${API_URL}/boutiques`, {});
     if (!response.ok) throw new Error('Erreur lors de la récupération des boutiques');
     const data = await response.json();
     return (Array.isArray(data) ? data : []).map(toBoutique).filter(Boolean);
@@ -112,7 +147,7 @@ export const apiAdminService = {
     if (boutique.logo && boutique.logo instanceof File) formData.append('logo', boutique.logo);
     if (boutique.image && boutique.image instanceof File) formData.append('images', boutique.image);
 
-    const response = await fetch(`${API_URL}/boutiques`, {
+    const response = await fetchWithRetry(`${API_URL}/boutiques`, {
       method: 'POST',
       body: formData
     });
@@ -144,7 +179,7 @@ export const apiAdminService = {
     if (boutique.logo && boutique.logo instanceof File) formData.append('logo', boutique.logo);
     if (boutique.image && boutique.image instanceof File) formData.append('images', boutique.image);
 
-    const response = await fetch(`${API_URL}/boutiques/${id}`, {
+    const response = await fetchWithRetry(`${API_URL}/boutiques/${id}`, {
       method: 'PUT',
       body: formData
     });
@@ -158,14 +193,14 @@ export const apiAdminService = {
 
   async deleteBoutique(id: string) {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/boutiques/${id}`, { method: 'DELETE' });
+    const response = await fetchWithRetry(`${API_URL}/boutiques/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Erreur lors de la suppression');
   },
 
   // ——— RESTAURANTS ———
   async getRestaurants() {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/restaurants`);
+    const response = await fetchWithRetry(`${API_URL}/restaurants`, {});
     if (!response.ok) throw new Error('Erreur lors de la récupération des restaurants');
     const data = await response.json();
     return (Array.isArray(data) ? data : []).map(toRestaurant).filter(Boolean);
@@ -187,7 +222,7 @@ export const apiAdminService = {
     if (restaurant.logo && restaurant.logo instanceof File) formData.append('logo', restaurant.logo);
     if (restaurant.image && restaurant.image instanceof File) formData.append('images', restaurant.image);
 
-    const response = await fetch(`${API_URL}/restaurants`, { method: 'POST', body: formData });
+    const response = await fetchWithRetry(`${API_URL}/restaurants`, { method: 'POST', body: formData });
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(err.message || `Erreur ${response.status} lors de la création`);
@@ -211,7 +246,7 @@ export const apiAdminService = {
     if (restaurant.logo && restaurant.logo instanceof File) formData.append('logo', restaurant.logo);
     if (restaurant.image && restaurant.image instanceof File) formData.append('images', restaurant.image);
 
-    const response = await fetch(`${API_URL}/restaurants/${id}`, { method: 'PUT', body: formData });
+    const response = await fetchWithRetry(`${API_URL}/restaurants/${id}`, { method: 'PUT', body: formData });
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(err.message || `Erreur ${response.status} lors de la mise à jour`);
@@ -221,14 +256,14 @@ export const apiAdminService = {
 
   async deleteRestaurant(id: string) {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/restaurants/${id}`, { method: 'DELETE' });
+    const response = await fetchWithRetry(`${API_URL}/restaurants/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Erreur lors de la suppression');
   },
 
   // ——— LOISIRS ———
   async getLoisirs() {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/loisirs`);
+    const response = await fetchWithRetry(`${API_URL}/loisirs`, {});
     if (!response.ok) throw new Error('Erreur lors de la récupération des loisirs');
     const data = await response.json();
     return (Array.isArray(data) ? data : []).map(toLoisir).filter(Boolean);
@@ -250,7 +285,7 @@ export const apiAdminService = {
     if (loisir.logo && loisir.logo instanceof File) formData.append('logo', loisir.logo);
     if (loisir.image && loisir.image instanceof File) formData.append('images', loisir.image);
 
-    const response = await fetch(`${API_URL}/loisirs`, { method: 'POST', body: formData });
+    const response = await fetchWithRetry(`${API_URL}/loisirs`, { method: 'POST', body: formData });
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(err.message || `Erreur ${response.status} lors de la création`);
@@ -274,7 +309,7 @@ export const apiAdminService = {
     if (loisir.logo && loisir.logo instanceof File) formData.append('logo', loisir.logo);
     if (loisir.image && loisir.image instanceof File) formData.append('images', loisir.image);
 
-    const response = await fetch(`${API_URL}/loisirs/${id}`, { method: 'PUT', body: formData });
+    const response = await fetchWithRetry(`${API_URL}/loisirs/${id}`, { method: 'PUT', body: formData });
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(err.message || `Erreur ${response.status} lors de la mise à jour`);
@@ -284,7 +319,7 @@ export const apiAdminService = {
 
   async deleteLoisir(id: string) {
     if (!API_URL) throw new Error('VITE_API_URL non configuré');
-    const response = await fetch(`${API_URL}/loisirs/${id}`, { method: 'DELETE' });
+    const response = await fetchWithRetry(`${API_URL}/loisirs/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Erreur lors de la suppression');
   }
 };

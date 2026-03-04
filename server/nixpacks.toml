@@ -1,0 +1,3 @@
+# Installe toutes les dependances (y compris dev) pour le build TypeScript
+[phases.install]
+cmds = ["npm install"]
