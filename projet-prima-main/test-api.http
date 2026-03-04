@@ -1,0 +1,17 @@
+### Test de la connexion à la base de données
+GET https://prima-pce4c6xwn-primacenters-projects.vercel.app/api/test-db
+
+### Création du compte administrateur
+POST https://prima-pce4c6xwn-primacenters-projects.vercel.app/api/auth/register
+Content-Type: application/json
+
+{}
+
+### Connexion administrateur
+POST https://prima-pce4c6xwn-primacenters-projects.vercel.app/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@primacenter.fr",
+  "password": "admin123"
+} 

@@ -1,0 +1,32 @@
+# Environnement
+.env
+
+# Dépendances
+node_modules/
+
+# Fichiers uploadés
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build
+dist/
+build/
+
+# Système
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Misc
+*.pid
+*.seed
+*.pid.lock 

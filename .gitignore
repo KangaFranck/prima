@@ -1,0 +1,25 @@
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Dépendances
+node_modules/
+
+# Fichiers uploadés
+uploads/
+
+# Build
+dist/
+build/
+.vite/
+
+# Logs et cache
+*.log
+.cache/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

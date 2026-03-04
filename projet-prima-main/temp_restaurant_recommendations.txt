@@ -1,0 +1,91 @@
+﻿        {/* Recommendations Block - Nouveau design élégant */}
+        <div className="mt-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-stone-800 mb-2">Découvrez d'autres restaurants</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full"></div>
+          </div>
+          
+          {otherRestaurants.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherRestaurants.map((otherRestaurant) => (
+                <a
+                  key={otherRestaurant.id}
+                  href={`/restaurants/${otherRestaurant.id}`}
+                  className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-amber-100 hover:border-amber-300 transform hover:-translate-y-2"
+                >
+                  {/* Image de fond avec overlay */}
+                  <div className="relative h-48 overflow-hidden">
+                    {otherRestaurant.image ? (
+                      <img
+                        src={otherRestaurant.image}
+                        alt={otherRestaurant.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                        <Utensils className="w-16 h-16 text-amber-500" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    
+                    {/* Logo flottant */}
+                    <div className="absolute top-4 right-4 w-16 h-16 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-2 flex items-center justify-center">
+                      {otherRestaurant.logo ? (
+                        <img
+                          src={otherRestaurant.logo}
+                          alt={otherRestaurant.name}
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      ) : (
+                        <Utensils className="w-8 h-8 text-amber-500" />
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Contenu de la carte */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-stone-800 mb-2 group-hover:text-amber-700 transition-colors">
+                      {otherRestaurant.name}
+                    </h3>
+                    {otherRestaurant.description && (
+                      <p className="text-stone-600 text-sm line-clamp-2 mb-4">
+                        {otherRestaurant.description}
+                      </p>
+                    )}
+                    
+                    {/* Badge de statut */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm text-stone-600">Disponible</span>
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-amber-600 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Utensils className="w-12 h-12 text-amber-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-stone-800 mb-4">Aucun autre restaurant disponible</h3>
+              <p className="text-stone-600 mb-8 max-w-md mx-auto">
+                D'autres restaurants seront bientôt ajoutés. Revenez plus tard pour découvrir de nouveaux établissements !
+              </p>
+            </div>
+          )}
+          
+          {/* Bouton d'action élégant */}
+          <div className="text-center mt-12">
+            <a
+              href="/restaurants"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-2xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              <Utensils className="w-5 h-5 mr-3" />
+              Voir tous les restaurants
+              <ArrowRight className="w-5 h-5 ml-3" />
+            </a>
+          </div>
+        </div>

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: primacenter-api
+    env: node
+    buildCommand: |
+      cd server
+      echo "Installation des dépendances..."
+      npm install
+      echo "Construction de l'application..."
+      npm run build
+      echo "Build terminé avec succès"
+    startCommand: |
+      cd server
+      echo "Démarrage de l'application..."
+      npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: primacenter-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /api/health
+    plan: free 
