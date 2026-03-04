@@ -2,6 +2,6 @@
 [phases.install]
 cmds = ["npm install"]
 
-# Force la commande de run sans npm (conteneur Railway n'a souvent que node)
+# Force la commande de run (node dist/index.js)
 [variables]
 NIXPACKS_START_CMD = "node dist/index.js"

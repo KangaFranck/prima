@@ -10,7 +10,7 @@ L’API PrimaCenter peut utiliser **Neon** pour la base de données et **Cloudfl
 
 2. **Créer les tables** : dans le dashboard Neon, aller dans **SQL Editor** et exécuter le contenu du fichier **`server/src/db/schema.sql`** (tables `boutiques`, `restaurants`, `loisirs`).
 
-3. **Variable d’environnement** (Railway, Vercel, ou `.env` local) :
+3. **Variable d’environnement** (Render, Vercel, ou `.env` local) :
    ```bash
    DATABASE_URL=postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
    ```
@@ -28,7 +28,7 @@ L’API PrimaCenter peut utiliser **Neon** pour la base de données et **Cloudfl
 
 3. **Créer des identifiants API** : **R2** → **Manage R2 API Tokens** → **Create API token** (permissions : Object Read & Write). Noter **Access Key ID**, **Secret Access Key**, et l’**Account ID** (visible dans l’URL ou dans Overview).
 
-4. **Variables d’environnement** (toutes requises pour activer R2) :
+4. **Variables d’environnement** (toutes requises pour activer R2 ; à renseigner sur Render, Vercel, ou en local) :
    ```bash
    R2_ACCOUNT_ID=ton_account_id
    R2_ACCESS_KEY_ID=cle_acces
@@ -47,4 +47,4 @@ L’API PrimaCenter peut utiliser **Neon** pour la base de données et **Cloudfl
 | BD PostgreSQL | `DATABASE_URL` (Neon)    | Utilise Neon au lieu de Mongo  |
 | Médias R2     | `R2_*` (les 5)           | Stockage des photos/logos sur R2 |
 
-Voir aussi **`server/.env.railway.example`** pour un exemple complet et **`docs/RAILWAY.md`** pour le déploiement sur Railway.
+Voir aussi **`server/.env.render.example`** pour un exemple complet et **`docs/DEPLOI-RAILWAY-RENDER.md`** pour le déploiement sur Render.

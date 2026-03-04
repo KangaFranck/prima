@@ -1,6 +1,6 @@
 /**
  * Serveur production : API (/api/*) + frontend statique (dist/).
- * Pour Railway, Render, ou tout hébergeur Node.
+ * Pour Render ou tout hébergeur Node.
  * Usage: npm run build && npm run start
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'http';

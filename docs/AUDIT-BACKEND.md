@@ -4,7 +4,7 @@
 
 Le projet contient **deux backends** :
 
-1. **Express (server/src/)** — utilisé par **Railway**
+1. **Express (server/src/)** — utilisé par **Render** (ou tout hébergeur Node)
    - Point d’entrée : `server/src/index.ts`
    - Compilé par `tsconfig` (`include: ["src/**/*"]`)
    - Routes : `/api/restaurants`, `/api/boutiques`, `/api/loisirs`
@@ -49,7 +49,7 @@ Ces fichiers **ne sont pas référencés** par `server/routes.ts` ni par `api/`.
 
 ## Doublons
 
-- **Modèles** : `server/models/` (racine, Mongoose, pour handlers cassés) vs `server/src/models/` (Boutique, Restaurant, Loisir — utilisés par l’Express **src**). Seuls ceux dans `src/` sont utilisés par le backend Railway.
+- **Modèles** : `server/models/` (racine, Mongoose, pour handlers cassés) vs `server/src/models/` (Boutique, Restaurant, Loisir — utilisés par l’Express **src**). Seuls ceux dans `src/` sont utilisés par le backend déployé (Render, etc.).
 - **R2** : `server/lib/r2.ts` (Vercel, utilisé par `routes.ts`) vs `server/src/lib/r2.ts` (Express, utilisé par les controllers **src**). Les deux sont utilisés mais par des backends différents ; pas un doublon à supprimer, mais à savoir.
 - **Neon** : `server/db.ts` (Vercel) vs `server/src/db/neon.ts` (Express). Même remarque.
 
@@ -85,5 +85,5 @@ Ces fichiers **ne sont pas référencés** par `server/routes.ts` ni par `api/`.
 Les dossiers `server/auth/` et `server/models/` peuvent être vides ; tu peux les supprimer à la main si besoin.
 
 **État après nettoyage**  
-- **Express (Railway)** : `server/src/` uniquement.  
+- **Express (Render / hébergeur Node)** : `server/src/` uniquement.  
 - **Vercel** : `server/routes.ts`, `server/db.ts`, `server/middleware/auth.ts`, `server/lib/r2.ts`, `server/lib/mappers.ts` + `api/index.ts`, `api/login.ts`.

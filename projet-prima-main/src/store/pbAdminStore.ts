@@ -126,7 +126,7 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
     } catch (error) {
       console.error('Erreur lors de la récupération des boutiques:', error);
       const msg = USE_EXPRESS_API
-        ? 'API injoignable ou erreur réseau. Sur un hébergement gratuit, le serveur peut s\'endormir après inactivité. Réessayez dans 1 minute.'
+        ? 'API injoignable ou erreur réseau. Réessayez dans 1 minute. Si le problème persiste, vérifiez que le service API est bien actif sur Render.'
         : 'Erreur lors de la récupération des boutiques';
       set({ error: msg, loading: false });
     }
@@ -143,7 +143,7 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
     } catch (error) {
       console.error('Erreur lors de la récupération des restaurants:', error);
       const msg = USE_EXPRESS_API
-        ? 'API injoignable ou erreur réseau. Sur un hébergement gratuit, le serveur peut s\'endormir après inactivité. Réessayez dans 1 minute.'
+        ? 'API injoignable ou erreur réseau. Réessayez dans 1 minute. Si le problème persiste, vérifiez que le service API est bien actif sur Render.'
         : 'Erreur lors de la récupération des restaurants';
       set({ error: msg, loading: false });
     }
@@ -160,7 +160,7 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
     } catch (error) {
       console.error('Erreur lors de la récupération des loisirs:', error);
       const msg = USE_EXPRESS_API
-        ? 'API injoignable ou erreur réseau. Sur un hébergement gratuit, le serveur peut s\'endormir après inactivité. Réessayez dans 1 minute.'
+        ? 'API injoignable ou erreur réseau. Réessayez dans 1 minute. Si le problème persiste, vérifiez que le service API est bien actif sur Render.'
         : 'Erreur lors de la récupération des loisirs';
       set({ error: msg, loading: false });
     }

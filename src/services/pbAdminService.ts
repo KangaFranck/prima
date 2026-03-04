@@ -77,7 +77,7 @@ export const adminService = {
       if (isNetworkError) {
         const onRender = typeof window !== 'undefined' && /\.onrender\.com$/i.test(window.location.hostname);
         throw new Error(onRender
-          ? 'API injoignable ou erreur réseau. Sur un hébergement gratuit, le serveur peut s’endormir après inactivité. Réessayez dans 1 minute.'
+          ? 'API injoignable ou erreur réseau. Réessayez dans 1 minute. Si le problème persiste, vérifiez que le service API est bien actif sur Render.'
           : 'API injoignable. Vérifiez que l’API tourne (npm run api) et que R2 est configuré si vous uploadez des images.');
       }
       throw error;

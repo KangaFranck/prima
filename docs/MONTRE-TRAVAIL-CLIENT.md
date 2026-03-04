@@ -8,16 +8,16 @@ Deux façons de faire voir le site à ton client.
 
 Une fois déployé, tu envoies simplement le lien à ton client.
 
-### Avec Railway
+### Avec Render
 
 1. Pousse ton code sur GitHub : `git add .` → `git commit -m "..."` → `git push`.
-2. Va sur [railway.app](https://railway.app) et connecte ton compte GitHub.
-3. **New Project** → **Deploy from GitHub repo** → sélectionne ton repo.
+2. Va sur [render.com](https://render.com) et connecte ton compte GitHub.
+3. **New +** → **Web Service** → connecte ton repo.
 4. Dans les paramètres du service :
-   - **Build Command** : `npm install && npm run build`
-   - **Start Command** : `npm run start`
-   - **Variables** : `DATABASE_URL`, `JWT_SECRET`, `ALLOWED_ORIGINS` (voir [DEPLOI-RAILWAY-RENDER.md](./DEPLOI-RAILWAY-RENDER.md)).
-5. Après le déploiement, Railway te donne une URL du type `https://ton-projet.up.railway.app`.
+   - **Build Command** : `npm install --include=dev && npm run build`
+   - **Start Command** : `npm start`
+   - **Variables** : `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGIN` (voir [DEPLOI-RAILWAY-RENDER.md](./DEPLOI-RAILWAY-RENDER.md)).
+5. Après le déploiement, Render te donne une URL du type `https://ton-projet.onrender.com`.
 6. Envoie cette URL à ton client. Il pourra voir le site et (si tu veux) l’interface admin.
 
 ---
@@ -45,7 +45,7 @@ Si tu veux montrer une version en cours de dev sur ta machine sans déployer :
 
 | Pourquoi | Solution |
 |----------|----------|
-| Montrer la version finale / stable | Déployer sur **Railway** (ou Render) et envoyer l’URL. |
+| Montrer la version finale / stable | Déployer sur **Render** et envoyer l’URL. |
 | Montrer une maquette en cours rapidement | Lancer le site en local + **ngrok** ou **localtunnel** et envoyer l’URL du tunnel. |
 
-Pour un client, la solution la plus propre est en général **Railway** : une URL fixe, toujours disponible.
+Pour un client, la solution la plus propre est en général **Render** (plan payant) : une URL fixe, toujours disponible.

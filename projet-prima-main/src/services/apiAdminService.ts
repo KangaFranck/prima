@@ -7,7 +7,7 @@
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const API_BASE = API_URL ? API_URL.replace(/\/api$/, '') : '';
 
-/** Réveille le serveur Render (gratuit) après inactivité : ping /api/health puis attend quelques secondes. */
+/** Réveille le serveur Render après inactivité : ping /api/health puis attend quelques secondes. */
 async function wakeUpServer(): Promise<void> {
   if (!API_BASE) return;
   try {

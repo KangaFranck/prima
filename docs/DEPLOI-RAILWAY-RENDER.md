@@ -1,6 +1,6 @@
-# Déploiement sans Vercel (Render / Railway)
+# Déploiement sur Render
 
-Pour éviter les 404/405 avec les serverless Vercel, tu peux héberger **tout le projet** (frontend + API) sur **Render** (ou Railway) avec un **seul serveur Node**.
+Pour éviter les 404/405 avec les serverless Vercel, tu peux héberger **tout le projet** (frontend + API) sur **Render** avec un **seul serveur Node**.
 
 ## Principe
 
@@ -53,25 +53,6 @@ Aucune config serverless, aucun rewrite : un seul process Node. Render fournit `
 
 ---
 
-## Railway
-
-Le fichier **`railway.json`** à la racine configure déjà le démarrage (`npm run start`) et un healthcheck sur `/api/health`. Un seul serveur Node sert le front (depuis `dist/`) et l’API (`/api/*`), comme sur Render.
-
-1. Va sur [railway.app](https://railway.app), connecte GitHub.
-2. **New Project** → **Deploy from GitHub repo** → choisis ton repo (ex. `KangaFranck/prima`).
-3. Paramètres du service :
-   - **Root Directory** : laisser vide.
-   - **Build Command** : `npm install && npm run build` (obligatoire pour générer `dist/`).
-   - **Start Command** : `npm run start` (déjà défini dans `railway.json`, tu peux le laisser ou le saisir à la main).
-   - **Variables d’environnement** (Settings → Variables) :
-     - `DATABASE_URL` = ton URL Neon (PostgreSQL)
-     - `JWT_SECRET` = ta clé secrète JWT
-     - `ALLOWED_ORIGINS` = l’URL du déploiement Railway **sans slash final** (ex. `https://prima-center-production.up.railway.app`). Tu peux la remplir après le premier déploiement.
-     - Si tu utilises les uploads : variables R2 comme en local.
-4. Déploie ; l’URL sera du type `https://xxx.up.railway.app`. Teste `/api/health` puis la page de connexion admin.
-
----
-
 ## Test en local (comme en prod)
 
 ```bash
@@ -89,4 +70,4 @@ Puis ouvre http://localhost:3000 (ou le port indiqué).
 ## Arrêter d’utiliser Vercel pour ce projet
 
 - Dans Vercel : Settings du projet → tu peux supprimer le projet ou le laisser inactif.
-- Le site et l’API tournent uniquement sur Railway (ou Render). Une seule URL, plus de 404/405 liés aux serverless.
+- Le site et l’API tournent uniquement sur Render. Une seule URL, plus de 404/405 liés aux serverless.
