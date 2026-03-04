@@ -1,3 +1,7 @@
 # Installe toutes les dependances (y compris dev) pour le build TypeScript
 [phases.install]
 cmds = ["npm install"]
+
+# Force la commande de run sans npm (conteneur Railway n'a souvent que node)
+[variables]
+NIXPACKS_START_CMD = "node dist/index.js"

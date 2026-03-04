@@ -26,9 +26,10 @@ Railway héberge le **backend Express** (API boutiques, restaurants, loisirs). U
 
 1. Clique sur le service déployé.
 2. Onglet **Settings** :
-   - **Root Directory** : indique **`server`** (une seule fois). Railway utilisera ce dossier et **détectera tout** (build + start).
-   - **Build Command** et **Start Command** : **ne rien remplir** (déjà définis dans `server/`).
-   - **Watch Paths** : optionnel (`server/**` pour ne redéployer que quand `server/` change).
+   - **Root Directory** : **obligatoire** — indique **`server`**. Sans ça, Railway build depuis la racine du repo (frontend) et l’erreur « npm could not be found » apparaît.
+   - **Start Command** : laisse vide (le projet utilise `node dist/index.js` via Procfile / nixpacks). Si un champ existe et contient `npm start`, remplace par **`node dist/index.js`**.
+   - **Build Command** : ne rien remplir (déjà dans `server/`).
+   - **Watch Paths** : optionnel (`server/**`).
 
 3. **Variables** (Settings → **Variables**) — **c’est la seule chose à renseigner** :
 
@@ -98,6 +99,7 @@ Railway héberge le **backend Express** (API boutiques, restaurants, loisirs). U
 
 | Problème | Piste |
 |----------|--------|
+| **« The executable npm could not be found »** (Deploy > Create container) | 1) **Root Directory** doit être **`server`** (Settings). 2) **Start Command** dans Settings : vide ou **`node dist/index.js`** (pas `npm start`). 3) Puis redéployer. |
 | Build échoue (tsc / modules) | Vérifier que **Root Directory** = `server`. Vérifier les logs de build. |
 | « PORT non défini » | Ne pas définir `PORT` dans les variables ; Railway l’injecte. |
 | CORS / requêtes bloquées | Vérifier que `CORS_ORIGIN` = URL exacte du front (sans slash final). |
