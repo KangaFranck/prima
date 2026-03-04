@@ -37,9 +37,11 @@ function mapRecordToService(record: any): Service {
   const logoUrl = imgUrl(record, 'logo');
   const images = Array.isArray(record.images) ? record.images : [];
   const firstImage = images[0];
-  const imageUrl = typeof firstImage === 'string' && firstImage.startsWith('http')
-    ? firstImage
-    : (logoUrl || (firstImage ? getFileUrl(record, firstImage) : '') || '/images/logos/default.png');
+  // Cover = image de couverture (images[0]), pas le logo ; si pas de cover, placeholder
+  const coverUrl = firstImage
+    ? (typeof firstImage === 'string' && firstImage.startsWith('http') ? firstImage : getFileUrl(record, firstImage) || '')
+    : '';
+  const imageUrl = coverUrl || '/images/logos/default.png';
 
   return {
     id: record.id,

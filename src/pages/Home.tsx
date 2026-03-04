@@ -41,9 +41,9 @@ const universeBlocks = [
     link: '/loisirs'
   },
   {
-    category: 'Services',
+    category: 'DAILY LIFE',
     title: 'Services',
-    description: 'Prestations et services au cœur de la Zone 4.',
+    description: 'Banques, santé et services pratiques réunis en un seul lieu.',
     image: '/images/business-center.jpg',
     link: '/services'
   }

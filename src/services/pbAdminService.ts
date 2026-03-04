@@ -349,16 +349,14 @@ export const adminService = {
     try {
       if (useApi()) {
         if (!service.nom?.trim()) throw new Error('Le nom est obligatoire');
-        const [logo_url] = await Promise.all([
+        const [logo_url, image_url] = await Promise.all([
           uploadFileToApi(service.logo, 'services', service.logo?.name || 'logo'),
+          service.image && service.image instanceof File && service.image.size > 0
+            ? uploadFileToApi(service.image, 'services', service.image.name || 'image')
+            : Promise.resolve(undefined),
         ]);
-        const images: string[] = [];
-        if (logo_url) images.push(logo_url);
-        const imageFile = service.image;
-        if (imageFile && imageFile instanceof File && imageFile.size > 0) {
-          const u = await uploadFileToApi(imageFile, 'services', imageFile.name || 'image');
-          if (u) images.push(u);
-        }
+        // Ne jamais mettre le logo dans images : logo = logo, image de couverture = images[0]
+        const images: string[] = image_url ? [image_url] : [];
         const out = await apiClient.services.create({
           nom: service.nom.trim(),
           description: service.description || '',
@@ -388,16 +386,14 @@ export const adminService = {
 
   async updateService(id: string, service: any) {
     try {
-      const [logo_url] = await Promise.all([
+      const imageFile = service.image && service.image instanceof File && service.image.size > 0;
+      const [logo_url, image_url] = await Promise.all([
         uploadFileToApi(service.logo, 'services', service.logo?.name || 'logo').then((u) => u ?? (typeof service.logo === 'string' ? service.logo : undefined)),
+        imageFile ? uploadFileToApi(service.image, 'services', service.image.name || 'image') : Promise.resolve(undefined),
       ]);
-      const images: string[] = [];
-      if (logo_url) images.push(logo_url);
-      const imageFile = service.image;
-      if (imageFile && imageFile instanceof File && imageFile.size > 0) {
-        const u = await uploadFileToApi(imageFile, 'services', imageFile.name || 'image');
-        if (u) images.push(u);
-      } else if (Array.isArray(service.images)) images.push(...service.images);
+      // Logo et image de couverture sont distincts : ne pas mettre le logo dans images
+      const existingImages = Array.isArray(service.images) ? service.images.filter((url: string) => url !== service.logo) : [];
+      const images: string[] = image_url ? [image_url] : existingImages;
       const out = await apiClient.services.update(id, {
         nom: service.nom || '',
         description: service.description || '',

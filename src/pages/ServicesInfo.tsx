@@ -6,13 +6,10 @@ import {
   Phone,
   Mail,
   Car,
-  ShoppingBag,
-  Coffee,
-  Wifi,
   CreditCard,
   Heart,
   Accessibility,
-  Shield
+  Banknote
 } from 'lucide-react';
 
 export default function ServicesInfo() {
@@ -30,27 +27,27 @@ export default function ServicesInfo() {
       color: "bg-[#d4d1ca]"
     },
     {
-      icon: <Wifi className="w-8 h-8" />,
-      title: "Wifi Gratuit",
-      description: "Connexion haut débit dans tout le centre",
-      color: "bg-[#e7e4dd]"
-    },
-    {
       icon: <CreditCard className="w-8 h-8" />,
       title: "Paiement",
       description: "Tous types de paiements acceptés",
-      color: "bg-[#d4d1ca]"
+      color: "bg-[#e7e4dd]"
     },
     {
       icon: <Heart className="w-8 h-8" />,
       title: "Espace Famille",
       description: "Zone dédiée aux familles",
-      color: "bg-[#e7e4dd]"
+      color: "bg-[#d4d1ca]"
     },
     {
       icon: <Accessibility className="w-8 h-8" />,
-      title: "Accessibilité",
+      title: "Accessibilité pour PMR",
       description: "Centre accessible à tous",
+      color: "bg-[#e7e4dd]"
+    },
+    {
+      icon: <Banknote className="w-8 h-8" />,
+      title: "Distributeur de billets",
+      description: "Distributeurs automatiques à votre disposition",
       color: "bg-[#d4d1ca]"
     }
   ];
