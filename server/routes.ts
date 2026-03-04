@@ -7,13 +7,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app,https://prima-liwx.onrender.com').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
 
 function cors(res: VercelResponse, origin: string | undefined) {
   const originNorm = origin ? origin.replace(/\/$/, '') : '';
   const allowed = originNorm && ALLOWED_ORIGINS.includes(originNorm);
   const vercelApp = originNorm && /\.vercel\.app$/i.test(originNorm);
-  const o = allowed ? originNorm : (vercelApp ? originNorm : ALLOWED_ORIGINS[0]);
+  const renderApp = originNorm && /\.onrender\.com$/i.test(originNorm);
+  const o = allowed ? originNorm : (vercelApp || renderApp ? originNorm : ALLOWED_ORIGINS[0]);
   res.setHeader('Access-Control-Allow-Origin', o || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
