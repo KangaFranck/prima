@@ -26,10 +26,12 @@ Railway héberge le **backend Express** (API boutiques, restaurants, loisirs). U
 
 1. Clique sur le service déployé.
 2. Onglet **Settings** :
-   - **Root Directory** : **obligatoire** — indique **`server`**. Sans ça, Railway build depuis la racine du repo (frontend) et l’erreur « npm could not be found » apparaît.
-   - **Start Command** : laisse vide (le projet utilise `node dist/index.js` via Procfile / nixpacks). Si un champ existe et contient `npm start`, remplace par **`node dist/index.js`**.
-   - **Build Command** : ne rien remplir (déjà dans `server/`).
+   - **Root Directory** : **obligatoire** — indique **`server`**.
+   - **Builder** (ou **Build**) : choisis **Dockerfile** (le repo contient `server/Dockerfile`). Ainsi Railway ne passe plus par Nixpacks et l’erreur « npm could not be found » disparaît.
+   - **Start Command** : laisse vide (le Dockerfile exécute déjà `node dist/index.js`).
+   - **Build Command** : ne rien remplir.
    - **Watch Paths** : optionnel (`server/**`).
+   - Si tu as plusieurs services Railway pour ce repo, garde un seul service avec Root Directory = `server` et Builder = Dockerfile.
 
 3. **Variables** (Settings → **Variables**) — **c’est la seule chose à renseigner** :
 
@@ -99,7 +101,7 @@ Railway héberge le **backend Express** (API boutiques, restaurants, loisirs). U
 
 | Problème | Piste |
 |----------|--------|
-| **« The executable npm could not be found »** (Deploy > Create container) | 1) **Root Directory** doit être **`server`** (Settings). 2) **Start Command** dans Settings : vide ou **`node dist/index.js`** (pas `npm start`). 3) Puis redéployer. |
+| **« The executable npm could not be found »** ou **Deployment failed** | 1) **Root Directory** = **`server`**. 2) Dans **Settings** → **Build**, choisis **Dockerfile** comme builder (le projet contient `server/Dockerfile`). 3) **Start Command** : laisse vide (le Dockerfile lance déjà `node dist/index.js`). 4) Redéployer. |
 | Build échoue (tsc / modules) | Vérifier que **Root Directory** = `server`. Vérifier les logs de build. |
 | « PORT non défini » | Ne pas définir `PORT` dans les variables ; Railway l’injecte. |
 | CORS / requêtes bloquées | Vérifier que `CORS_ORIGIN` = URL exacte du front (sans slash final). |
