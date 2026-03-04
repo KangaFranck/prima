@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Home, ShoppingBag, Coffee, Dumbbell, Calendar, LogOut, Settings, User, Utensils, Menu, X } from 'lucide-react';
+import { Home, ShoppingBag, Coffee, Dumbbell, Calendar, LogOut, Settings, User, Utensils, Menu, X, Wrench } from 'lucide-react';
 import { useAuthStore } from '../store/pbAuthStore';
 import { motion } from 'framer-motion';
 
@@ -102,6 +102,19 @@ export const AdminLayout = () => {
           >
             <Utensils className="w-5 h-5 mr-3 shrink-0" />
             Loisirs
+          </NavLink>
+          <NavLink
+            to="/admin/services"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2.5 text-base lg:px-6 lg:py-3 lg:text-lg transition-colors duration-200 ${
+                isActive 
+                  ? 'bg-[#F5F5DC] text-[#2C2C2C] font-medium'
+                  : 'text-gray-300 hover:bg-[#3D3D3D] hover:text-[#F5F5DC]'
+              }`}
+          >
+            <Wrench className="w-5 h-5 mr-3 shrink-0" />
+            Services
           </NavLink>
           <NavLink
             to="/admin/evenements"

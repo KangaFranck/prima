@@ -32,4 +32,9 @@ export interface Restaurant extends Entity {
 export interface Loisir extends Entity {
   type: 'loisir';
   activites?: string[];
+}
+
+export interface Service extends Entity {
+  type: 'service';
+  adresse?: string;
 } 

@@ -6,6 +6,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import { useShopStore } from '../store/shopStore';
 import { useRestaurantStore } from '../store/restaurantStore';
 import { useLoisirStore } from '../store/loisirStore';
+import { useServiceStore } from '../store/serviceStore';
 import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -34,10 +35,17 @@ const universeBlocks = [
   },
   {
     category: 'Lifestyle',
-    title: 'Loisir',
+    title: 'Loisirs',
     description: 'Cinéma et espaces de jeux pour enfants et adultes.',
     image: '/images/sections/loisir.jpg',
     link: '/loisirs'
+  },
+  {
+    category: 'Services',
+    title: 'Services',
+    description: 'Prestations et services au cœur de la Zone 4.',
+    image: '/images/business-center.jpg',
+    link: '/services'
   }
 ];
 
@@ -46,7 +54,7 @@ interface CarouselItem {
   name: string;
   logo?: string;
   image?: string;
-  type: 'boutique' | 'restaurant' | 'loisir';
+  type: 'boutique' | 'restaurant' | 'loisir' | 'service';
 }
 
 export default function Home() {
@@ -56,19 +64,22 @@ export default function Home() {
   const { shops, fetchShops } = useShopStore();
   const { restaurants, fetchRestaurants } = useRestaurantStore();
   const { loisirs, fetchLoisirs } = useLoisirStore();
+  const { services, fetchServices } = useServiceStore();
 
   // Charger les données au montage du composant
   useEffect(() => {
     fetchShops();
     fetchRestaurants();
     fetchLoisirs();
-  }, [fetchShops, fetchRestaurants, fetchLoisirs]);
+    fetchServices();
+  }, [fetchShops, fetchRestaurants, fetchLoisirs, fetchServices]);
 
   // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base)
   const allItems: CarouselItem[] = [
     ...shops.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'boutique' as const })),
     ...restaurants.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'restaurant' as const })),
-    ...loisirs.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'loisir' as const }))
+    ...loisirs.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'loisir' as const })),
+    ...services.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'service' as const }))
   ];
 
   return (
@@ -88,16 +99,17 @@ export default function Home() {
             {/* Présentation Prima avec Logo - Parfaitement centré */}
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">
-                {/* Logo Prima Center - Taille maximale et parfaitement centré */}
+                {/* Logo Prima Center - taille légèrement réduite */}
                 <div className="mb-6 flex items-center justify-center w-full">
                   <Logo 
-                    className="h-48 md:h-64 lg:h-80 xl:h-96 mx-auto" 
+                    className="h-40 md:h-56 lg:h-72 xl:h-80 mx-auto" 
                     color="white"
                     variant="light"
                   />
                 </div>
-                <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-12 md:-mt-14 lg:-mt-16 xl:-mt-18">
-                  Un lieu conçu pour simplifier votre quotidien : shopping, divertissement, restauration, services et bien-être au cœur de la Zone 4.
+                <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-10 md:-mt-12 lg:-mt-14 xl:-mt-16 max-w-2xl">
+                  Un lieu conçu pour simplifier votre quotidien : shopping, divertissement, restauration,<br />
+                  services et bien-être au cœur de la Zone 4.
                 </p>
               </div>
             </div>

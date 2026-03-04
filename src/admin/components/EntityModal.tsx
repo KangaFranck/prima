@@ -7,7 +7,7 @@ interface EntityModalProps {
   onSubmit: (formData: FormData) => void | Promise<void>;
   title: string;
   entityData?: any;
-  entityType: 'loisirs' | 'boutiques' | 'restaurants' | 'evenements';
+  entityType: 'loisirs' | 'boutiques' | 'restaurants' | 'services' | 'evenements';
 }
 
 export const EntityModal: React.FC<EntityModalProps> = ({

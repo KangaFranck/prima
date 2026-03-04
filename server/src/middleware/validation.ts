@@ -31,4 +31,15 @@ export const validateLoisir = (req: Request, res: Response, next: NextFunction):
   }
 
   next();
+};
+
+export const validateService = (req: Request, res: Response, next: NextFunction): void => {
+  const { nom } = req.body;
+  
+  if (!nom) {
+    res.status(400).json({ message: 'Le nom est requis' });
+    return;
+  }
+
+  next();
 }; 

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import restaurantRoutes from './routes/restaurantRoutes';
 import boutiqueRoutes from './routes/boutiqueRoutes';
 import loisirRoutes from './routes/loisirRoutes';
+import serviceRoutes from './routes/serviceRoutes';
 import { Request, Response, NextFunction } from './types/express';
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use('/uploads', express.static(uploadDir));
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/boutiques', boutiqueRoutes);
 app.use('/api/loisirs', loisirRoutes);
+app.use('/api/services', serviceRoutes);
 
 // Route de test
 app.get('/api/test', (req: Request, res: Response) => {

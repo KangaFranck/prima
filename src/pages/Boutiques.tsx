@@ -41,7 +41,7 @@ const Boutiques = () => {
           loading="eager"
         />
         <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute bottom-6 left-4 md:left-8 lg:left-12">
+        <div className="absolute bottom-6 left-0 right-0 content-edge">
           <h1 className="text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
             Boutiques
           </h1>

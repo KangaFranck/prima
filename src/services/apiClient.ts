@@ -3,7 +3,7 @@
  * Utilisé quand VITE_API_URL est défini (test local avec vercel dev ou prod Vercel).
  */
 
-import type { Boutique, Restaurant, Loisir, Evenement } from '../types/admin';
+import type { Boutique, Restaurant, Loisir, Service, Evenement } from '../types/admin';
 
 // En dev sans URL : requête relative. En local (localhost), fallback sur le port 3002 (npm run api) pour éviter PocketBase 8090.
 function getBaseURL(): string {
@@ -40,6 +40,7 @@ export function invalidateDataCache(segment?: string): void {
     if (segment.startsWith('boutiques')) dataCache.delete('boutiques');
     if (segment.startsWith('restaurants')) dataCache.delete('restaurants');
     if (segment.startsWith('loisirs')) dataCache.delete('loisirs');
+    if (segment.startsWith('services')) dataCache.delete('services');
     if (segment.startsWith('evenements')) dataCache.delete('evenements');
   } else {
     dataCache.clear();
@@ -175,6 +176,24 @@ export const apiClient = {
     },
     delete(id: string): Promise<{ ok: boolean }> {
       return request<{ ok: boolean }>(`loisirs/${id}`, { method: 'DELETE' });
+    },
+  },
+
+  services: {
+    list(): Promise<Service[]> {
+      return request<Service[]>('services');
+    },
+    get(id: string): Promise<Service> {
+      return request<Service>(`services/${id}`);
+    },
+    create(body: Partial<Service>): Promise<Service> {
+      return request<Service>('services', { method: 'POST', body: JSON.stringify(body) });
+    },
+    update(id: string, body: Partial<Service>): Promise<Service> {
+      return request<Service>(`services/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    },
+    delete(id: string): Promise<{ ok: boolean }> {
+      return request<{ ok: boolean }>(`services/${id}`, { method: 'DELETE' });
     },
   },
 

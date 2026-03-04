@@ -22,7 +22,8 @@ import { useSearch } from '../hooks/useSearch';
 const universList = [
   { path: '/boutiques', label: 'Boutiques' },
   { path: '/restaurants', label: 'Restaurants' },
-  { path: '/loisirs', label: 'Loisirs' }
+  { path: '/loisirs', label: 'Loisirs' },
+  { path: '/services', label: 'Services' }
 ];
 
 // Liste des liens de navigation
@@ -173,7 +174,8 @@ const Navbar = () => {
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                       {result.type === 'boutique' && 'Boutique'}
                       {result.type === 'restaurant' && 'Restaurant'}
-                      {result.type === 'loisir' && 'Loisir'}
+                      {result.type === 'loisir' && 'Loisirs'}
+                      {result.type === 'service' && 'Services'}
                     </span>
                   </div>
                 </div>

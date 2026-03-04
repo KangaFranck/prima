@@ -5,7 +5,7 @@ import { apiClient } from '../services/apiClient';
 interface SearchResult {
   id: string;
   name: string;
-  type: 'boutique' | 'restaurant' | 'loisir';
+  type: 'boutique' | 'restaurant' | 'loisir' | 'service';
   description?: string;
   universe?: string;
   cuisine?: string;
@@ -35,10 +35,11 @@ export const useSearch = () => {
 
       setIsLoading(true);
       try {
-        const [boutiques, restaurants, loisirs] = await Promise.all([
+        const [boutiques, restaurants, loisirs, services] = await Promise.all([
           apiClient.boutiques.list(),
           apiClient.restaurants.list(),
           apiClient.loisirs.list(),
+          apiClient.services.list(),
         ]);
 
         const searchResults: SearchResult[] = [];
@@ -80,6 +81,19 @@ export const useSearch = () => {
               description: l.description,
               universe: l.universe,
               image: l.logo || l.image || '/images/logos/default.png',
+            });
+          });
+
+        services
+          .filter((s) => s.statut !== 'inactif' && matchesQuery(query, s.nom, s.type, s.description))
+          .forEach((s) => {
+            searchResults.push({
+              id: s.id,
+              name: s.nom,
+              type: 'service',
+              description: s.description,
+              universe: s.type,
+              image: s.logo || (Array.isArray(s.images) && s.images[0]) || '/images/logos/default.png',
             });
           });
 

@@ -19,6 +19,8 @@ import Restaurants from './pages/Restaurants';
 import RestaurantDetail from './pages/restaurants/[id]';
 import Loisirs from './pages/Loisirs';
 import LoisirDetail from './pages/loisirs/[id]';
+import Services from './pages/Services';
+import ServiceDetail from './pages/services/[id]';
 import EventDetail from './pages/evenements/[id]';
 import ActusEvents from './pages/ActusEvents';
 import ServicesInfo from './pages/ServicesInfo';
@@ -43,6 +45,7 @@ import { ProtectedSettingsRoute } from './components/ProtectedSettingsRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ScrollToTop from './components/ScrollToTop';
 import { Loisirs as AdminLoisirs } from './admin/pages/Loisirs';
+import { Services as AdminServices } from './admin/pages/Services';
 import { useAuthStore } from './store/pbAuthStore';
 
 const queryClient = new QueryClient();
@@ -64,6 +67,8 @@ const PublicLayout = () => {
           <Route path="restaurants/:id" element={<RestaurantDetail />} />
           <Route path="loisirs" element={<Loisirs />} />
           <Route path="loisirs/:id" element={<LoisirDetail />} />
+          <Route path="services" element={<Services />} />
+          <Route path="services/:id" element={<ServiceDetail />} />
           <Route path="actualites" element={<ActusEvents />} />
           <Route path="contact" element={<ServicesInfo />} />
           <Route path="a-propos" element={<APropos />} />
@@ -107,6 +112,7 @@ export default function App() {
             <Route path="boutiques" element={<AdminBoutiques />} />
             <Route path="restaurants" element={<AdminRestaurants />} />
             <Route path="loisirs" element={<AdminLoisirs />} />
+            <Route path="services" element={<AdminServices />} />
             <Route path="evenements" element={<Evenements />} />
             <Route 
               path="settings" 

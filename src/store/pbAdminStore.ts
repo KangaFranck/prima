@@ -65,6 +65,23 @@ interface Loisir {
   updatedAt: string;
 }
 
+interface Service {
+  id: string;
+  nom: string;
+  description?: string;
+  type?: string;
+  horaires?: string;
+  logo?: string;
+  images?: string[];
+  statut: "actif" | "inactif";
+  ouvertLeDimanche?: boolean;
+  telephone?: string;
+  email?: string;
+  adresse?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 interface Evenement {
   id: string;
   titre: string;
@@ -82,6 +99,7 @@ interface AdminStore {
   boutiques: Boutique[];
   restaurants: Restaurant[];
   loisirs: Loisir[];
+  services: Service[];
   evenements: Evenement[];
   loading: boolean;
   error: string | null;
@@ -90,6 +108,7 @@ interface AdminStore {
   fetchBoutiques: () => Promise<void>;
   fetchRestaurants: () => Promise<void>;
   fetchLoisirs: () => Promise<void>;
+  fetchServices: () => Promise<void>;
   fetchEvenements: () => Promise<void>;
   
   createBoutique: (data: any) => Promise<void>;
@@ -104,6 +123,10 @@ interface AdminStore {
   updateLoisir: (id: string, data: any) => Promise<void>;
   deleteLoisir: (id: string) => Promise<void>;
   
+  createService: (data: any) => Promise<void>;
+  updateService: (id: string, data: any) => Promise<void>;
+  deleteService: (id: string) => Promise<void>;
+  
   createEvenement: (data: any) => Promise<void>;
   updateEvenement: (id: string, data: any) => Promise<void>;
   deleteEvenement: (id: string) => Promise<void>;
@@ -113,6 +136,7 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
   boutiques: [],
   restaurants: [],
   loisirs: [],
+  services: [],
   evenements: [],
   loading: false,
   error: null,
@@ -156,6 +180,20 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
     } catch (error) {
       console.error('Erreur lors de la récupération des loisirs:', error);
       set({ error: 'Erreur lors de la récupération des loisirs', loading: false });
+    }
+  },
+
+  fetchServices: async () => {
+    const state = get();
+    if (state.loading) return;
+    
+    set({ loading: true, error: null });
+    try {
+      const services = await adminService.getServices();
+      set({ services, loading: false });
+    } catch (error) {
+      console.error('Erreur lors de la récupération des services:', error);
+      set({ error: 'Erreur lors de la récupération des services', loading: false });
     }
   },
 
@@ -303,6 +341,40 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
       }));
     } catch (error) {
       console.error('Erreur lors de la suppression du loisir:', error);
+      throw error;
+    }
+  },
+
+  createService: async (data) => {
+    try {
+      const service = await adminService.createService(data);
+      set(state => ({ services: [...state.services, service] }));
+    } catch (error) {
+      console.error('Erreur lors de la création du service:', error);
+      throw error;
+    }
+  },
+
+  updateService: async (id, data) => {
+    try {
+      const service = await adminService.updateService(id, data);
+      set(state => ({
+        services: state.services.map(s => s.id === id ? service : s)
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du service:', error);
+      throw error;
+    }
+  },
+
+  deleteService: async (id) => {
+    try {
+      await adminService.deleteService(id);
+      set(state => ({
+        services: state.services.filter(s => s.id !== id)
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du service:', error);
       throw error;
     }
   },

@@ -335,6 +335,104 @@ export const adminService = {
     }
   },
 
+  // SERVICES
+  async getServices() {
+    try {
+      return apiClient.services.list();
+    } catch (error) {
+      console.error('Erreur lors de la récupération des services:', error);
+      throw error;
+    }
+  },
+
+  async createService(service: any) {
+    try {
+      if (useApi()) {
+        if (!service.nom?.trim()) throw new Error('Le nom est obligatoire');
+        const [logo_url] = await Promise.all([
+          uploadFileToApi(service.logo, 'services', service.logo?.name || 'logo'),
+        ]);
+        const images: string[] = [];
+        if (logo_url) images.push(logo_url);
+        const imageFile = service.image;
+        if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+          const u = await uploadFileToApi(imageFile, 'services', imageFile.name || 'image');
+          if (u) images.push(u);
+        }
+        const out = await apiClient.services.create({
+          nom: service.nom.trim(),
+          description: service.description || '',
+          type: service.type || service.universe || '',
+          horaires: service.horaires || '',
+          telephone: service.telephone || undefined,
+          email: service.email || undefined,
+          adresse: service.adresse || undefined,
+          logo: logo_url || undefined,
+          images: images.length ? images : undefined,
+          statut: service.statut || 'actif',
+          ouvertLeDimanche: !!service.openSunday,
+          reseauxSociaux: {
+            instagram: service.instagram || undefined,
+            facebook: service.facebook || undefined,
+          },
+        });
+        invalidateDataCache('services');
+        return out;
+      }
+      throw new Error('Seule l’API Node est supportée.');
+    } catch (error: any) {
+      console.error('Erreur lors de la création du service:', error);
+      throw error;
+    }
+  },
+
+  async updateService(id: string, service: any) {
+    try {
+      const [logo_url] = await Promise.all([
+        uploadFileToApi(service.logo, 'services', service.logo?.name || 'logo').then((u) => u ?? (typeof service.logo === 'string' ? service.logo : undefined)),
+      ]);
+      const images: string[] = [];
+      if (logo_url) images.push(logo_url);
+      const imageFile = service.image;
+      if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+        const u = await uploadFileToApi(imageFile, 'services', imageFile.name || 'image');
+        if (u) images.push(u);
+      } else if (Array.isArray(service.images)) images.push(...service.images);
+      const out = await apiClient.services.update(id, {
+        nom: service.nom || '',
+        description: service.description || '',
+        type: service.type || service.universe || '',
+        horaires: service.horaires || '',
+        telephone: service.telephone,
+        email: service.email,
+        adresse: service.adresse,
+        logo: logo_url || undefined,
+        images: images.length ? images : undefined,
+        statut: service.statut || 'actif',
+        ouvertLeDimanche: !!service.openSunday,
+        reseauxSociaux: {
+          instagram: service.instagram || undefined,
+          facebook: service.facebook || undefined,
+        },
+      });
+      invalidateDataCache('services');
+      return out;
+    } catch (error: any) {
+      console.error('Erreur lors de la mise à jour du service:', error);
+      throw error;
+    }
+  },
+
+  async deleteService(id: string) {
+    try {
+      await apiClient.services.delete(id);
+      invalidateDataCache('services');
+    } catch (error) {
+      console.error('Erreur lors de la suppression du service:', error);
+      throw error;
+    }
+  },
+
   // ÉVÉNEMENTS
   async getEvenements() {
     try {

@@ -2,6 +2,7 @@ export type StatutBoutique = 'actif' | 'inactif';
 export type StatutEvenement = 'planifié' | 'en cours' | 'terminé';
 export type StatutRestaurant = 'actif' | 'inactif';
 export type StatutLoisir = 'actif' | 'inactif';
+export type StatutService = 'actif' | 'inactif';
 
 export interface Boutique {
   id: string;
@@ -55,6 +56,24 @@ export interface Loisir {
   openSunday: boolean;
 }
 
+export interface Service {
+  id: string;
+  nom: string;
+  description?: string;
+  type?: string;
+  horaires?: string;
+  logo?: string;
+  images?: string[];
+  statut: StatutService;
+  ouvertLeDimanche?: boolean;
+  telephone?: string;
+  email?: string;
+  adresse?: string;
+  reseauxSociaux?: { instagram?: string; facebook?: string };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Evenement {
   id: string;
   titre: string;
@@ -71,6 +90,7 @@ export interface AdminState {
   boutiques: Boutique[];
   restaurants: Restaurant[];
   loisirs: Loisir[];
+  services: Service[];
   evenements: Evenement[];
   loading: boolean;
   error: string | null;

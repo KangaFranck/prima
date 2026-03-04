@@ -20,19 +20,19 @@ const video3 = '/videos/prima-3.mp4';
 const universeBlocks = [
   {
     title: 'Boutiques',
-    description: 'Découvrez nos boutiques de mode et accessoires',
+    description: 'Mode, beauté, technologie et équipement du quotidien : une offre complète pensée pour tous les besoins.',
     image: '/images/sections/boutiques.jpg',
     link: '/boutiques'
   },
   {
     title: 'Restaurants',
-    description: 'Une expérience culinaire unique',
+    description: 'Restaurants, cafés, pâtisseries et glaciers pour toutes les envies et tous les moments de la journée.',
     image: '/images/sections/restaurants.jpg',
     link: '/restaurants'
   },
   {
     title: 'Loisir',
-    description: 'Votre espace bien-être et sport',
+    description: 'Cinéma et espaces de jeux pour enfants et adultes.',
     image: '/images/sections/loisir.jpg',
     link: '/loisirs'
   }
@@ -94,7 +94,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sans font-thin text-white text-center tracking-wider leading-relaxed -mt-12 md:-mt-14 lg:-mt-16 xl:-mt-18">
-                  Un espace unique où shopping, loisirs et gastronomie se rencontrent
+                  Un lieu conçu pour simplifier votre quotidien : shopping, divertissement, restauration, services et bien-être au cœur de la Zone 4.
                 </p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-playfair mb-4 text-gray-800">NOS UNIVERS</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Découvrez plus de 70 commerçants, des marques internationales aux enseignes locales, le tout dans un cadre moderne et convivial, au cœur de la zone 4
+              Découvrez plus de 70 enseignes, des marques internationales aux adresses locales, reconnues pour leur qualité et leur savoir-faire.
             </p>
           </div>
           

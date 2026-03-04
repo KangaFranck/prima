@@ -57,7 +57,7 @@ function EventRow({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl mx-auto mb-12 lg:mb-16`}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl w-full mr-auto mb-12 lg:mb-16`}
     >
       <div className="lg:w-[55%] aspect-[4/3] lg:aspect-auto lg:min-h-[360px] flex-shrink-0">
         <button type="button" onClick={onSeeMore} className="block w-full h-full text-left">

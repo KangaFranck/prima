@@ -41,8 +41,8 @@ const Footer = () => {
                 HORAIRE
               </h3>
               <div className="space-y-1.5 md:space-y-2 text-gray-300 font-sofia text-sm md:text-base">
-                <p>du lundi au dimanche</p>
-                <p>ouvert de 9h00 à 00h00</p>
+                <p>Du lundi au dimanche</p>
+                <p>Ouvert de 9h00 à 00h00</p>
               </div>
             </div>
             <div className="flex flex-col">
@@ -57,8 +57,8 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Colonne 3 : icônes et logo empilés, même alignement à droite (comme la référence) */}
-          <div className="flex flex-col items-end justify-start gap-5 md:gap-6 w-full md:w-auto">
+          {/* Colonne 3 : mobile = icônes à gauche, logo à droite (même marge) ; desktop = icônes + logo alignés à droite */}
+          <div className="flex flex-row justify-between items-center md:flex-col md:items-end md:justify-start gap-5 md:gap-6 w-full md:w-auto">
             <div className="flex flex-col gap-4 flex-shrink-0">
               <a
                 href="https://facebook.com"

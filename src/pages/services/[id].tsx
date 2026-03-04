@@ -1,62 +1,57 @@
 import React, { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useLoisirStore } from "../../store/loisirStore";
+import { useServiceStore } from "../../store/serviceStore";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   CommerceDetailView,
   CommerceDetailData,
 } from "../../components/CommerceDetailView";
 
-function toDetailData(l: {
+function toDetailData(s: {
   id: string;
   name: string;
   description: string;
   image: string;
   logo?: string;
-  logoCarousel?: string;
   horaires?: string;
-  heureOuverture: string;
-  heureFermeture: string;
-  openSunday: boolean;
   statut: "actif" | "inactif";
   telephone?: string;
   instagram?: string;
   facebook?: string;
-  tiktok?: string;
   email?: string;
-  siteWeb?: string;
   website?: string;
+  siteWeb?: string;
   adresse?: string;
+  ouvertLeDimanche?: boolean;
 }): CommerceDetailData {
   return {
-    name: l.name,
-    image: l.image,
-    image2: l.logoCarousel,
-    logo: l.logo,
-    description: l.description || undefined,
-    adresse: l.adresse,
-    telephone: l.telephone,
-    email: l.email,
-    website: l.website || l.siteWeb,
-    horaires: l.horaires,
-    heureOuverture: l.heureOuverture,
-    heureFermeture: l.heureFermeture,
-    openSunday: l.openSunday,
-    statut: l.statut,
-    facebook: l.facebook,
-    instagram: l.instagram,
-    tiktok: l.tiktok,
+    name: s.name,
+    image: s.image,
+    image2: undefined,
+    logo: s.logo,
+    description: s.description || undefined,
+    adresse: s.adresse,
+    telephone: s.telephone,
+    email: s.email,
+    website: s.website || s.siteWeb,
+    horaires: s.horaires,
+    heureOuverture: "",
+    heureFermeture: "",
+    openSunday: s.ouvertLeDimanche,
+    statut: s.statut,
+    facebook: s.facebook,
+    instagram: s.instagram,
   };
 }
 
-export default function LoisirDetail() {
+export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
-  const { loisirs, fetchLoisirs, loading, error } = useLoisirStore();
-  const loisir = loisirs.find((l) => l.id === id);
+  const { services, fetchServices, loading, error } = useServiceStore();
+  const service = services.find((s) => s.id === id);
 
   useEffect(() => {
-    fetchLoisirs();
-  }, [fetchLoisirs]);
+    fetchServices();
+  }, [fetchServices]);
 
   if (loading) {
     return (
@@ -71,41 +66,41 @@ export default function LoisirDetail() {
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-slate-50 px-4">
         <p className="text-center text-red-600">{error}</p>
         <Link
-          to="/loisirs"
+          to="/services"
           className="text-sm font-medium text-slate-600 hover:text-slate-900"
         >
-          Retour aux loisirs
+          Retour aux services
         </Link>
       </div>
     );
   }
 
-  if (!loisir) {
+  if (!service) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-slate-50 px-4">
-        <p className="text-center text-slate-600">Loisirs non trouvés</p>
+        <p className="text-center text-slate-600">Service non trouvé</p>
         <Link
-          to="/loisirs"
+          to="/services"
           className="text-sm font-medium text-slate-600 hover:text-slate-900"
         >
-          Retour aux loisirs
+          Retour aux services
         </Link>
       </div>
     );
   }
 
   const currentId = id ?? "";
-  const otherLoisirs = loisirs
-    .filter((l) => l.id !== currentId)
+  const otherServices = services
+    .filter((s) => s.id !== currentId)
     .slice(0, 5)
-    .map((l) => ({ id: l.id, name: l.name, logo: l.logo }));
+    .map((s) => ({ id: s.id, name: s.name, logo: s.logo }));
 
   return (
     <CommerceDetailView
-      data={toDetailData(loisir)}
-      listPath="/loisirs"
-      listLabel="Loisirs"
-      otherCommerces={otherLoisirs}
+      data={toDetailData(service)}
+      listPath="/services"
+      listLabel="Services"
+      otherCommerces={otherServices}
     />
   );
 }

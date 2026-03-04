@@ -33,3 +33,4 @@ const logoAndImages = upload.fields([
 export const uploadBoutique = logoAndImages;
 export const uploadRestaurant = logoAndImages;
 export const uploadLoisir = logoAndImages;
+export const uploadService = logoAndImages;
