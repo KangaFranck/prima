@@ -57,9 +57,9 @@ function EventRow({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl w-full mr-auto mb-12 lg:mb-16`}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl w-full mx-auto mb-12 lg:mb-16`}
     >
-      <div className="w-full max-w-[1020px] aspect-[1020/1350] flex-shrink-0 overflow-hidden">
+      <div className="w-full lg:w-[70%] aspect-[1020/1350] flex-shrink-0 overflow-hidden">
         <button type="button" onClick={onSeeMore} className="block w-full h-full text-left">
           {evenement.image ? (
             <img
@@ -76,7 +76,7 @@ function EventRow({
           )}
         </button>
       </div>
-      <div className="flex-1 flex flex-col justify-center p-6 md:p-8 lg:p-10">
+      <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-6 md:p-8 lg:p-10">
         <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
           Prochain événement
         </p>
