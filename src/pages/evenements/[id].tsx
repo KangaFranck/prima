@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
 import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus } from 'lucide-react';
@@ -9,6 +9,8 @@ const EventDetail = () => {
   const { id } = useParams();
   const { evenements, fetchEvenements, loading, error } = useEvenementStore();
   const evenement = evenements.find(e => e.id === id);
+  const [mainImageError, setMainImageError] = useState(false);
+  const [galleryErrors, setGalleryErrors] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetchEvenements();
@@ -62,14 +64,15 @@ const EventDetail = () => {
       <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
         {/* Colonne image : taille limitée pour laisser toute la place au bloc infos (texte + boutons) */}
         <div className="w-full lg:min-w-0 lg:max-w-[min(440px,42%)] flex-shrink space-y-4">
-          <div className="aspect-[1020/1350] lg:max-h-[70vh] overflow-hidden">
-            {evenement.image ? (
+          <div className="aspect-[1020/1350] lg:max-h-[70vh] overflow-hidden bg-[#F8F7F4]">
+            {evenement.image && !mainImageError ? (
               <img
                 src={evenement.image}
                 alt={evenement.title}
                 className="w-full h-full object-cover"
                 width={1020}
                 height={1350}
+                onError={() => setMainImageError(true)}
               />
             ) : (
               <div className="w-full h-full min-h-[320px] bg-[#F8F7F4] flex items-center justify-center">
@@ -96,11 +99,18 @@ const EventDetail = () => {
                       : 'aspect-[4/3] min-h-[160px] sm:min-h-[200px]'
                   }`}
                 >
-                  <img
-                    src={url}
-                    alt={`${evenement.title} - image ${i + 2}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {!galleryErrors.has(i) ? (
+                    <img
+                      src={url}
+                      alt={`${evenement.title} - image ${i + 2}`}
+                      className="w-full h-full object-cover"
+                      onError={() => setGalleryErrors(prev => new Set(prev).add(i))}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Calendar className="w-12 h-12 text-gray-300" />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

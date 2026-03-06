@@ -4,6 +4,7 @@ import { EntityModal } from '../components/EntityModal';
 import { Evenement } from '../../types/entity';
 import { usePbAdminStore } from '../../store/pbAdminStore';
 import { formatEventDateRange } from '../../utils/date';
+import { apiClient, invalidateDataCache } from '../../services/apiClient';
 
 export const Evenements = () => {
   const { evenements, createEvenement, updateEvenement, deleteEvenement, fetchEvenements, loading, error } = usePbAdminStore();
@@ -78,9 +79,17 @@ export const Evenements = () => {
     }
   };
 
-  const handleEdit = (evenement: Evenement) => {
-    setSelectedEvenement(evenement);
-    setIsModalOpen(true);
+  const handleEdit = async (evenement: Evenement) => {
+    try {
+      invalidateDataCache(`evenements/${evenement.id}`);
+      const fresh = await apiClient.evenements.get(evenement.id);
+      setSelectedEvenement(fresh);
+      setIsModalOpen(true);
+    } catch (e) {
+      console.error('Erreur chargement événement:', e);
+      setSelectedEvenement(evenement);
+      setIsModalOpen(true);
+    }
   };
 
   const handleDelete = async (id: string) => {
