@@ -60,8 +60,8 @@ const EventDetail = () => {
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Layout style Bal Harbour : image à gauche, infos à droite */}
       <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
-        {/* Colonne image : cover + galerie optionnelle (1 à 3 images) */}
-        <div className="w-full max-w-[1020px] flex-shrink-0 space-y-4">
+        {/* Colonne image : cover + galerie (peut rétrécir pour laisser place au texte) */}
+        <div className="w-full lg:min-w-0 lg:max-w-[min(1020px,55%)] flex-shrink space-y-4">
           <div className="aspect-[1020/1350] overflow-hidden">
             {evenement.image ? (
               <img
@@ -92,12 +92,12 @@ const EventDetail = () => {
           )}
         </div>
 
-        {/* Colonne infos */}
-        <div className="flex-1 flex flex-col p-6 md:p-8 lg:p-10 lg:py-14">
+        {/* Colonne infos : largeur min pour éviter que le texte déborde ou soit coupé */}
+        <div className="flex-1 flex flex-col min-w-0 lg:min-w-[320px] p-6 md:p-8 lg:p-10 lg:py-14 bg-white overflow-visible relative z-10">
           <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
             Prochain événement
           </p>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4 break-words">
             {evenement.title}
           </h1>
           {evenement.lieu && (

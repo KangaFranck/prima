@@ -284,6 +284,24 @@ header .content-wrap {
       -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
     }
   }
+  /* Bloc icônes + logo footer : respect de la marge droite universelle (aligné avec le content-wrap) */
+  .footer-icons-logo-wrap {
+    padding-right: calc(var(--content-px) + var(--safe-area-right));
+    -webkit-padding-end: calc(var(--content-px) + var(--safe-area-right));
+  }
+  @media (min-width: 640px) {
+    .footer-icons-logo-wrap {
+      padding-right: calc(var(--content-px-sm) + var(--safe-area-right));
+      -webkit-padding-end: calc(var(--content-px-sm) + var(--safe-area-right));
+    }
+  }
+  @media (min-width: 768px) {
+    .footer-icons-logo-wrap {
+      padding-right: calc(var(--content-px-md) + var(--safe-area-right));
+      -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
+    }
+  }
+
   /* Ligne icônes + logo en pleine largeur : padding gauche = content-wrap, pas de padding droit → logo touche la marge */
   .footer-logo-row {
     width: 100%;
