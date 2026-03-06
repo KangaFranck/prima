@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Coffee, Dumbbell, Calendar, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import { useShopStore } from '../store/shopStore';
 import { useRestaurantStore } from '../store/restaurantStore';
 import { useLoisirStore } from '../store/loisirStore';
@@ -10,7 +10,6 @@ import { useServiceStore } from '../store/serviceStore';
 import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 // Vidéo unique de la première section (fichier : public/videos/backvideos.mp4)
 const backVideo = '/videos/backvideos.mp4';
@@ -192,46 +191,37 @@ export default function Home() {
           
           <div>
             <Swiper
-              modules={[Pagination, Autoplay]}
+              modules={[Autoplay]}
               loop={true}
-              spaceBetween={16}
-              slidesPerView={1}
-              centeredSlides={true}
+              spaceBetween={12}
+              slidesPerView={2}
+              centeredSlides={false}
               speed={600}
               breakpoints={{
                 480: {
-                  slidesPerView: 1.2,
-                  spaceBetween: 20,
-                  centeredSlides: true,
+                  slidesPerView: 2,
+                  spaceBetween: 16,
                 },
                 640: {
                   slidesPerView: 3,
                   spaceBetween: 4,
-                  centeredSlides: false,
                 },
                 768: {
                   slidesPerView: 4,
                   spaceBetween: 6,
-                  centeredSlides: false,
                 },
                 1024: {
                   slidesPerView: 5,
                   spaceBetween: 8,
-                  centeredSlides: false,
                   slidesPerGroup: 6,
                 },
                 1280: {
                   slidesPerView: 6,
                   spaceBetween: 10,
-                  centeredSlides: false,
                   slidesPerGroup: 6,
                 }
               }}
-              pagination={!isDesktop ? {
-                clickable: true,
-                bulletClass: 'swiper-pagination-bullet custom-bullet !bg-gray-400',
-                bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active !bg-black !opacity-100'
-              } : false}
+              pagination={false}
               onSwiper={(swiper) => { swiperRef.current = swiper; }}
               onSlideChange={(swiper) => {
                 if (isDesktop) setEnseignesPage(Math.floor(swiper.realIndex / 6));
