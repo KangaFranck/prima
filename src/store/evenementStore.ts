@@ -12,6 +12,10 @@ interface Evenement {
   images?: string[];
   lieu?: string;
   heure?: string;
+  /** Date de fin (optionnel) */
+  dateFin?: string;
+  /** Heure de fin (optionnel) */
+  heureFin?: string;
   statut: "actif" | "inactif" | "planifié";
 }
 
@@ -41,6 +45,8 @@ function mapRecordToEvenement(record: any): Evenement {
     images: images.length > 0 ? images : undefined,
     lieu: record.lieu,
     heure: record.heure,
+    dateFin: record.dateFin,
+    heureFin: record.heureFin,
     statut: record.statut || "actif",
   };
 }

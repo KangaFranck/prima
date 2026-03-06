@@ -88,7 +88,9 @@ interface Evenement {
   description: string;
   date: string;
   lieu: string;
-  heure: string;
+  heure?: string;
+  dateFin?: string;
+  heureFin?: string;
   affiche?: string;
   statut: string;
   createdAt: string;

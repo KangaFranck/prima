@@ -123,6 +123,8 @@ export function rowToEvenement(r: Record<string, unknown>) {
     description: r.description ?? '',
     date: r.date,
     heure: r.heure ?? undefined,
+    dateFin: r.date_fin ?? undefined,
+    heureFin: r.heure_fin ?? undefined,
     lieu: r.lieu ?? '',
     statut: r.statut ?? 'planifié',
     affiche: publicImageUrl(r.affiche_url) ?? undefined,

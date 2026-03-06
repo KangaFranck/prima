@@ -143,6 +143,8 @@ CREATE TABLE evenements (
   description TEXT DEFAULT '',
   date DATE NOT NULL,
   heure VARCHAR(20),
+  date_fin DATE,
+  heure_fin VARCHAR(20),
   lieu VARCHAR(500) DEFAULT '',
   statut VARCHAR(20) NOT NULL DEFAULT 'planifié' CHECK (statut IN ('planifié', 'en cours', 'annulé', 'terminé')),
   affiche_url TEXT,

@@ -79,6 +79,11 @@ export interface Evenement {
   titre: string;
   description: string;
   date: string;
+  heure?: string;
+  /** Date de fin (optionnel, pour événements sur plusieurs jours/semaines) */
+  dateFin?: string;
+  /** Heure de fin (optionnel) */
+  heureFin?: string;
   lieu: string;
   statut: StatutEvenement;
   affiche?: string;

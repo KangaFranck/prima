@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { formatDate } from '../utils/date';
+import { formatEventDateRange } from '../utils/date';
 import { useEvenementStore } from '../store/evenementStore';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Facebook, Instagram, Plus } from 'lucide-react';
@@ -20,15 +20,28 @@ const todayStr = () => {
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
 };
 
-function addToCalendar(e: React.MouseEvent, evenement: { id: string; title: string; date: string; description?: string; lieu?: string; heure?: string }) {
+function addToCalendar(e: React.MouseEvent, evenement: { id: string; title: string; date: string; description?: string; lieu?: string; heure?: string; dateFin?: string; heureFin?: string }) {
   e.preventDefault();
   e.stopPropagation();
   const d = evenement.date ? new Date(evenement.date) : new Date();
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
-  const start = `${y}${m}${day}T100000Z`;
-  const end = `${y}${m}${day}T210000Z`;
+  const h = evenement.heure ? parseInt(evenement.heure.slice(0, 2), 10) || 10 : 10;
+  const min = evenement.heure ? parseInt(evenement.heure.slice(3, 5), 10) || 0 : 0;
+  const start = `${y}${m}${day}T${String(h).padStart(2, '0')}${String(min).padStart(2, '0')}00Z`;
+  let end: string;
+  if (evenement.dateFin) {
+    const df = new Date(evenement.dateFin);
+    const ye = df.getFullYear();
+    const me = String(df.getMonth() + 1).padStart(2, '0');
+    const daye = String(df.getDate()).padStart(2, '0');
+    const he = evenement.heureFin ? parseInt(evenement.heureFin.slice(0, 2), 10) || 21 : 21;
+    const mine = evenement.heureFin ? parseInt(evenement.heureFin.slice(3, 5), 10) || 0 : 0;
+    end = `${ye}${me}${daye}T${String(he).padStart(2, '0')}${String(mine).padStart(2, '0')}00Z`;
+  } else {
+    end = `${y}${m}${day}T210000Z`;
+  }
   const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(evenement.title)}&dates=${start}/${end}&details=${encodeURIComponent(evenement.description || '')}&location=${encodeURIComponent(evenement.lieu || '')}`;
   window.open(url, '_blank');
 }
@@ -92,8 +105,7 @@ function EventRow({
         <div className="flex items-center gap-2 text-gray-600 mb-6">
           <Clock className="w-4 h-4 shrink-0 text-gray-500" />
           <span className="font-sofia text-sm md:text-base">
-            {formatDate(evenement.date)}
-            {evenement.heure ? ` — ${evenement.heure}` : ''}
+            {formatEventDateRange({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin })}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-3 mt-auto">

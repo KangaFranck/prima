@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
 import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { formatDate } from '../../utils/date';
+import { formatDate, formatEventDateRange } from '../../utils/date';
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -109,8 +109,7 @@ const EventDetail = () => {
           <div className="flex items-center gap-2 text-gray-600 mb-6">
             <Clock className="w-4 h-4 shrink-0 text-gray-500" />
             <span className="font-sofia text-sm md:text-base">
-              {formatDate(evenement.date)}
-              {evenement.heure ? ` — ${evenement.heure}` : ''}
+              {formatEventDateRange({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin })}
             </span>
           </div>
 

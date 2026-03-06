@@ -40,6 +40,9 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     // Champs spécifiques aux événements
     titre: '',
     date: '',
+    heure: '',
+    dateFin: '',
+    heureFin: '',
     lieu: '',
     affiche: null as File | null,
     galerie1: null as File | null,
@@ -59,10 +62,16 @@ export const EntityModal: React.FC<EntityModalProps> = ({
   useEffect(() => {
     if (entityData) {
       if (entityType === 'evenements') {
+        const dateDebut = entityData.date || '';
+        const heureDebut = entityData.heure || '';
+        const dateTimeDebut = dateDebut && heureDebut ? `${dateDebut}T${heureDebut.slice(0, 5)}` : dateDebut;
         setFormData({
           titre: entityData.titre || entityData.title || '',
           description: entityData.description || '',
-          date: entityData.date || '',
+          date: dateTimeDebut,
+          heure: heureDebut,
+          dateFin: entityData.dateFin || '',
+          heureFin: entityData.heureFin || '',
           lieu: entityData.lieu || '',
           statut: entityData.statut || 'planifié',
           affiche: null,
@@ -158,6 +167,9 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         image2: null,
         titre: '',
         date: '',
+        heure: '',
+        dateFin: '',
+        heureFin: '',
         lieu: '',
         affiche: null,
         galerie1: null,
@@ -211,7 +223,11 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       // Champs spécifiques aux événements - SEULEMENT CEUX QUI EXISTENT DANS LA DB
       formDataObj.append('titre', formData.titre);
       formDataObj.append('description', formData.description);
-      formDataObj.append('date', formData.date);
+      const dateDebutVal = (formEl.querySelector('[name="date"]') as HTMLInputElement)?.value ?? formData.date ?? '';
+      formDataObj.append('date', dateDebutVal);
+      if (dateDebutVal && dateDebutVal.includes('T')) formDataObj.append('heure', dateDebutVal.slice(11, 16));
+      formDataObj.append('dateFin', formData.dateFin || '');
+      formDataObj.append('heureFin', formData.heureFin || '');
       formDataObj.append('lieu', formData.lieu);
       formDataObj.append('statut', formData.statut);
       if (formData.affiche) formDataObj.append('affiche', formData.affiche);
@@ -304,10 +320,10 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                 />
               </div>
 
-              {/* Date - Obligatoire */}
+              {/* Date et heure de début - Obligatoire */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date <span className="text-red-500">*</span>
+                  Date et heure de début <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="datetime-local"
@@ -332,6 +348,34 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   placeholder="Lieu de l'événement"
+                />
+              </div>
+
+              {/* Date de fin - Optionnel (événements sur plusieurs jours/semaines) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date de fin
+                </label>
+                <input
+                  type="date"
+                  name="dateFin"
+                  value={formData.dateFin}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Heure de fin - Optionnel */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Heure de fin
+                </label>
+                <input
+                  type="time"
+                  name="heureFin"
+                  value={formData.heureFin}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 />
               </div>
 

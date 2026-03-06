@@ -37,4 +37,6 @@ export interface Loisir extends Entity {
 export interface Service extends Entity {
   type: 'service';
   adresse?: string;
-} 
+}
+
+export type { Evenement } from './admin'; 

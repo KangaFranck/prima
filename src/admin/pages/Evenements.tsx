@@ -33,7 +33,9 @@ export const Evenements = () => {
         date: formData.get('date') as string,
         lieu: formData.get('lieu') as string,
         statut: formData.get('statut') as 'planifié' | 'annulé' | 'terminé',
-        email: formData.get('email') as string || undefined
+        email: formData.get('email') as string || undefined,
+        dateFin: (formData.get('dateFin') as string) || undefined,
+        heureFin: (formData.get('heureFin') as string) || undefined,
       };
 
       const afficheFile = formData.get('affiche') as File;
@@ -195,13 +197,12 @@ export const Evenements = () => {
                       {evenement.titre || evenement.title || 'Sans titre'}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-600">
-                    {evenement.date ? new Date(evenement.date).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
+                  <td className="px-6 py-4 text-sm text-stone-600 max-w-[220px]">
+                    {evenement.date ? formatEventDateRange({
+                      date: evenement.date,
+                      heure: evenement.heure,
+                      dateFin: evenement.dateFin,
+                      heureFin: evenement.heureFin,
                     }) : 'Non définie'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-600">

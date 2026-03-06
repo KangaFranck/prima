@@ -343,10 +343,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (req.method === 'POST') {
         const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
         const dateVal = b.date ? new Date(b.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+        const dateFinVal = b.dateFin ? new Date(b.dateFin).toISOString().slice(0, 10) : null;
         const imagesArr = Array.isArray(b.images) ? b.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
         const [inserted] = await sql`
-          INSERT INTO evenements (titre, description, date, heure, lieu, statut, affiche_url, image_url, images)
-          VALUES (${b.titre || ''}, ${b.description || ''}, ${dateVal}, ${b.heure || null}, ${b.lieu || ''}, ${b.statut || 'planifié'}, ${b.affiche_url ?? b.affiche ?? null}, ${b.image_url ?? b.image ?? null}, ${JSON.stringify(imagesArr)}::jsonb)
+          INSERT INTO evenements (titre, description, date, heure, date_fin, heure_fin, lieu, statut, affiche_url, image_url, images)
+          VALUES (${b.titre || ''}, ${b.description || ''}, ${dateVal}, ${b.heure || null}, ${dateFinVal}, ${b.heureFin || null}, ${b.lieu || ''}, ${b.statut || 'planifié'}, ${b.affiche_url ?? b.affiche ?? null}, ${b.image_url ?? b.image ?? null}, ${JSON.stringify(imagesArr)}::jsonb)
           RETURNING *
         `;
         return res.status(201).json(rowToEvenement((inserted as Record<string, unknown>)!));
@@ -354,12 +355,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (req.method === 'PUT' && id) {
         const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
         const dateVal = b.date ? new Date(b.date).toISOString().slice(0, 10) : undefined;
+        const dateFinVal = b.dateFin != null && b.dateFin !== '' ? new Date(b.dateFin).toISOString().slice(0, 10) : null;
+        const heureFinVal = b.heureFin != null ? b.heureFin : null;
         const imagesArr = Array.isArray(b.images) ? b.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : undefined;
         await sql`
           UPDATE evenements SET
             titre = ${b.titre ?? ''}, description = ${b.description ?? ''},
             date = COALESCE(${dateVal || null}::date, date),
-            heure = ${b.heure ?? null}, lieu = ${b.lieu ?? ''}, statut = ${b.statut ?? 'planifié'},
+            heure = ${b.heure ?? null},
+            date_fin = ${dateFinVal},
+            heure_fin = ${heureFinVal},
+            lieu = ${b.lieu ?? ''}, statut = ${b.statut ?? 'planifié'},
             affiche_url = ${b.affiche_url ?? b.affiche ?? null}, image_url = ${b.image_url ?? b.image ?? null},
             images = COALESCE(${imagesArr != null ? JSON.stringify(imagesArr) : null}::jsonb, images)
           WHERE id = ${id}
