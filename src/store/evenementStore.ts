@@ -8,6 +8,8 @@ interface Evenement {
   description: string;
   date: string;
   image: string;
+  /** 1 à 3 images supplémentaires (galerie), optionnel */
+  images?: string[];
   lieu?: string;
   heure?: string;
   statut: "actif" | "inactif" | "planifié";
@@ -28,6 +30,7 @@ function eventImageUrl(record: any): string {
 
 function mapRecordToEvenement(record: any): Evenement {
   const imageUrl = eventImageUrl(record);
+  const images = Array.isArray(record.images) ? record.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
 
   return {
     id: record.id,
@@ -35,6 +38,7 @@ function mapRecordToEvenement(record: any): Evenement {
     description: record.description || "",
     date: record.date,
     image: imageUrl || "/images/logos/default.png",
+    images: images.length > 0 ? images : undefined,
     lieu: record.lieu,
     heure: record.heure,
     statut: record.statut || "actif",

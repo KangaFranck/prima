@@ -343,9 +343,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (req.method === 'POST') {
         const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
         const dateVal = b.date ? new Date(b.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+        const imagesArr = Array.isArray(b.images) ? b.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
         const [inserted] = await sql`
-          INSERT INTO evenements (titre, description, date, heure, lieu, statut, affiche_url, image_url)
-          VALUES (${b.titre || ''}, ${b.description || ''}, ${dateVal}, ${b.heure || null}, ${b.lieu || ''}, ${b.statut || 'planifié'}, ${b.affiche_url ?? b.affiche ?? null}, ${b.image_url ?? b.image ?? null})
+          INSERT INTO evenements (titre, description, date, heure, lieu, statut, affiche_url, image_url, images)
+          VALUES (${b.titre || ''}, ${b.description || ''}, ${dateVal}, ${b.heure || null}, ${b.lieu || ''}, ${b.statut || 'planifié'}, ${b.affiche_url ?? b.affiche ?? null}, ${b.image_url ?? b.image ?? null}, ${JSON.stringify(imagesArr)}::jsonb)
           RETURNING *
         `;
         return res.status(201).json(rowToEvenement((inserted as Record<string, unknown>)!));
@@ -353,12 +354,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (req.method === 'PUT' && id) {
         const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
         const dateVal = b.date ? new Date(b.date).toISOString().slice(0, 10) : undefined;
+        const imagesArr = Array.isArray(b.images) ? b.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : undefined;
         await sql`
           UPDATE evenements SET
             titre = ${b.titre ?? ''}, description = ${b.description ?? ''},
             date = COALESCE(${dateVal || null}::date, date),
             heure = ${b.heure ?? null}, lieu = ${b.lieu ?? ''}, statut = ${b.statut ?? 'planifié'},
-            affiche_url = ${b.affiche_url ?? b.affiche ?? null}, image_url = ${b.image_url ?? b.image ?? null}
+            affiche_url = ${b.affiche_url ?? b.affiche ?? null}, image_url = ${b.image_url ?? b.image ?? null},
+            images = COALESCE(${imagesArr != null ? JSON.stringify(imagesArr) : null}::jsonb, images)
           WHERE id = ${id}
         `;
         const [row] = await sql`SELECT * FROM evenements WHERE id = ${id}`;

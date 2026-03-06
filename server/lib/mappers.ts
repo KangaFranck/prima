@@ -102,7 +102,20 @@ export function rowToLoisir(r: Record<string, unknown>) {
   };
 }
 
+function parseImages(val: unknown): string[] {
+  if (val == null) return [];
+  if (Array.isArray(val)) return val.slice(0, 3).filter((u): u is string => typeof u === 'string' && u.length > 0).map(u => publicImageUrl(u) ?? u);
+  if (typeof val === 'string') {
+    try {
+      const arr = JSON.parse(val) as unknown[];
+      return Array.isArray(arr) ? arr.slice(0, 3).filter((u): u is string => typeof u === 'string' && u.length > 0).map(u => publicImageUrl(u) ?? u) : [];
+    } catch { return []; }
+  }
+  return [];
+}
+
 export function rowToEvenement(r: Record<string, unknown>) {
+  const images = parseImages(r.images);
   return {
     id: r.id,
     titre: r.titre ?? '',
@@ -114,6 +127,7 @@ export function rowToEvenement(r: Record<string, unknown>) {
     statut: r.statut ?? 'planifié',
     affiche: publicImageUrl(r.affiche_url) ?? undefined,
     image: publicImageUrl(r.image_url ?? r.affiche_url) ?? undefined,
+    images: images.length > 0 ? images : undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };

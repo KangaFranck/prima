@@ -82,6 +82,8 @@ export interface Evenement {
   lieu: string;
   statut: StatutEvenement;
   affiche?: string;
+  /** 1 à 3 images supplémentaires (galerie), optionnel */
+  images?: string[];
   createdAt: string;
   updatedAt: string;
 }

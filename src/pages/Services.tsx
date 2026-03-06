@@ -93,9 +93,9 @@ const Services = () => {
               >
                 <motion.div
                   variants={itemVariants}
-                  className="w-full h-full flex flex-col items-center justify-center p-4"
+                  className="w-full h-full flex flex-col items-center justify-start p-4"
                 >
-                  <div className="flex-1 w-full flex items-center justify-center min-h-0 relative">
+                  <div className="w-full h-24 sm:h-28 flex-shrink-0 flex items-center justify-center">
                     {(service.logo || service.image) ? (
                       <img
                         src={service.logo || service.image}
@@ -106,8 +106,8 @@ const Services = () => {
                       <span className="text-2xl font-sofia font-light text-neutral-400">{service.name.charAt(0)}</span>
                     )}
                   </div>
-                  <div className="mt-3 text-center flex-shrink-0">
-                    <h3 className="text-neutral-800 font-sofia font-medium text-sm uppercase break-words">
+                  <div className="mt-3 text-center flex-shrink-0 min-h-0 flex-1 flex items-center justify-center">
+                    <h3 className="text-neutral-800 font-sofia font-medium text-sm uppercase break-words line-clamp-3">
                       {service.name}
                     </h3>
                   </div>

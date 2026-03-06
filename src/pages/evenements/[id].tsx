@@ -60,17 +60,34 @@ const EventDetail = () => {
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Layout style Bal Harbour : image à gauche, infos à droite */}
       <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
-        {/* Colonne image */}
-        <div className="lg:w-[55%] flex-shrink-0">
-          {evenement.image ? (
-            <img
-              src={evenement.image}
-              alt={evenement.title}
-              className="w-full h-full object-cover min-h-[320px] lg:min-h-[480px]"
-            />
-          ) : (
-            <div className="w-full min-h-[320px] lg:min-h-[480px] bg-[#F8F7F4] flex items-center justify-center">
-              <Calendar className="w-20 h-20 text-gray-300" />
+        {/* Colonne image : cover + galerie optionnelle (1 à 3 images) */}
+        <div className="w-full max-w-[1020px] flex-shrink-0 space-y-4">
+          <div className="aspect-[1020/1350] overflow-hidden">
+            {evenement.image ? (
+              <img
+                src={evenement.image}
+                alt={evenement.title}
+                className="w-full h-full object-cover"
+                width={1020}
+                height={1350}
+              />
+            ) : (
+              <div className="w-full h-full min-h-[320px] bg-[#F8F7F4] flex items-center justify-center">
+                <Calendar className="w-20 h-20 text-gray-300" />
+              </div>
+            )}
+          </div>
+          {evenement.images && evenement.images.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {evenement.images.map((url, i) => (
+                <div key={i} className="aspect-[1020/1350] max-h-[280px] overflow-hidden rounded-md bg-[#F8F7F4]">
+                  <img
+                    src={url}
+                    alt={`${evenement.title} - image ${i + 2}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
             </div>
           )}
         </div>

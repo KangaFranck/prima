@@ -37,17 +37,23 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     logo: null as File | null,
     image: null as File | null,
     image2: null as File | null,
-    // Champs spécifiques aux événements - SEULEMENT CEUX QUI EXISTENT DANS LA DB
+    // Champs spécifiques aux événements
     titre: '',
     date: '',
     lieu: '',
-    affiche: null as File | null
+    affiche: null as File | null,
+    galerie1: null as File | null,
+    galerie2: null as File | null,
+    galerie3: null as File | null
   });
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [image2Preview, setImage2Preview] = useState<string | null>(null);
   const [affichePreview, setAffichePreview] = useState<string | null>(null);
+  const [galerie1Preview, setGalerie1Preview] = useState<string | null>(null);
+  const [galerie2Preview, setGalerie2Preview] = useState<string | null>(null);
+  const [galerie3Preview, setGalerie3Preview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -153,12 +159,18 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         titre: '',
         date: '',
         lieu: '',
-        affiche: null
+        affiche: null,
+        galerie1: null,
+        galerie2: null,
+        galerie3: null
       });
       setLogoPreview(null);
       setImagePreview(null);
       setImage2Preview(null);
       setAffichePreview(null);
+      setGalerie1Preview(null);
+      setGalerie2Preview(null);
+      setGalerie3Preview(null);
     }
   }, [entityData, isOpen, entityType]);
 
@@ -173,7 +185,7 @@ export const EntityModal: React.FC<EntityModalProps> = ({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'image2' | 'affiche') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'image' | 'image2' | 'affiche' | 'galerie1' | 'galerie2' | 'galerie3') => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData(prev => ({ ...prev, [field]: file }));
@@ -182,6 +194,9 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       else if (field === 'image') setImagePreview(previewUrl);
       else if (field === 'image2') setImage2Preview(previewUrl);
       else if (field === 'affiche') setAffichePreview(previewUrl);
+      else if (field === 'galerie1') setGalerie1Preview(previewUrl);
+      else if (field === 'galerie2') setGalerie2Preview(previewUrl);
+      else if (field === 'galerie3') setGalerie3Preview(previewUrl);
     }
   };
 
@@ -361,6 +376,55 @@ export const EntityModal: React.FC<EntityModalProps> = ({
                       {affichePreview ? 'Changer l\'affiche' : 'Télécharger une affiche'}
                     </label>
                   </div>
+                </div>
+              </div>
+
+              {/* Images supplémentaires (1 à 3, optionnel) */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Images supplémentaires (optionnel, 1 à 3)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {([1, 2, 3] as const).map((n) => {
+                    const prev = n === 1 ? galerie1Preview : n === 2 ? galerie2Preview : galerie3Preview;
+                    const field = n === 1 ? 'galerie1' : n === 2 ? 'galerie2' : 'galerie3';
+                    return (
+                      <div key={n} className="flex flex-col gap-2">
+                        {prev && (
+                          <div className="relative w-full aspect-[1020/1350] max-h-24 rounded overflow-hidden bg-gray-100">
+                            <img src={prev} alt={`Galerie ${n}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              aria-label={`Supprimer l'image ${n}`}
+                              onClick={() => {
+                                setFormData(prev => ({ ...prev, [field]: null }));
+                                if (n === 1) setGalerie1Preview(null);
+                                else if (n === 2) setGalerie2Preview(null);
+                                else setGalerie3Preview(null);
+                              }}
+                              className="absolute top-1 right-1 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, field)}
+                          className="hidden"
+                          id={`galerie-${n}-upload`}
+                        />
+                        <label
+                          htmlFor={`galerie-${n}-upload`}
+                          className="cursor-pointer inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                          <Upload className="w-4 h-4 mr-1" />
+                          {prev ? `Remplacer` : `Image ${n}`}
+                        </label>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 

@@ -31,7 +31,7 @@ const navigationLinks = [
   { path: '/a-propos', label: 'À propos' },
   { type: 'univers', label: 'Nos univers' },
   { path: '/actualites', label: 'Actus & Events' },
-  { path: '/contact', label: 'Services & Info' }
+  { path: '/contact', label: 'Infos pratiques' }
 ];
 
 const Navbar = () => {

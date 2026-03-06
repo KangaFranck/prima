@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Users, Trophy, Leaf, ShoppingBag, Clock, MapPin, Phone } from 'lucide-react';
 import Logo from '../components/Logo';
 import Stats from '../components/Stats';
 
@@ -24,10 +23,13 @@ const APropos = () => {
             >
               <h2 className="text-4xl font-ogg mb-6">Notre Histoire</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Depuis son inauguration, Prima Center s'est imposé comme la référence en matière de shopping et de divertissement à Abidjan. Notre centre commercial allie architecture moderne, confort et excellence pour offrir une expérience unique à nos visiteurs.
+                Situé à Marcory, au cœur de la Zone 4, PRIMA CENTER est l'une des galeries commerciales emblématiques d'Abidjan. Depuis 1998, le centre réunit visiteurs et enseignes dans un lieu dédié au shopping, à la restauration, aux loisirs et aux services du quotidien.
+              </p>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                Au fil des années, PRIMA CENTER est devenu une adresse incontournable où se mêlent commerce, détente et convivialité. Grâce à une offre variée de boutiques, restaurants, espaces de loisirs et services, le centre propose une expérience complète à ses visiteurs.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Situé au cœur de la ville, Prima Center est bien plus qu'un simple centre commercial : c'est un lieu de vie, de rencontres et d'échanges qui participe activement au dynamisme économique de la région.
+                Pensé comme un véritable lieu de vie, PRIMA CENTER accueille chaque jour visiteurs et habitués dans un environnement animé et convivial.
               </p>
             </motion.div>
             <motion.div 
@@ -52,7 +54,7 @@ const APropos = () => {
         <Stats />
       </section>
 
-      {/* Section Nos Valeurs */}
+      {/* Section L'Expérience PRIMA CENTER */}
       <section className="py-16 md:py-24 bg-[#E5DDD3]/10 w-full">
         <div className="content-wrap">
           <motion.h2 
@@ -61,7 +63,7 @@ const APropos = () => {
             viewport={{ once: true }}
             className="text-4xl font-bold text-center mb-16"
           >
-            Nos Valeurs
+            L'Expérience PRIMA CENTER
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
@@ -71,10 +73,10 @@ const APropos = () => {
               transition={{ delay: 0.2 }}
               className="bg-white p-8 shadow-lg"
             >
-              <Trophy className="w-12 h-12 mb-6 text-[#E5DDD3]" />
-              <h3 className="text-xl font-bold mb-4">Excellence</h3>
+              <span className="text-4xl block mb-6" aria-hidden>🤝</span>
+              <h3 className="text-xl font-bold mb-4">Accueil & Expérience</h3>
               <p className="text-gray-600">
-                Nous nous engageons à maintenir les plus hauts standards de qualité dans tous nos services et à offrir une expérience shopping exceptionnelle.
+                PRIMA CENTER accorde une attention particulière à l'accueil et au confort de ses visiteurs afin d'offrir une expérience agréable à chaque passage.
               </p>
             </motion.div>
             <motion.div 
@@ -84,10 +86,10 @@ const APropos = () => {
               transition={{ delay: 0.4 }}
               className="bg-white p-8 shadow-lg"
             >
-              <Users className="w-12 h-12 mb-6 text-[#E5DDD3]" />
-              <h3 className="text-xl font-bold mb-4">Service Client</h3>
+              <span className="text-4xl block mb-6" aria-hidden>👥</span>
+              <h3 className="text-xl font-bold mb-4">Service & Satisfaction</h3>
               <p className="text-gray-600">
-                La satisfaction de notre clientèle est notre priorité. Nous mettons tout en œuvre pour répondre à vos besoins et attentes.
+                La satisfaction de notre clientèle est au cœur de nos priorités. Nous mettons tout en œuvre pour offrir un environnement agréable et des services de qualité.
               </p>
             </motion.div>
             <motion.div 
@@ -97,10 +99,10 @@ const APropos = () => {
               transition={{ delay: 0.6 }}
               className="bg-white p-8 shadow-lg"
             >
-              <Leaf className="w-12 h-12 mb-6 text-[#E5DDD3]" />
-              <h3 className="text-xl font-bold mb-4">Développement Durable</h3>
+              <span className="text-4xl block mb-6" aria-hidden>✨</span>
+              <h3 className="text-xl font-bold mb-4">Une Galerie Animée</h3>
               <p className="text-gray-600">
-                Nous nous engageons pour un avenir plus vert avec des initiatives écologiques et une gestion responsable de nos ressources.
+                Tout au long de l'année, PRIMA CENTER se transforme au rythme des grandes fêtes avec des décorations et des animations qui créent une atmosphère chaleureuse.
               </p>
             </motion.div>
           </div>

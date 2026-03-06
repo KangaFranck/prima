@@ -28,11 +28,11 @@ export default function TopInfoBar() {
         <div className="content-wrap">
           <div className="h-10 flex items-center justify-between">
             <div className="text-sm">
-              Ouvert 7J/7 de 09h00 – 00h00
+              Ouvert 7J/7 de 09h00 – 20h00
             </div>
             <div className="flex items-center space-x-4">
               <a 
-                href="https://facebook.com/primacenter" 
+                href="https://www.facebook.com/PrimaCenter225" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white hover:text-[#e7e4dd] transition-colors"
@@ -40,7 +40,7 @@ export default function TopInfoBar() {
                 <Facebook className="w-4 h-4" />
               </a>
               <a 
-                href="https://instagram.com/primacenter" 
+                href="https://www.instagram.com/primacenter_marcory/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white hover:text-[#e7e4dd] transition-colors"
@@ -48,7 +48,7 @@ export default function TopInfoBar() {
                 <Instagram className="w-4 h-4" />
               </a>
               <a 
-                href="https://tiktok.com/@primacenter" 
+                href="https://www.tiktok.com/@prima.center" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white hover:text-[#e7e4dd] transition-colors"

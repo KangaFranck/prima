@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Coffee, Dumbbell, Calendar, Play, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -22,28 +22,28 @@ const universeBlocks = [
   {
     category: 'Shopping',
     title: 'Boutiques',
-    description: 'Mode, beauté, technologie et équipement du quotidien : une offre complète pensée pour tous les besoins.',
+    description: 'Mode, beauté, technologie et équipements du quotidien dans une sélection variée pour toutes les envies.',
     image: '/images/sections/boutiques.jpg',
     link: '/boutiques'
   },
   {
-    category: 'Gastronomie',
+    category: 'FOOD & DRINKS',
     title: 'Restaurants',
-    description: 'Restaurants, cafés, pâtisseries et glaciers pour toutes les envies et tous les moments de la journée.',
+    description: 'Restaurants, cafés, pâtisseries et glaciers pour se retrouver à tout moment de la journée.',
     image: '/images/sections/restaurants.jpg',
     link: '/restaurants'
   },
   {
     category: 'Lifestyle',
     title: 'Loisirs',
-    description: 'Cinéma et espaces de jeux pour enfants et adultes.',
+    description: 'Cinéma et espaces de jeux pour enfants et adultes pour se divertir et partager un moment de détente.',
     image: '/images/sections/loisir.jpg',
     link: '/loisirs'
   },
   {
     category: 'DAILY LIFE',
     title: 'Services',
-    description: 'Banques, santé et services pratiques réunis en un seul lieu.',
+    description: 'Banques, santé et services du quotidien réunis en un seul lieu.',
     image: '/images/business-center.jpg',
     link: '/services'
   }
@@ -57,8 +57,14 @@ interface CarouselItem {
   type: 'boutique' | 'restaurant' | 'loisir' | 'service';
 }
 
+const DESKTOP_BREAKPOINT = 1024;
+const ENSEIGNES_PER_PAGE_DESKTOP = 6;
+
 export default function Home() {
   const [currentVideo, setCurrentVideo] = useState(mainVideo);
+  const swiperRef = useRef<{ realIndex: number; slideTo: (i: number) => void } | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [enseignesPage, setEnseignesPage] = useState(0);
 
   // Utiliser les nouveaux stores
   const { shops, fetchShops } = useShopStore();
@@ -73,6 +79,14 @@ export default function Home() {
     fetchLoisirs();
     fetchServices();
   }, [fetchShops, fetchRestaurants, fetchLoisirs, fetchServices]);
+
+  // Desktop ou mobile pour la pagination du carousel enseignes (mobile = rien ne change)
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= DESKTOP_BREAKPOINT);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base)
   const allItems: CarouselItem[] = [
@@ -108,8 +122,8 @@ export default function Home() {
                   />
                 </div>
                 <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-10 md:-mt-12 lg:-mt-14 xl:-mt-16 max-w-2xl">
-                  Un lieu conçu pour simplifier votre quotidien : shopping, divertissement, restauration,<br />
-                  services et bien-être au cœur de la Zone 4.
+                  Shopping, restaurants, loisirs et services<br />
+                  au cœur de la Zone 4 à Abidjan.
                 </p>
               </div>
             </div>
@@ -124,6 +138,8 @@ export default function Home() {
                 ].map((video, index) => (
                   <div key={index} className="flex flex-col items-center opacity-100 md:opacity-0 md:hover:opacity-100 transition-opacity duration-300">
                     <button
+                      type="button"
+                      aria-label={video.title}
                       onClick={() => setCurrentVideo(video.src)}
                       className="relative w-full aspect-video overflow-hidden shadow-lg mb-3 group"
                     >
@@ -204,10 +220,10 @@ export default function Home() {
       </section>
 
       {/* Section 3: Carousel - même alignement que navbar/footer */}
-      <section className="py-12 relative overflow-hidden bg-[#E5DDD3] w-full">
+      <section className="py-12 relative overflow-hidden bg-[#E5DDD3] w-full enseignes-carousel">
         <div className="content-wrap relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-4xl font-ogg mb-4 text-gray-800">DES COMMERCES OUVERTS 7J/7</h2>
+            <h2 className="text-4xl font-ogg mb-4 text-gray-800">DÉCOUVREZ NOS ENSEIGNES</h2>
           </div>
           
           <div>
@@ -238,17 +254,23 @@ export default function Home() {
                   slidesPerView: 5,
                   spaceBetween: 8,
                   centeredSlides: false,
+                  slidesPerGroup: 6,
                 },
                 1280: {
                   slidesPerView: 6,
                   spaceBetween: 10,
                   centeredSlides: false,
+                  slidesPerGroup: 6,
                 }
               }}
-              pagination={{
+              pagination={!isDesktop ? {
                 clickable: true,
                 bulletClass: 'swiper-pagination-bullet custom-bullet !bg-gray-400',
                 bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active !bg-black !opacity-100'
+              } : false}
+              onSwiper={(swiper) => { swiperRef.current = swiper; }}
+              onSlideChange={(swiper) => {
+                if (isDesktop) setEnseignesPage(Math.floor(swiper.realIndex / 6));
               }}
               autoplay={{
                 delay: 2500,
@@ -282,6 +304,25 @@ export default function Home() {
                 </SwiperSlide>
               ))}
             </Swiper>
+            {/* Pagination desktop : un point par groupe de 6 logos */}
+            {isDesktop && allItems.length > 0 && (() => {
+              const totalPages = Math.ceil(allItems.length / ENSEIGNES_PER_PAGE_DESKTOP);
+              return totalPages > 1 ? (
+                <div className="flex justify-center gap-1.5 mt-6">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Page ${i + 1}`}
+                      onClick={() => swiperRef.current?.slideTo(i * ENSEIGNES_PER_PAGE_DESKTOP)}
+                      className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                        i === enseignesPage ? 'bg-black opacity-100' : 'bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+              ) : null;
+            })()}
           </div>
         </div>
       </section>

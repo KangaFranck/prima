@@ -445,10 +445,14 @@ export const adminService = {
         if (!evenement.titre?.trim()) throw new Error('Le titre est obligatoire');
         if (!evenement.description?.trim()) throw new Error('La description est obligatoire');
         if (!evenement.lieu?.trim()) throw new Error('Le lieu est obligatoire');
-        const [affiche_url, image_url] = await Promise.all([
+        const [affiche_url, image_url, galerie1_url, galerie2_url, galerie3_url] = await Promise.all([
           uploadFileToApi(evenement.affiche, 'evenements', evenement.affiche?.name || 'affiche'),
           uploadFileToApi(evenement.image ?? evenement.affiche, 'evenements', 'image'),
+          uploadFileToApi(evenement.galerie1, 'evenements', 'galerie1'),
+          uploadFileToApi(evenement.galerie2, 'evenements', 'galerie2'),
+          uploadFileToApi(evenement.galerie3, 'evenements', 'galerie3'),
         ]);
+        const images = [galerie1_url, galerie2_url, galerie3_url].filter(Boolean) as string[];
         const dateVal = evenement.date ? new Date(evenement.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
         const out = await apiClient.evenements.create({
           titre: evenement.titre.trim(),
@@ -459,6 +463,7 @@ export const adminService = {
           statut: (evenement.statut === 'annulé' ? 'planifié' : evenement.statut) || 'planifié',
           affiche_url: affiche_url || undefined,
           image_url: image_url || affiche_url || undefined,
+          images: images.length > 0 ? images : undefined,
         });
         invalidateDataCache('evenements');
         return out;
@@ -474,10 +479,20 @@ export const adminService = {
     try {
       if (useApi()) {
         if (!evenement.titre?.trim()) throw new Error('Le titre est obligatoire');
-        const [affiche_url, image_url] = await Promise.all([
-          uploadFileToApi(evenement.affiche, 'evenements', evenement.affiche?.name || 'affiche').then((u) => u ?? evenement.affiche ?? undefined),
-          uploadFileToApi(evenement.image, 'evenements', 'image').then((u) => u ?? evenement.image ?? undefined),
+        const [affiche_url, image_url, galerie1_url, galerie2_url, galerie3_url] = await Promise.all([
+          uploadFileToApi(evenement.affiche, 'evenements', evenement.affiche?.name || 'affiche').then((u) => u ?? (typeof evenement.affiche === 'string' ? evenement.affiche : undefined)),
+          uploadFileToApi(evenement.image, 'evenements', 'image').then((u) => u ?? (typeof evenement.image === 'string' ? evenement.image : undefined)),
+          uploadFileToApi(evenement.galerie1, 'evenements', 'galerie1'),
+          uploadFileToApi(evenement.galerie2, 'evenements', 'galerie2'),
+          uploadFileToApi(evenement.galerie3, 'evenements', 'galerie3'),
         ]);
+        const existing = Array.isArray(evenement.images) ? evenement.images : [];
+        const newUrls = [galerie1_url, galerie2_url, galerie3_url];
+        const images = [
+          newUrls[0] ?? existing[0],
+          newUrls[1] ?? existing[1],
+          newUrls[2] ?? existing[2],
+        ].filter(Boolean) as string[];
         const dateVal = evenement.date ? new Date(evenement.date).toISOString().slice(0, 10) : undefined;
         const out = await apiClient.evenements.update(id, {
           titre: evenement.titre.trim(),
@@ -488,6 +503,7 @@ export const adminService = {
           statut: (evenement.statut === 'annulé' ? 'planifié' : evenement.statut) || 'planifié',
           affiche_url: affiche_url ?? undefined,
           image_url: image_url ?? undefined,
+          images: images.length > 0 ? images : undefined,
         });
         invalidateDataCache('evenements');
         return out;

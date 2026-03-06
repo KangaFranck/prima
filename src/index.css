@@ -284,6 +284,26 @@ header .content-wrap {
       -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
     }
   }
+  /* Ligne icônes + logo en pleine largeur : padding gauche = content-wrap, pas de padding droit → logo touche la marge */
+  .footer-logo-row {
+    width: 100%;
+    padding-left: calc(var(--content-px) + var(--safe-area-left));
+    padding-right: 0;
+    -webkit-padding-start: calc(var(--content-px) + var(--safe-area-left));
+    -webkit-padding-end: 0;
+  }
+  @media (min-width: 640px) {
+    .footer-logo-row {
+      padding-left: calc(var(--content-px-sm) + var(--safe-area-left));
+      -webkit-padding-start: calc(var(--content-px-sm) + var(--safe-area-left));
+    }
+  }
+  @media (min-width: 768px) {
+    .footer-logo-row {
+      padding-left: calc(var(--content-px-md) + var(--safe-area-left));
+      -webkit-padding-start: calc(var(--content-px-md) + var(--safe-area-left));
+    }
+  }
 }
 
 /* Custom styles – Ogg Roman + Sofia Pro (pas de font-weight ici pour éviter conflit avec .font-bold) */
@@ -347,4 +367,24 @@ header .content-wrap {
   100% {
     background-position: 100% 100%;
   }
+}
+
+/* Carousel enseignes : pointier plus bas et plus petits, mobile inchangé */
+.enseignes-carousel .swiper-pagination {
+  margin-top: 1.5rem;
+  position: relative;
+}
+.enseignes-carousel .swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+}
+@media (min-width: 1024px) {
+  .enseignes-carousel .swiper-pagination {
+    display: none; /* on desktop on affiche la pagination custom (un point par groupe) */
+  }
+}
+
+/* Footer : logo collé à la marge droite (même hauteur conservée) */
+.footer-logo-touch-right {
+  margin-right: calc(-1 * (var(--content-px) + var(--safe-area-right)));
 }

@@ -57,8 +57,8 @@ const Boutiques = () => {
                   to={`/boutiques/${shop.id}`}
                   className="group block w-full max-w-[200px] sm:max-w-[220px] mx-auto aspect-square relative overflow-hidden bg-transparent transition-transform duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-400"
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                    <div className="flex-1 w-full flex items-center justify-center min-h-0 relative">
+                  <div className="w-full h-full flex flex-col items-center justify-start p-4">
+                    <div className="w-full h-24 sm:h-28 flex-shrink-0 flex items-center justify-center">
                       {(shop.logo || shop.image) ? (
                         <img
                           src={shop.logo || shop.image}
@@ -69,8 +69,8 @@ const Boutiques = () => {
                         <span className="text-2xl font-sofia font-light text-neutral-400">{shop.name.charAt(0)}</span>
                       )}
                     </div>
-                    <div className="mt-3 text-center flex-shrink-0">
-                      <h3 className="text-neutral-800 font-sofia font-medium text-sm uppercase break-words">
+                    <div className="mt-3 text-center flex-shrink-0 min-h-0 flex-1 flex items-center justify-center">
+                      <h3 className="text-neutral-800 font-sofia font-medium text-sm uppercase break-words line-clamp-3">
                         {shop.name}
                       </h3>
                     </div>

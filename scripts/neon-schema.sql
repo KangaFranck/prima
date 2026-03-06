@@ -147,6 +147,7 @@ CREATE TABLE evenements (
   statut VARCHAR(20) NOT NULL DEFAULT 'planifié' CHECK (statut IN ('planifié', 'en cours', 'annulé', 'terminé')),
   affiche_url TEXT,
   image_url TEXT,
+  images JSONB DEFAULT '[]',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

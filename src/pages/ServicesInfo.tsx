@@ -1,31 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Clock,
   MapPin,
   Phone,
   Mail,
-  Car,
   CreditCard,
-  Heart,
+  Zap,
   Accessibility,
-  Banknote
+  Banknote,
+  Store,
+  Shirt
 } from 'lucide-react';
 
 export default function ServicesInfo() {
   const services = [
-    {
-      icon: <Clock className="w-8 h-8" />,
-      title: "Horaires d'ouverture",
-      description: "Lundi - Dimanche : 6h00 - 23h00",
-      color: "bg-[#e7e4dd]"
-    },
-    {
-      icon: <Car className="w-8 h-8" />,
-      title: "Parking",
-      description: "Parking souterrain sécurisé",
-      color: "bg-[#d4d1ca]"
-    },
     {
       icon: <CreditCard className="w-8 h-8" />,
       title: "Paiement",
@@ -33,21 +21,33 @@ export default function ServicesInfo() {
       color: "bg-[#e7e4dd]"
     },
     {
-      icon: <Heart className="w-8 h-8" />,
-      title: "Espace Famille",
-      description: "Zone dédiée aux familles",
+      icon: <Zap className="w-8 h-8" />,
+      title: "Bornes de recharge",
+      description: "Bornes pour véhicules électriques",
       color: "bg-[#d4d1ca]"
     },
     {
       icon: <Accessibility className="w-8 h-8" />,
-      title: "Accessibilité pour PMR",
-      description: "Centre accessible à tous",
+      title: "Accessibilité",
+      description: "Accessible aux personnes à mobilité réduite",
       color: "bg-[#e7e4dd]"
     },
     {
       icon: <Banknote className="w-8 h-8" />,
-      title: "Distributeur de billets",
-      description: "Distributeurs automatiques à votre disposition",
+      title: "Services bancaires",
+      description: "Banques, distributeurs automatiques et bureau de change",
+      color: "bg-[#d4d1ca]"
+    },
+    {
+      icon: <Store className="w-8 h-8" />,
+      title: "Services du quotidien",
+      description: "Hypermarché, pharmacie et centre médical",
+      color: "bg-[#e7e4dd]"
+    },
+    {
+      icon: <Shirt className="w-8 h-8" />,
+      title: "Pressing",
+      description: "Service de pressing disponible",
       color: "bg-[#d4d1ca]"
     }
   ];
@@ -83,7 +83,7 @@ export default function ServicesInfo() {
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute bottom-6 left-0 right-0 content-edge">
           <h1 className="text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
-            Services & Informations
+            Infos pratiques
           </h1>
           <p className="mt-2 text-sm sm:text-base md:text-lg font-sofia font-light text-white/95 drop-shadow-sm">
             Tout ce dont vous avez besoin pour votre visite
@@ -149,32 +149,30 @@ export default function ServicesInfo() {
             {/* Texte explicatif à droite - Ogg Roman (titres) + Sofia Pro (corps) - page Contact */}
             <div className="space-y-6 font-sofia">
               <div>
-                <h3 className="text-sm font-ogg font-medium text-gray-600 uppercase tracking-wider mb-4">NOTRE POSITION</h3>
-                <h2 className="text-4xl md:text-5xl font-ogg font-bold text-black mb-6">
-                  <span className="block">ZONE 4</span>
-                  <span className="block">MARCORY</span>
+                <h2 className="text-3xl md:text-4xl font-ogg font-bold text-black mb-6 uppercase tracking-tight">
+                  NOTRE LOCALISATION ZONE 4 MARCORY
                 </h2>
                 <div className="w-16 h-0.5 bg-black mb-6"></div>
               </div>
               
               <p className="text-gray-700 text-lg leading-relaxed font-sofia">
-                Situé au cœur de la Zone 4 à Marcory, le Prima Center vous accueille dans un emplacement stratégique et facilement accessible. 
-                Notre centre commercial est entouré des principales artères de la ville, offrant une expérience shopping unique 
+                Situé au cœur de la Zone 4 à Marcory, PRIMA CENTER bénéficie d'un emplacement privilégié et facilement accessible. 
+                La galerie s'inscrit dans l'un des quartiers les plus dynamiques d'Abidjan et réunit boutiques, restaurants, loisirs et services 
                 dans un cadre moderne et convivial.
               </p>
 
               <div className="space-y-3 pt-4 font-sofia">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-black rounded-full"></div>
-                  <span className="text-gray-600">Proche de l'aéroport Félix Houphouët-Boigny</span>
+                  <span className="text-gray-600">À quelques minutes de l'aéroport international Félix Houphouët-Boigny</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-black rounded-full"></div>
-                  <span className="text-gray-600">Accès direct depuis le Boulevard de la République</span>
+                  <span className="text-gray-600">Accès direct depuis les principaux axes de Marcory</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-black rounded-full"></div>
-                  <span className="text-gray-600">Parking sécurisé disponible</span>
+                  <span className="text-gray-600">Parking extérieur disponible pour les visiteurs</span>
                 </div>
               </div>
             </div>

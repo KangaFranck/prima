@@ -27,7 +27,7 @@ export const Evenements = () => {
     
     try {
       // Construction de l'objet événement à partir du FormData
-      const evenement: Partial<Evenement> = {
+      const evenement: Partial<Evenement> & { galerie1?: File; galerie2?: File; galerie3?: File } = {
         titre: formData.get('titre') as string,
         description: formData.get('description') as string,
         date: formData.get('date') as string,
@@ -36,15 +36,20 @@ export const Evenements = () => {
         email: formData.get('email') as string || undefined
       };
 
-      // Gestion du fichier affiche
       const afficheFile = formData.get('affiche') as File;
       if (afficheFile && afficheFile.size > 0) {
-        console.log('Affiche File détectée:', afficheFile.name, afficheFile.type, afficheFile.size);
         evenement.affiche = afficheFile;
       } else if (selectedEvenement?.affiche) {
-        console.log('Utilisation de l\'affiche existante');
         evenement.affiche = selectedEvenement.affiche;
       }
+
+      const g1 = formData.get('galerie1') as File | null;
+      const g2 = formData.get('galerie2') as File | null;
+      const g3 = formData.get('galerie3') as File | null;
+      if (g1?.size) evenement.galerie1 = g1;
+      if (g2?.size) evenement.galerie2 = g2;
+      if (g3?.size) evenement.galerie3 = g3;
+      if (selectedEvenement?.images) evenement.images = selectedEvenement.images;
 
       console.log('Objet événement final:', {
         ...evenement,

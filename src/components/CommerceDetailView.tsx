@@ -148,11 +148,11 @@ export function CommerceDetailView({
           {/* Logo : bloc carré invisible (transparent) pour s’accorder au design */}
           <div className="shrink-0 flex flex-col items-start gap-4 lg:w-40 xl:w-48">
             {logo ? (
-              <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-none bg-neutral-50 p-2 md:h-28 md:w-28">
-                <img src={logo} alt="" className="max-h-full max-w-full object-contain" />
+              <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-none bg-transparent p-1 md:h-32 md:w-32">
+                <img src={logo} alt="" className="max-h-full max-w-full object-contain scale-105" />
               </div>
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-none font-ogg text-2xl font-semibold text-neutral-300 bg-neutral-50 md:h-28 md:w-28">
+              <div className="flex h-28 w-28 items-center justify-center rounded-none font-ogg text-2xl font-semibold text-neutral-300 bg-transparent md:h-32 md:w-32">
                 {name.charAt(0)}
               </div>
             )}

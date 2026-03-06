@@ -5,12 +5,13 @@ import { ShoppingBag, Users, Building2, Clock } from 'lucide-react';
 interface StatItemProps {
   end: number;
   suffix?: string;
+  prefix?: string;
   label: string;
   duration?: number;
   icon?: React.ReactNode;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ end, label, suffix = '', duration = 2000, icon }) => {
+const StatItem: React.FC<StatItemProps> = ({ end, label, suffix = '', prefix = '', duration = 2000, icon }) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const counterRef = useRef<HTMLDivElement>(null);
@@ -76,17 +77,19 @@ const Stats = () => {
         <h2 className="text-4xl font-ogg font-bold text-center mb-12 text-gray-900">Prima Center en chiffres</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <StatItem 
+            prefix="+"
             end={70} 
-            suffix="+" 
-            label="Boutiques" 
+            suffix="" 
+            label="Enseignes" 
           />
           <StatItem 
-            end={900} 
-            suffix="K" 
+            prefix="+"
+            end={1} 
+            suffix="M" 
             label="Visiteurs par an" 
           />
           <StatItem 
-            end={45} 
+            end={15} 
             suffix="k" 
             label="m² de surface" 
           />
