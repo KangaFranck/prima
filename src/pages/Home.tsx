@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Coffee, Dumbbell, Calendar, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -58,8 +58,36 @@ const ENSEIGNES_PER_PAGE_DESKTOP = 6;
 
 export default function Home() {
   const swiperRef = useRef<{ realIndex: number; slideTo: (i: number) => void } | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoTouchedRef = useRef(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [enseignesPage, setEnseignesPage] = useState(0);
+  /** Sur iOS, définir la source après le montage peut éviter l’écran noir */
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  useEffect(() => {
+    setVideoSrc(backVideo);
+  }, []);
+
+  /** Sur iOS/Safari mobile la vidéo peut rester noire : forcer la lecture dès que possible */
+  const tryPlayVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  }, []);
+
+  const onVideoSectionTouch = useCallback(() => {
+    if (videoTouchedRef.current) return;
+    videoTouchedRef.current = true;
+    tryPlayVideo();
+  }, [tryPlayVideo]);
+
+  useEffect(() => {
+    tryPlayVideo();
+    const onVisibility = () => { if (document.visibilityState === 'visible') tryPlayVideo(); };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [tryPlayVideo]);
 
   // Utiliser les nouveaux stores
   const { shops, fetchShops } = useShopStore();
@@ -93,17 +121,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Section 1: Vidéo de fond unique (backvideos.mp4) - sans filtre assombrissant */}
-      <section className="relative h-screen overflow-hidden bg-black">
+      {/* Section 1: Vidéo de fond (backvideos.mp4) - lecture forcée sur iOS/Safari mobile pour éviter écran noir */}
+      <section
+        className="relative h-screen overflow-hidden bg-black"
+        onTouchEnd={onVideoSectionTouch}
+      >
         <video
+          ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover"
-          src={backVideo}
+          src={videoSrc ?? undefined}
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
           disablePictureInPicture
+          onCanPlay={tryPlayVideo}
+          onLoadedData={tryPlayVideo}
           onError={(e) => console.warn('Vidéo de fond:', (e.target as HTMLVideoElement).error?.message || 'échec chargement')}
         />
         <div className="absolute inset-0 bg-black/30">
