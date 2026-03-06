@@ -32,9 +32,22 @@ function eventImageUrl(record: any): string {
   return (record.affiche ? getFileUrl(record, record.affiche) : '') || '';
 }
 
+function getRecordImages(record: any): string[] {
+  const raw = record?.images ?? record?.Images;
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0);
+  if (typeof raw === 'string') {
+    try {
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
+    } catch { return []; }
+  }
+  return [];
+}
+
 function mapRecordToEvenement(record: any): Evenement {
   const imageUrl = eventImageUrl(record);
-  const images = Array.isArray(record.images) ? record.images.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
+  const images = getRecordImages(record);
 
   return {
     id: record.id,

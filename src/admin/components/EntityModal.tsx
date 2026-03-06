@@ -95,10 +95,11 @@ export const EntityModal: React.FC<EntityModalProps> = ({
         if (entityData.affiche) {
           setAffichePreview(entityData.affiche);
         }
-        const images = Array.isArray(entityData.images) ? entityData.images : [];
-        setGalerie1Preview(images[0] && typeof images[0] === 'string' ? images[0] : null);
-        setGalerie2Preview(images[1] && typeof images[1] === 'string' ? images[1] : null);
-        setGalerie3Preview(images[2] && typeof images[2] === 'string' ? images[2] : null);
+        const rawImages = (entityData as any).images ?? (entityData as any).Images ?? [];
+        const images = Array.isArray(rawImages) ? rawImages.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
+        setGalerie1Preview(images[0] ?? null);
+        setGalerie2Preview(images[1] ?? null);
+        setGalerie3Preview(images[2] ?? null);
       } else {
         // Commerces : préremplir avec les données en base (heures en ISO, "YYYY-MM-DD HH:MM:SS" ou "HH:MM")
         const toTime = (v: unknown): string => {

@@ -114,8 +114,15 @@ function parseImages(val: unknown): string[] {
   return [];
 }
 
+/** Récupère le champ images depuis la row (colonne JSONB, clé possible selon le driver). */
+function getRowImages(r: Record<string, unknown>): unknown {
+  if (r.images !== undefined && r.images !== null) return r.images;
+  const key = Object.keys(r).find((k) => k.toLowerCase() === 'images');
+  return key ? r[key] : undefined;
+}
+
 export function rowToEvenement(r: Record<string, unknown>) {
-  const images = parseImages(r.images);
+  const images = parseImages(getRowImages(r));
   return {
     id: r.id,
     titre: r.titre ?? '',
