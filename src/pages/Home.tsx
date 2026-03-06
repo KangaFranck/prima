@@ -20,7 +20,7 @@ const universeBlocks = [
     category: 'Shopping',
     title: 'Boutiques',
     description: 'Mode, beauté, technologie et équipements du quotidien dans une sélection variée pour toutes les envies.',
-    image: '/images/sections/boutiques.jpg',
+    image: '/images/BOUTIQUES.png',
     link: '/boutiques'
   },
   {
@@ -142,7 +142,7 @@ export default function Home() {
               }`}>
                 {/* Image */}
                 <div className="w-full lg:w-1/2">
-                  <Link to={block.link} className="group relative block aspect-video lg:aspect-square overflow-hidden">
+                  <Link to={block.link} className="group relative block aspect-square overflow-hidden">
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300 z-10" />
                     <img
                       src={block.image}
