@@ -63,12 +63,27 @@ const MIMES: Record<string, string> = {
   '.jpeg': 'image/jpeg',
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
   '.mp4': 'video/mp4',
   '.webm': 'video/webm',
   '.ogg': 'video/ogg',
 };
+
+/**
+ * Cache conseillé :
+ * - Médias / polices / JS-CSS : 1 an (31536000) → pas de re-téléchargement, moins de lenteur.
+ * - HTML : pas de cache long → les utilisateurs récupèrent les mises à jour tout de suite.
+ */
+const CACHEABLE_EXT = new Set([
+  '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico',
+  '.mp4', '.webm', '.ogg',
+  '.woff', '.woff2',
+  '.js', '.css', '.json',
+]);
+const CACHE_MAX_AGE_MEDIA = 31536000; // 1 an (recommandé pour images, vidéos, fonts, assets buildés)
+const CACHE_MAX_AGE_HTML = 0; // pas de cache pour HTML (index.html) pour voir les mises à jour
 
 function serveStatic(pathname: string, res: ServerResponse): boolean {
   let decoded: string;
@@ -85,7 +100,10 @@ function serveStatic(pathname: string, res: ServerResponse): boolean {
     if (!existsSync(filePath) || !statSync(filePath).isFile()) {
       const indexHtml = join(distDir, 'index.html');
       if (existsSync(indexHtml)) {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.writeHead(200, {
+          'Content-Type': 'text/html',
+          'Cache-Control': 'public, max-age=' + CACHE_MAX_AGE_HTML + ', must-revalidate',
+        });
         res.end(readFileSync(indexHtml));
         return true;
       }
@@ -93,7 +111,13 @@ function serveStatic(pathname: string, res: ServerResponse): boolean {
     }
     const ext = extname(filePath);
     const contentType = MIMES[ext] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': contentType });
+    const headers: Record<string, string> = { 'Content-Type': contentType };
+    if (CACHEABLE_EXT.has(ext)) {
+      headers['Cache-Control'] = `public, max-age=${CACHE_MAX_AGE_MEDIA}, immutable`;
+    } else if (ext === '.html') {
+      headers['Cache-Control'] = `public, max-age=${CACHE_MAX_AGE_HTML}, must-revalidate`;
+    }
+    res.writeHead(200, headers);
     res.end(readFileSync(filePath));
     return true;
   } catch {

@@ -21,9 +21,13 @@ function getClient(): S3Client {
   });
 }
 
+/** Durée de cache conseillée pour les médias R2 (1 an) : après 1er chargement, le navigateur ne re-télécharge pas. */
+const R2_CACHE_CONTROL = 'public, max-age=31536000, immutable';
+
 /**
  * Upload un buffer vers R2 et retourne l'URL à stocker en BDD.
  * key: ex. "boutiques/abc-123/logo.png"
+ * Les objets sont envoyés avec Cache-Control pour que le navigateur les mette en cache.
  */
 export async function uploadToR2(
   key: string,
@@ -38,6 +42,7 @@ export async function uploadToR2(
       Key: key,
       Body: body,
       ContentType: contentType,
+      CacheControl: R2_CACHE_CONTROL,
     })
   );
   // Si domaine public configuré : URL directe

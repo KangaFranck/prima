@@ -161,7 +161,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // ---- Public GET: boutiques, restaurants, loisirs, services, evenements ----
+    // Pas de cache navigateur : après une modif admin, les visiteurs voient les nouvelles infos au prochain chargement
     if (req.method === 'GET' && ['boutiques', 'restaurants', 'loisirs', 'services', 'evenements'].includes(resource)) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       let rows: Record<string, unknown>[];
       if (resource === 'boutiques') {
         rows = id ? await sql`SELECT * FROM boutiques WHERE id = ${id} LIMIT 1` : await sql`SELECT * FROM boutiques ORDER BY created_at DESC`;

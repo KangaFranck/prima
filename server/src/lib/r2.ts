@@ -46,6 +46,7 @@ export async function uploadToR2(
     Key: key,
     Body: body,
     ContentType: contentType,
+    CacheControl: 'public, max-age=31536000, immutable',
   });
   await getClient().send(cmd);
   return `${publicUrl}/${key}`;

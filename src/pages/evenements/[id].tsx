@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
 import { apiClient } from '../../services/apiClient';
-import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus } from 'lucide-react';
+import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus, X } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { formatDate, formatEventDateRange } from '../../utils/date';
 
@@ -47,10 +47,19 @@ const EventDetail = () => {
   const [detailLoading, setDetailLoading] = useState(true);
   const [mainImageError, setMainImageError] = useState(false);
   const [galleryErrors, setGalleryErrors] = useState<Set<number>>(new Set());
+  /** Image affichée en lightbox (cliquable) ; null = fermé */
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEvenements();
   }, [fetchEvenements]);
+
+  useEffect(() => {
+    if (!lightboxUrl) return;
+    const onEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightboxUrl(null); };
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
+  }, [lightboxUrl]);
 
   useEffect(() => {
     if (!id) {
@@ -117,88 +126,101 @@ const EventDetail = () => {
   // Get other evenements (excluding current one) - show up to 6
   const otherEvenements = evenements.filter(e => e.id !== id).slice(0, 6);
 
+  const hasGalerie = evenement.images && evenement.images.length > 0;
+  const galerieCount = hasGalerie ? evenement.images!.length : 0;
+
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
-      {/* Layout style Bal Harbour : image à gauche, infos à droite */}
-      <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
-        {/* Colonne image : taille limitée pour laisser toute la place au bloc infos (texte + boutons) */}
-        <div className="w-full lg:min-w-0 lg:max-w-[min(440px,42%)] flex-shrink space-y-4">
-          <div className="aspect-[1020/1350] lg:max-h-[70vh] overflow-hidden bg-[#F8F7F4]">
+      {/* 1) Bloc images : galerie au-dessus, affiche en dessous. Si une seule image galerie elle occupe tout le bloc ; sinon partagé. Toutes cliquables → lightbox. */}
+      <div className="w-full max-w-6xl mx-auto">
+        {/* Galerie (au-dessus de l'affiche) : 1 image = bloc plein, 2–3 = partagé */}
+        {hasGalerie && (
+          <div
+            className={`grid gap-3 overflow-hidden px-4 sm:px-6 pt-4 sm:pt-6 ${
+              galerieCount === 1
+                ? 'grid-cols-1'
+                : galerieCount === 2
+                  ? 'grid-cols-1 sm:grid-cols-2'
+                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            }`}
+          >
+            {evenement.images!.map((url, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setLightboxUrl(url)}
+                className={`overflow-hidden rounded-lg bg-[#F8F7F4] text-left focus:outline-none focus:ring-2 focus:ring-black/20 cursor-pointer ${
+                  galerieCount === 1
+                    ? 'aspect-[16/10] min-h-[200px] sm:min-h-[280px]'
+                    : 'aspect-[4/3] min-h-[160px] sm:min-h-[200px]'
+                }`}
+              >
+                {!galleryErrors.has(i) ? (
+                  <img
+                    src={url}
+                    alt={`${evenement.title} - image ${i + 1}`}
+                    className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
+                    onError={() => setGalleryErrors(prev => new Set(prev).add(i))}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Calendar className="w-12 h-12 text-gray-300" />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Affiche principale (en dessous de la galerie si présente, sinon en tête) */}
+        <div className={`w-full px-4 sm:px-6 ${hasGalerie ? 'pt-3 pb-4' : 'pt-4 sm:pt-6 pb-4'}`}>
+          <div className="aspect-[16/10] sm:aspect-[2/1] max-h-[60vh] overflow-hidden rounded-lg bg-[#F8F7F4]">
             {evenement.image && !mainImageError ? (
-              <img
-                src={evenement.image}
-                alt={evenement.title}
-                className="w-full h-full object-cover"
-                width={1020}
-                height={1350}
-                onError={() => setMainImageError(true)}
-              />
+              <button
+                type="button"
+                onClick={() => setLightboxUrl(evenement.image)}
+                className="w-full h-full block text-left focus:outline-none focus:ring-2 focus:ring-black/20 cursor-pointer"
+              >
+                <img
+                  src={evenement.image}
+                  alt={evenement.title}
+                  className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
+                  onError={() => setMainImageError(true)}
+                />
+              </button>
             ) : (
-              <div className="w-full h-full min-h-[320px] bg-[#F8F7F4] flex items-center justify-center">
+              <div className="w-full h-full min-h-[280px] bg-[#F8F7F4] flex items-center justify-center">
                 <Calendar className="w-20 h-20 text-gray-300" />
               </div>
             )}
           </div>
-          {evenement.images && evenement.images.length > 0 && (
-            <div
-              className={`grid gap-3 overflow-hidden ${
-                evenement.images.length === 1
-                  ? 'grid-cols-1'
-                  : evenement.images.length === 2
-                    ? 'grid-cols-1 sm:grid-cols-2'
-                    : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-              }`}
-            >
-              {evenement.images.map((url, i) => (
-                <div
-                  key={i}
-                  className={`overflow-hidden rounded-lg bg-[#F8F7F4] ${
-                    evenement.images!.length === 1
-                      ? 'aspect-[16/10] min-h-[200px] sm:min-h-[260px]'
-                      : 'aspect-[4/3] min-h-[160px] sm:min-h-[200px]'
-                  }`}
-                >
-                  {!galleryErrors.has(i) ? (
-                    <img
-                      src={url}
-                      alt={`${evenement.title} - image ${i + 2}`}
-                      className="w-full h-full object-cover"
-                      onError={() => setGalleryErrors(prev => new Set(prev).add(i))}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Calendar className="w-12 h-12 text-gray-300" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
+      </div>
 
-        {/* Colonne infos : largeur garantie pour afficher tout (titre, date, boutons, partage) */}
-        <div className="flex-1 flex flex-col min-w-0 lg:min-w-[360px] lg:flex-shrink-0 p-6 md:p-8 lg:p-10 lg:py-14 bg-white overflow-visible relative z-10">
-          <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
+      {/* 2) Bloc infos en grand type cover (pleine largeur, typo grande) */}
+      <div className="w-full bg-[#F8F7F4] py-12 sm:py-16 md:py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
             Prochain événement
           </p>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4 break-words">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">
             {evenement.title}
           </h1>
           {evenement.lieu && (
-            <div className="flex items-start gap-2 text-gray-600 mb-2">
-              <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-gray-500" />
-              <span className="font-sofia text-sm md:text-base">{evenement.lieu}</span>
+            <div className="flex items-start gap-2 text-gray-600 mb-3">
+              <MapPin className="w-5 h-5 mt-0.5 shrink-0 text-gray-500" />
+              <span className="font-sofia text-base md:text-lg">{evenement.lieu}</span>
             </div>
           )}
-          <div className="flex items-center gap-2 text-gray-600 mb-6">
-            <Clock className="w-4 h-4 shrink-0 text-gray-500" />
-            <span className="font-sofia text-sm md:text-base">
+          <div className="flex items-center gap-2 text-gray-600 mb-8">
+            <Clock className="w-5 h-5 shrink-0 text-gray-500" />
+            <span className="font-sofia text-base md:text-lg">
               {formatEventDateRange({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin })}
             </span>
           </div>
 
           {evenement.description && (
-            <div className="font-sofia text-gray-700 leading-relaxed mb-8 whitespace-pre-line">
+            <div className="font-sofia text-gray-700 text-lg md:text-xl leading-relaxed mb-10 whitespace-pre-line">
               {evenement.description}
             </div>
           )}
@@ -206,47 +228,73 @@ const EventDetail = () => {
           <button
             type="button"
             onClick={addToCalendar}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-sofia font-medium text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto justify-center mb-8 flex-shrink-0"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white font-sofia font-medium text-base hover:bg-gray-800 transition-colors justify-center mb-10"
           >
-            <Plus className="w-4 h-4 flex-shrink-0" />
+            <Plus className="w-5 h-5 flex-shrink-0" />
             Ajouter au calendrier
           </button>
 
-          <div className="pt-6 border-t border-gray-200">
-            <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-3">Partager</p>
-            <div className="flex gap-2">
+          <div className="pt-8 border-t border-gray-300">
+            <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-4">Partager</p>
+            <div className="flex gap-3">
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrlFull)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
                 aria-label="Partager sur Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-5 h-5" />
               </a>
               <a
                 href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5" />
               </a>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <h3 className="text-sm font-sofia font-semibold text-gray-700 mb-2">Contact</h3>
-            <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black">
-              <Phone className="w-4 h-4" /> +225 07 88 00 80
+          <div className="mt-10 pt-8 border-t border-gray-200">
+            <h3 className="text-base font-sofia font-semibold text-gray-700 mb-3">Contact</h3>
+            <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black">
+              <Phone className="w-5 h-5" /> +225 07 88 00 80
             </a>
-            <a href="mailto:communicationprimacenter@gmail.com" className="flex items-center gap-2 text-gray-600 font-sofia text-sm hover:text-black mt-1">
-              <Mail className="w-4 h-4" /> communicationprimacenter@gmail.com
+            <a href="mailto:communicationprimacenter@gmail.com" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black mt-2">
+              <Mail className="w-5 h-5" /> communicationprimacenter@gmail.com
             </a>
           </div>
         </div>
       </div>
+
+      {/* Lightbox : image cliquée, bouton X pour fermer */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setLightboxUrl(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Voir l'image en grand"
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxUrl(null)}
+            className="absolute top-4 right-4 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+            aria-label="Fermer"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <img
+            src={lightboxUrl}
+            alt=""
+            className="max-w-full max-h-[90vh] w-auto h-auto object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Section autres événements */}
       <div className="bg-white py-16 w-full">
