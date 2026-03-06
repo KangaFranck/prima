@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash, Search, X } from 'lucide-react';
 import { EntityModal } from '../components/EntityModal';
 import { Evenement } from '../../types/entity';
 import { usePbAdminStore } from '../../store/pbAdminStore';
+import { formatEventDateRange } from '../../utils/date';
 
 export const Evenements = () => {
   const { evenements, createEvenement, updateEvenement, deleteEvenement, fetchEvenements, loading, error } = usePbAdminStore();
