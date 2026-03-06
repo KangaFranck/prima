@@ -62,16 +62,17 @@ export const EntityModal: React.FC<EntityModalProps> = ({
   useEffect(() => {
     if (entityData) {
       if (entityType === 'evenements') {
-        const dateDebut = entityData.date || '';
-        const heureDebut = entityData.heure || '';
-        const dateTimeDebut = dateDebut && heureDebut ? `${dateDebut}T${heureDebut.slice(0, 5)}` : dateDebut;
+        const dateDebutRaw = entityData.date ? String(entityData.date).slice(0, 10) : '';
+        const heureDebut = entityData.heure ? String(entityData.heure).trim().slice(0, 5) : '';
+        const dateTimeDebut = dateDebutRaw ? (heureDebut ? `${dateDebutRaw}T${heureDebut}` : dateDebutRaw) : '';
+        const dateFinRaw = entityData.dateFin ? String(entityData.dateFin).slice(0, 10) : '';
         setFormData({
           titre: entityData.titre || entityData.title || '',
           description: entityData.description || '',
           date: dateTimeDebut,
           heure: heureDebut,
-          dateFin: entityData.dateFin || '',
-          heureFin: entityData.heureFin || '',
+          dateFin: dateFinRaw,
+          heureFin: entityData.heureFin ? String(entityData.heureFin).trim().slice(0, 5) : '',
           lieu: entityData.lieu || '',
           statut: entityData.statut || 'planifié',
           affiche: null,
@@ -90,10 +91,14 @@ export const EntityModal: React.FC<EntityModalProps> = ({
           logo: null,
           image: null
         });
-        
+
         if (entityData.affiche) {
           setAffichePreview(entityData.affiche);
         }
+        const images = Array.isArray(entityData.images) ? entityData.images : [];
+        setGalerie1Preview(images[0] && typeof images[0] === 'string' ? images[0] : null);
+        setGalerie2Preview(images[1] && typeof images[1] === 'string' ? images[1] : null);
+        setGalerie3Preview(images[2] && typeof images[2] === 'string' ? images[2] : null);
       } else {
         // Commerces : préremplir avec les données en base (heures en ISO, "YYYY-MM-DD HH:MM:SS" ou "HH:MM")
         const toTime = (v: unknown): string => {

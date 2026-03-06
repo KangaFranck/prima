@@ -78,9 +78,24 @@ const EventDetail = () => {
             )}
           </div>
           {evenement.images && evenement.images.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div
+              className={`grid gap-3 overflow-hidden ${
+                evenement.images.length === 1
+                  ? 'grid-cols-1'
+                  : evenement.images.length === 2
+                    ? 'grid-cols-1 sm:grid-cols-2'
+                    : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+              }`}
+            >
               {evenement.images.map((url, i) => (
-                <div key={i} className="aspect-[1020/1350] max-h-[280px] overflow-hidden rounded-md bg-[#F8F7F4]">
+                <div
+                  key={i}
+                  className={`overflow-hidden rounded-lg bg-[#F8F7F4] ${
+                    evenement.images!.length === 1
+                      ? 'aspect-[16/10] min-h-[200px] sm:min-h-[260px]'
+                      : 'aspect-[4/3] min-h-[160px] sm:min-h-[200px]'
+                  }`}
+                >
                   <img
                     src={url}
                     alt={`${evenement.title} - image ${i + 2}`}
