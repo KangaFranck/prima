@@ -8,7 +8,6 @@
     "dev": "nodemon src/index.ts",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc --noEmitOnError",
-    "postinstall": "npm run build",
     "test": "jest"
   },
   "engines": {
