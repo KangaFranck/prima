@@ -94,8 +94,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Section 1: Vidéo de fond unique (backvideos.mp4) */}
-      <section className="relative h-screen overflow-hidden">
+      {/* Section 1: Vidéo de fond unique (backvideos.mp4) - boucle, préchargée pour un bon affichage après déploiement */}
+      <section className="relative h-screen overflow-hidden bg-black">
         <video
           className="absolute inset-0 w-full h-full object-cover"
           src={backVideo}
@@ -103,6 +103,9 @@ export default function Home() {
           loop
           muted
           playsInline
+          preload="auto"
+          disablePictureInPicture
+          onError={(e) => console.warn('Vidéo de fond:', (e.target as HTMLVideoElement).error?.message || 'échec chargement')}
         />
         <div className="absolute inset-0 bg-black/60">
           <div className="w-full h-full flex flex-col content-edge">

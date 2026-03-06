@@ -65,6 +65,9 @@ const MIMES: Record<string, string> = {
   '.svg': 'image/svg+xml',
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.ogg': 'video/ogg',
 };
 
 function serveStatic(pathname: string, res: ServerResponse): boolean {
