@@ -60,9 +60,9 @@ const EventDetail = () => {
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
       {/* Layout style Bal Harbour : image à gauche, infos à droite */}
       <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
-        {/* Colonne image : cover + galerie (peut rétrécir pour laisser place au texte) */}
-        <div className="w-full lg:min-w-0 lg:max-w-[min(1020px,55%)] flex-shrink space-y-4">
-          <div className="aspect-[1020/1350] overflow-hidden">
+        {/* Colonne image : taille limitée pour laisser toute la place au bloc infos (texte + boutons) */}
+        <div className="w-full lg:min-w-0 lg:max-w-[min(440px,42%)] flex-shrink space-y-4">
+          <div className="aspect-[1020/1350] lg:max-h-[70vh] overflow-hidden">
             {evenement.image ? (
               <img
                 src={evenement.image}
@@ -92,8 +92,8 @@ const EventDetail = () => {
           )}
         </div>
 
-        {/* Colonne infos : largeur min pour éviter que le texte déborde ou soit coupé */}
-        <div className="flex-1 flex flex-col min-w-0 lg:min-w-[320px] p-6 md:p-8 lg:p-10 lg:py-14 bg-white overflow-visible relative z-10">
+        {/* Colonne infos : largeur garantie pour afficher tout (titre, date, boutons, partage) */}
+        <div className="flex-1 flex flex-col min-w-0 lg:min-w-[360px] lg:flex-shrink-0 p-6 md:p-8 lg:p-10 lg:py-14 bg-white overflow-visible relative z-10">
           <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
             Prochain événement
           </p>
@@ -123,9 +123,9 @@ const EventDetail = () => {
           <button
             type="button"
             onClick={addToCalendar}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-sofia font-medium text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto justify-center mb-8"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-sofia font-medium text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto justify-center mb-8 flex-shrink-0"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 flex-shrink-0" />
             Ajouter au calendrier
           </button>
 
