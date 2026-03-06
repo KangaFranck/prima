@@ -1,20 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
+import { apiClient } from '../../services/apiClient';
 import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { formatDate, formatEventDateRange } from '../../utils/date';
 
+/** Forme attendue par la page détail (liste ou détail par ID). */
+type DetailEvenement = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  image: string;
+  images?: string[];
+  lieu?: string;
+  heure?: string;
+  dateFin?: string;
+  heureFin?: string;
+  statut?: string;
+};
+
+function mapApiToDetail(r: any): DetailEvenement {
+  const rawImages = r?.images ?? r?.Images;
+  const images = Array.isArray(rawImages) ? rawImages.slice(0, 3).filter((u: unknown) => typeof u === 'string' && u.length > 0) : [];
+  return {
+    id: r.id,
+    title: r.titre ?? r.title ?? '',
+    description: r.description ?? '',
+    date: r.date ?? '',
+    image: r.image ?? r.affiche ?? '',
+    images: images.length > 0 ? images : undefined,
+    lieu: r.lieu,
+    heure: r.heure,
+    dateFin: r.dateFin,
+    heureFin: r.heureFin,
+    statut: r.statut,
+  };
+}
+
 const EventDetail = () => {
   const { id } = useParams();
   const { evenements, fetchEvenements, loading, error } = useEvenementStore();
-  const evenement = evenements.find(e => e.id === id);
+  const fromList = evenements.find(e => e.id === id);
+  const [detailEvenement, setDetailEvenement] = useState<DetailEvenement | null>(null);
+  const [detailLoading, setDetailLoading] = useState(true);
   const [mainImageError, setMainImageError] = useState(false);
   const [galleryErrors, setGalleryErrors] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetchEvenements();
   }, [fetchEvenements]);
+
+  useEffect(() => {
+    if (!id) {
+      setDetailLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setDetailLoading(true);
+    apiClient.evenements
+      .get(id)
+      .then((data) => {
+        if (!cancelled) setDetailEvenement(mapApiToDetail(data));
+      })
+      .catch(() => {
+        if (!cancelled) setDetailEvenement(null);
+      })
+      .finally(() => {
+        if (!cancelled) setDetailLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id]);
 
   const addToCalendar = () => {
     if (!evenement) return;
@@ -31,7 +88,9 @@ const EventDetail = () => {
 
   const shareUrlFull = typeof window !== 'undefined' ? window.location.href : '';
 
-  if (loading) {
+  const evenement = detailEvenement ?? (fromList ? mapApiToDetail(fromList) : null);
+
+  if (loading || (id && detailLoading && !evenement)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4]">
         <LoadingSpinner />
