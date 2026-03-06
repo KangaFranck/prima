@@ -180,53 +180,6 @@ export default function ServicesInfo() {
         </div>
       </section>
 
-      {/* Newsletter Section - pleine largeur */}
-      <section className="py-20 bg-white w-full">
-        <div className="content-wrap">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8"
-            >
-              {/* Texte à gauche */}
-              <div className="space-y-2">
-                <div className="w-full">
-                  <h2 className="text-2xl font-ogg text-black">
-                    <span className="block">Restez</span>
-                    <span className="block">informé</span>
-                  </h2>
-                  <div className="w-full h-0.5 bg-black mt-2"></div>
-                </div>
-                <p className="text-gray-500 text-sm">
-                  Recevez les dernières actualités, événements et offres exclusives
-                </p>
-              </div>
-
-              {/* Formulaire à droite */}
-              <form className="flex items-center space-x-4 w-full md:w-auto">
-                <div className="relative flex-1 md:min-w-[300px]">
-                  <input
-                    type="email"
-                    placeholder="Entrez votre adresse email*"
-                    className="w-full bg-transparent border-0 border-b border-gray-300 focus:border-black focus:outline-none py-2 text-gray-500 placeholder-gray-400"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="text-gray-400 hover:text-black transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </form>
-            </motion.div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 } 

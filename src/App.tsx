@@ -32,6 +32,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Shops from './components/Shops';
 import Footer from './components/Footer';
+import NewsletterBanner from './components/NewsletterBanner';
 import { Boutiques as AdminBoutiques } from './admin/pages/Boutiques';
 import { Restaurants as AdminRestaurants } from './admin/pages/Restaurants';
 import { FitnessPage } from './admin/pages/Fitness';
@@ -76,6 +77,7 @@ const PublicLayout = () => {
           <Route path="evenements/:id" element={<EventDetail />} />
         </Routes>
       </div>
+      <NewsletterBanner />
       <Footer />
     </div>
   );

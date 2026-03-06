@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Trophy, Users, Leaf } from 'lucide-react';
 import Logo from '../components/Logo';
 import Stats from '../components/Stats';
 
@@ -73,7 +74,9 @@ const APropos = () => {
               transition={{ delay: 0.2 }}
               className="bg-white p-8 shadow-lg"
             >
-              <span className="text-4xl block mb-6" aria-hidden>🤝</span>
+              <div className="flex justify-center mb-6">
+                <Trophy className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
+              </div>
               <h3 className="text-xl font-bold mb-4">Accueil & Expérience</h3>
               <p className="text-gray-600">
                 PRIMA CENTER accorde une attention particulière à l'accueil et au confort de ses visiteurs afin d'offrir une expérience agréable à chaque passage.
@@ -86,7 +89,9 @@ const APropos = () => {
               transition={{ delay: 0.4 }}
               className="bg-white p-8 shadow-lg"
             >
-              <span className="text-4xl block mb-6" aria-hidden>👥</span>
+              <div className="flex justify-center mb-6">
+                <Users className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
+              </div>
               <h3 className="text-xl font-bold mb-4">Service & Satisfaction</h3>
               <p className="text-gray-600">
                 La satisfaction de notre clientèle est au cœur de nos priorités. Nous mettons tout en œuvre pour offrir un environnement agréable et des services de qualité.
@@ -99,7 +104,9 @@ const APropos = () => {
               transition={{ delay: 0.6 }}
               className="bg-white p-8 shadow-lg"
             >
-              <span className="text-4xl block mb-6" aria-hidden>✨</span>
+              <div className="flex justify-center mb-6">
+                <Leaf className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
+              </div>
               <h3 className="text-xl font-bold mb-4">Une Galerie Animée</h3>
               <p className="text-gray-600">
                 Tout au long de l'année, PRIMA CENTER se transforme au rythme des grandes fêtes avec des décorations et des animations qui créent une atmosphère chaleureuse.

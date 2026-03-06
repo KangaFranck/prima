@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Coffee, Dumbbell, Calendar, Play, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Coffee, Dumbbell, Calendar, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { useShopStore } from '../store/shopStore';
@@ -12,11 +12,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Importez vos vidéos et images ici
-const mainVideo = '/videos/prima-main.mp4';
-const video1 = '/videos/prima-1.mp4';
-const video2 = '/videos/prima-2.mp4';
-const video3 = '/videos/prima-3.mp4';
+// Vidéo unique de la première section (fichier : public/videos/backvideos.mp4)
+const backVideo = '/videos/backvideos.mp4';
 
 const universeBlocks = [
   {
@@ -30,21 +27,21 @@ const universeBlocks = [
     category: 'FOOD & DRINKS',
     title: 'Restaurants',
     description: 'Restaurants, cafés, pâtisseries et glaciers pour se retrouver à tout moment de la journée.',
-    image: '/images/sections/restaurants.jpg',
+    image: '/images/RESTAURANTS.png',
     link: '/restaurants'
   },
   {
     category: 'Lifestyle',
     title: 'Loisirs',
     description: 'Cinéma et espaces de jeux pour enfants et adultes pour se divertir et partager un moment de détente.',
-    image: '/images/sections/loisir.jpg',
+    image: '/images/LOISIRS.png',
     link: '/loisirs'
   },
   {
     category: 'DAILY LIFE',
     title: 'Services',
     description: 'Banques, santé et services du quotidien réunis en un seul lieu.',
-    image: '/images/business-center.jpg',
+    image: '/images/SERVICES.png',
     link: '/services'
   }
 ];
@@ -61,7 +58,6 @@ const DESKTOP_BREAKPOINT = 1024;
 const ENSEIGNES_PER_PAGE_DESKTOP = 6;
 
 export default function Home() {
-  const [currentVideo, setCurrentVideo] = useState(mainVideo);
   const swiperRef = useRef<{ realIndex: number; slideTo: (i: number) => void } | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [enseignesPage, setEnseignesPage] = useState(0);
@@ -98,11 +94,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Section 1: Video Background */}
+      {/* Section 1: Vidéo de fond unique (backvideos.mp4) */}
       <section className="relative h-screen overflow-hidden">
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src={currentVideo}
+          src={backVideo}
           autoPlay
           loop
           muted
@@ -110,10 +106,8 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-black/60">
           <div className="w-full h-full flex flex-col content-edge">
-            {/* Présentation Prima avec Logo - Parfaitement centré */}
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">
-                {/* Logo Prima Center - taille légèrement réduite */}
                 <div className="mb-6 flex items-center justify-center w-full">
                   <Logo 
                     className="h-40 md:h-56 lg:h-72 xl:h-80 mx-auto" 
@@ -125,39 +119,6 @@ export default function Home() {
                   Shopping, restaurants, loisirs et services<br />
                   au cœur de la Zone 4 à Abidjan.
                 </p>
-              </div>
-            </div>
-
-            {/* Mini vidéos en bas */}
-            <div className="absolute bottom-0 left-0 right-0 pb-16 content-edge">
-              <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
-                {[
-                  { src: video1, title: 'Découvrez Prima' },
-                  { src: video2, title: 'Nos espaces' },
-                  { src: video3, title: 'Événements' }
-                ].map((video, index) => (
-                  <div key={index} className="flex flex-col items-center opacity-100 md:opacity-0 md:hover:opacity-100 transition-opacity duration-300">
-                    <button
-                      type="button"
-                      aria-label={video.title}
-                      onClick={() => setCurrentVideo(video.src)}
-                      className="relative w-full aspect-video overflow-hidden shadow-lg mb-3 group"
-                    >
-                      <video
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        src={video.src}
-                        muted
-                        loop
-                        playsInline
-                      />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
-                      <div className="absolute inset-0 flex items-center justify-center p-2 mx-1">
-                        <Play className="w-6 h-6 md:w-8 md:h-8 text-white opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </div>
-                    </button>
-                    <p className="text-white text-xs md:text-sm font-sofia font-light">{video.title}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
