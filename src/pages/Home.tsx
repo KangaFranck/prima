@@ -94,10 +94,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Section 1: Vidéo de fond unique (backvideos.mp4) - boucle, préchargée pour un bon affichage après déploiement */}
+      {/* Section 1: Vidéo de fond unique (backvideos.mp4) - filtre sombre + calque pour lisibilité */}
       <section className="relative h-screen overflow-hidden bg-black">
         <video
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.55] contrast-[1.05]"
           src={backVideo}
           autoPlay
           loop
@@ -107,7 +107,7 @@ export default function Home() {
           disablePictureInPicture
           onError={(e) => console.warn('Vidéo de fond:', (e.target as HTMLVideoElement).error?.message || 'échec chargement')}
         />
-        <div className="absolute inset-0 bg-black/60">
+        <div className="absolute inset-0 bg-black/55">
           <div className="w-full h-full flex flex-col content-edge">
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">

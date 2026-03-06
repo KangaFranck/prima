@@ -237,6 +237,10 @@ export const EntityModal: React.FC<EntityModalProps> = ({
       formDataObj.append('lieu', formData.lieu);
       formDataObj.append('statut', formData.statut);
       if (formData.affiche) formDataObj.append('affiche', formData.affiche);
+      // Images galerie (1 à 3) : indispensables pour qu'elles soient envoyées et affichées en détail
+      if (formData.galerie1) formDataObj.append('galerie1', formData.galerie1);
+      if (formData.galerie2) formDataObj.append('galerie2', formData.galerie2);
+      if (formData.galerie3) formDataObj.append('galerie3', formData.galerie3);
     } else {
       // Heures : priorité au DOM (source de vérité), fallback sur l'état React si le DOM est vide
       const domHeureOuv = (formEl.querySelector('[name="heureOuverture"]') as HTMLInputElement)?.value?.trim() ?? '';
