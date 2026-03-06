@@ -41,7 +41,7 @@ interface CommerceDetailViewProps {
   data: CommerceDetailData;
   listPath: string;
   listLabel: string;
-  /** Autres commerces du même type (5 max), pour afficher les logos entre "Découvrez les autres" et "Retour à..." */
+  /** Autres commerces du même type (5 max), pour afficher les logos entre "Découvrez les autres enseignes" et "Retour à..." */
   otherCommerces?: OtherCommerce[];
 }
 const ACCENT = "#b8956e"; // tan / gold comme Africafé ITC
@@ -305,10 +305,10 @@ export function CommerceDetailView({
             </div>
           ) : null}
         </div>
-        {/* Séparateur + Découvrez les autres établissements (style ITC) */}
+        {/* Séparateur + Découvrez les autres enseignes (style ITC) */}
         <div className="mt-16 border-t pt-12" style={{ borderColor: ACCENT }}>
           <h2 className="font-ogg text-center text-xl font-bold uppercase tracking-wide text-neutral-900 md:text-2xl">
-            Découvrez les autres établissements
+            Découvrez les autres enseignes
           </h2>
           <div
             className="mx-auto mt-4 h-0.5 w-16"
