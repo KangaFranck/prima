@@ -102,6 +102,19 @@ const EventDetail = () => {
 
   const evenement = detailEvenement ?? (fromList ? mapApiToDetail(fromList) : null);
 
+  /** useMemo doit être appelé avant tout return (règles des hooks React) */
+  const carouselImages = useMemo(() => {
+    if (!evenement) return [];
+    const out: string[] = [];
+    if (evenement.image && !mainImageError) out.push(evenement.image);
+    if (evenement.images?.length) {
+      for (let i = 0; i < evenement.images.length; i++) {
+        if (evenement.images[i] && !galleryErrors.has(i)) out.push(evenement.images[i]);
+      }
+    }
+    return out;
+  }, [evenement?.image, evenement?.images, mainImageError, galleryErrors]);
+
   if (loading || (id && detailLoading && !evenement)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4]">
@@ -126,20 +139,7 @@ const EventDetail = () => {
     );
   }
 
-  // Get other evenements (excluding current one) - show up to 6
   const otherEvenements = evenements.filter(e => e.id !== id).slice(0, 6);
-
-  /** Ordre : affiche → galerie1 → galerie2 → galerie3 (si renseignées) */
-  const carouselImages = useMemo(() => {
-    const out: string[] = [];
-    if (evenement.image && !mainImageError) out.push(evenement.image);
-    if (evenement.images?.length) {
-      for (let i = 0; i < evenement.images.length; i++) {
-        if (evenement.images[i] && !galleryErrors.has(i)) out.push(evenement.images[i]);
-      }
-    }
-    return out;
-  }, [evenement.image, evenement.images, mainImageError, galleryErrors]);
 
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
