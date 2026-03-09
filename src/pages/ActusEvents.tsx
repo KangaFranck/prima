@@ -1,24 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { formatEventDateRange } from '../utils/date';
+import { formatEventDateRange, getEventStatus } from '../utils/date';
 import { useEvenementStore } from '../store/evenementStore';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Facebook, Instagram, Plus } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-function toDateStr(d: string): string {
-  const date = new Date(d);
-  if (isNaN(date.getTime())) return '';
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-const todayStr = () => {
-  const t = new Date();
-  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
-};
 
 function addToCalendar(e: React.MouseEvent, evenement: { id: string; title: string; date: string; description?: string; lieu?: string; heure?: string; dateFin?: string; heureFin?: string }) {
   e.preventDefault();
@@ -51,14 +38,23 @@ function shareUrl(path: string): string {
   return window.location.origin + path;
 }
 
-/** Carte événement style Bal Harbour : image à gauche, infos à droite (titre, lieu, date/heure, Ajouter au calendrier, Partager) */
+/** Libellé selon le statut */
+const STATUS_LABEL: Record<string, string> = {
+  en_cours: 'En cours',
+  avenir: 'À venir',
+  passe: 'Actus & Events passées',
+};
+
+/** Carte événement style Bal Harbour : image à gauche, infos à droite */
 function EventRow({
   evenement,
   index,
+  statusLabel,
   onSeeMore,
 }: {
-  evenement: { id: string; title: string; date: string; image: string; lieu?: string; heure?: string; description?: string };
+  evenement: { id: string; title: string; date: string; image: string; lieu?: string; heure?: string; description?: string; dateFin?: string; heureFin?: string };
   index: number;
+  statusLabel: string;
   onSeeMore: () => void;
 }) {
   const isReversed = index % 2 === 1;
@@ -91,7 +87,7 @@ function EventRow({
       </div>
       <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-6 md:p-8 lg:p-10">
         <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
-          Prochaine actu
+          {statusLabel}
         </p>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
           {evenement.title}
@@ -157,21 +153,15 @@ const ActusEvents = () => {
   const { evenements, loading, error, fetchEvenements } = useEvenementStore();
   const navigate = useNavigate();
 
-  const { featured, upcoming, past } = useMemo(() => {
-    const today = todayStr();
-    const withDate = evenements
+  const { enCours, avenir, past } = useMemo(() => {
+    const withStatus = evenements
       .filter((e) => e.date)
-      .map((e) => ({ ...e, dateStr: toDateStr(e.date) }))
-      .filter((e) => e.dateStr);
-    const upcomingList = withDate.filter((e) => e.dateStr >= today).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
-    const pastList = withDate.filter((e) => e.dateStr < today).sort((a, b) => b.dateStr.localeCompare(a.dateStr));
-    const featuredOne = upcomingList[0] ?? null;
-    const otherUpcoming = upcomingList.slice(1);
-    return {
-      featured: featuredOne,
-      upcoming: otherUpcoming,
-      past: pastList,
-    };
+      .map((e) => ({ ...e, status: getEventStatus({ date: e.date, heure: e.heure, dateFin: e.dateFin, heureFin: e.heureFin }) }))
+      .filter((e) => e.status);
+    const enCoursList = withStatus.filter((e) => e.status === 'en_cours').sort((a, b) => a.date.localeCompare(b.date));
+    const avenirList = withStatus.filter((e) => e.status === 'avenir').sort((a, b) => a.date.localeCompare(b.date));
+    const pastList = withStatus.filter((e) => e.status === 'passe').sort((a, b) => (b.dateFin || b.date).localeCompare(a.dateFin || a.date));
+    return { enCours: enCoursList, avenir: avenirList, past: pastList };
   }, [evenements]);
 
   useEffect(() => {
@@ -197,7 +187,7 @@ const ActusEvents = () => {
 
   const isEmpty = evenements.length === 0;
 
-  const allUpcoming = featured ? [featured, ...upcoming] : upcoming;
+  const allCurrentAndUpcoming = [...enCours, ...avenir];
 
   return (
     <div className="min-h-screen bg-white w-full max-w-full min-w-0 overflow-x-hidden">
@@ -216,33 +206,25 @@ const ActusEvents = () => {
               <div className="w-20 h-20 bg-gray-100 flex items-center justify-center mx-auto mb-6 rounded-full">
                 <Calendar className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucune actu à afficher</h3>
+              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucun Actus & Events à afficher</h3>
               <p className="text-gray-500 max-w-md mx-auto font-sofia">
-                D'autres actus seront bientôt ajoutées. Revenez plus tard !
+                D'autres Actus & Events seront bientôt ajoutés. Revenez plus tard !
               </p>
             </div>
           ) : (
             <>
-              {allUpcoming.map((evenement, index) => (
-                <EventRow
-                  key={evenement.id}
-                  evenement={evenement}
-                  index={index}
-                  onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
-                />
-              ))}
-
-              {past.length > 0 && (
-                <section className="mt-16 pt-12 border-t border-gray-200">
+              {enCours.length > 0 && (
+                <section className="mb-16">
                   <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    Actus passées
+                    En cours
                   </h2>
-                  <div className="space-y-8">
-                    {past.map((evenement, index) => (
+                  <div className="space-y-12">
+                    {enCours.map((evenement, index) => (
                       <EventRow
                         key={evenement.id}
                         evenement={evenement}
-                        index={allUpcoming.length + index}
+                        index={index}
+                        statusLabel={STATUS_LABEL.en_cours}
                         onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
                       />
                     ))}
@@ -250,13 +232,52 @@ const ActusEvents = () => {
                 </section>
               )}
 
-              {!featured && upcoming.length === 0 && past.length === 0 && evenements.length > 0 && (
+              {avenir.length > 0 && (
+                <section className={enCours.length > 0 ? 'mb-16' : ''}>
+                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
+                    À venir
+                  </h2>
+                  <div className="space-y-12">
+                    {avenir.map((evenement, index) => (
+                      <EventRow
+                        key={evenement.id}
+                        evenement={evenement}
+                        index={enCours.length + index}
+                        statusLabel={STATUS_LABEL.avenir}
+                        onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {past.length > 0 && (
+                <section className="mt-16 pt-12 border-t border-gray-200">
+                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
+                    Actus & Events passées
+                  </h2>
+                  <div className="space-y-8">
+                    {past.map((evenement, index) => (
+                      <EventRow
+                        key={evenement.id}
+                        evenement={evenement}
+                        index={allCurrentAndUpcoming.length + index}
+                        statusLabel={STATUS_LABEL.passe}
+                        onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {enCours.length === 0 && avenir.length === 0 && past.length === 0 && evenements.length > 0 && (
                 <div className="space-y-12">
                   {evenements.map((evenement, index) => (
                     <EventRow
                       key={evenement.id}
                       evenement={evenement}
                       index={index}
+                      statusLabel="Actus & Events"
                       onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
                     />
                   ))}

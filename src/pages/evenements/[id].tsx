@@ -5,7 +5,7 @@ import { apiClient } from '../../services/apiClient';
 import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { formatDate, formatEventDateRange } from '../../utils/date';
+import { formatDate, formatEventDateRange, getEventStatus } from '../../utils/date';
 import 'swiper/css';
 
 /** Forme attendue par la page détail (liste ou détail par ID). */
@@ -134,7 +134,7 @@ const EventDetail = () => {
   if (!evenement) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4]">
-        <p className="text-xl text-gray-600">Actu non trouvée.</p>
+        <p className="text-xl text-gray-600">Actus & Events non trouvé(e).</p>
       </div>
     );
   }
@@ -211,7 +211,10 @@ const EventDetail = () => {
             {/* Bloc infos à droite */}
             <div className="flex-1 min-w-0 pt-6 lg:pt-0">
               <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
-                Prochaine actu
+                {(() => {
+                  const s = getEventStatus({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin });
+                  return s === 'en_cours' ? 'En cours' : s === 'avenir' ? 'À venir' : 'Actus & Events passées';
+                })()}
               </p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">
                 {evenement.title}
@@ -312,7 +315,7 @@ const EventDetail = () => {
       <div className="bg-white py-16 w-full">
         <div className="content-wrap">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres actus</h2>
+            <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres Actus & Events</h2>
             <div className="w-24 h-1 bg-black mx-auto"></div>
           </div>
           
@@ -381,7 +384,7 @@ const EventDetail = () => {
               className="inline-flex items-center px-12 py-6 bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <Calendar className="w-6 h-6 mr-3" />
-              Voir toutes les actus
+              Voir tous les Actus & Events
               <ArrowRight className="w-6 h-6 ml-3" />
             </a>
           </div>
