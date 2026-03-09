@@ -4,7 +4,7 @@
  * Usage: npm run build && npm run start
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'http';
-import { readFileSync, existsSync, statSync } from 'fs';
+import { readFileSync, existsSync, statSync, createReadStream } from 'fs';
 import { join, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -85,7 +85,19 @@ const CACHEABLE_EXT = new Set([
 const CACHE_MAX_AGE_MEDIA = 31536000; // 1 an (recommandé pour images, vidéos, fonts, assets buildés)
 const CACHE_MAX_AGE_HTML = 0; // pas de cache pour HTML (index.html) pour voir les mises à jour
 
-function serveStatic(pathname: string, res: ServerResponse): boolean {
+const VIDEO_EXT = new Set(['.mp4', '.webm', '.ogg']);
+
+/** Parse Range header "bytes=0-1023" → { start, end } ou null */
+function parseRange(rangeHeader: string | undefined, fileSize: number): { start: number; end: number } | null {
+  if (!rangeHeader || !rangeHeader.startsWith('bytes=')) return null;
+  const part = rangeHeader.slice(6).trim().split('-');
+  const start = parseInt(part[0], 10);
+  const end = part[1] ? parseInt(part[1], 10) : fileSize - 1;
+  if (isNaN(start) || isNaN(end) || start > end || start < 0 || end >= fileSize) return null;
+  return { start, end };
+}
+
+function serveStatic(pathname: string, req: IncomingMessage, res: ServerResponse): boolean {
   let decoded: string;
   try {
     decoded = decodeURIComponent(pathname);
@@ -117,8 +129,25 @@ function serveStatic(pathname: string, res: ServerResponse): boolean {
     } else if (ext === '.html') {
       headers['Cache-Control'] = `public, max-age=${CACHE_MAX_AGE_HTML}, must-revalidate`;
     }
-    res.writeHead(200, headers);
-    res.end(readFileSync(filePath));
+
+    const stat = statSync(filePath);
+    const fileSize = stat.size;
+    const range = VIDEO_EXT.has(ext) ? parseRange(req.headers['range'], fileSize) : null;
+
+    if (range) {
+      const { start, end } = range;
+      const chunkSize = end - start + 1;
+      headers['Content-Range'] = `bytes ${start}-${end}/${fileSize}`;
+      headers['Accept-Ranges'] = 'bytes';
+      headers['Content-Length'] = String(chunkSize);
+      res.writeHead(206, headers);
+      const stream = createReadStream(filePath, { start, end });
+      stream.pipe(res);
+    } else {
+      headers['Accept-Ranges'] = 'bytes';
+      res.writeHead(200, headers);
+      res.end(readFileSync(filePath));
+    }
     return true;
   } catch {
     return false;
@@ -189,7 +218,7 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  if (serveStatic(pathname, res)) return;
+  if (serveStatic(pathname, req, res)) return;
   res.writeHead(404, { 'Content-Type': 'text/plain' });
   res.end('Not found');
 });

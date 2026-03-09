@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Coffee, Dumbbell, Calendar, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -63,22 +63,18 @@ export default function Home() {
   const [isDesktop, setIsDesktop] = useState(false);
   const [enseignesPage, setEnseignesPage] = useState(0);
   /** Sur iOS, définir la source après le montage peut éviter l’écran noir */
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [videoFallback, setVideoFallback] = useState(false);
-  useEffect(() => {
-    setVideoSrc(backVideo);
-  }, []);
 
   useEffect(() => {
-    if (!videoSrc || videoFallback) return;
+    if (videoFallback) return;
     const t = setTimeout(() => {
       const video = videoRef.current;
       if (video && (video.readyState ?? 0) < 2) setVideoFallback(true);
     }, 5000);
     return () => clearTimeout(t);
-  }, [videoSrc, videoFallback]);
+  }, [videoFallback]);
 
-  /** Sur iOS/Safari mobile la vidéo peut rester noire : forcer la lecture dès que possible */
+  /** Forcer la lecture — Safari exige muted+playsinline pour autoplay */
   const tryPlayVideo = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -92,7 +88,13 @@ export default function Home() {
     tryPlayVideo();
   }, [tryPlayVideo]);
 
-  useEffect(() => {
+  /** useLayoutEffect : synchrone avant paint — crucial pour Safari/iOS */
+  useLayoutEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('playsinline', 'true');
+    }
     tryPlayVideo();
     const onVisibility = () => { if (document.visibilityState === 'visible') tryPlayVideo(); };
     document.addEventListener('visibilitychange', onVisibility);
@@ -146,15 +148,13 @@ export default function Home() {
             loop
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
             disablePictureInPicture
             onCanPlay={tryPlayVideo}
             onLoadedData={tryPlayVideo}
             onError={() => setVideoFallback(true)}
           >
-            {videoSrc && (
-              <source src={videoSrc} type="video/mp4" />
-            )}
+            <source src={backVideo} type="video/mp4" />
           </video>
         )}
         <div className="absolute inset-0 bg-black/30">
