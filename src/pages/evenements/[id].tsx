@@ -149,7 +149,7 @@ const EventDetail = () => {
           <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-10 xl:gap-14">
             {/* Bloc images à gauche : carousel avec boutons gauche/droite */}
             <div className="shrink-0 lg:w-[340px] xl:w-[400px]">
-              <div className="relative aspect-[4/3] max-h-[320px] lg:max-h-[380px] overflow-hidden rounded-lg bg-[#E5DDD3]">
+              <div className="relative aspect-[3/4] min-h-[280px] overflow-hidden rounded-lg bg-[#E5DDD3]">
                 {carouselImages.length > 0 ? (
                   <>
                     <Swiper
@@ -169,7 +169,7 @@ const EventDetail = () => {
                             <img
                               src={url}
                               alt={`${evenement.title} - ${i === 0 ? 'affiche' : `image ${i}`}`}
-                              className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
+                              className="w-full h-full object-cover object-center scale-110 hover:scale-[1.12] transition-transform duration-300"
                               onError={() => {
                                 if (i === 0) setMainImageError(true);
                                 else setGalleryErrors(prev => new Set(prev).add(i - 1));
