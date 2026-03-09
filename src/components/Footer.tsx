@@ -22,14 +22,14 @@ const Footer = () => {
               BOUTIQUES
             </Link>
             <div className="space-y-1 text-gray-300 font-sofia text-xs md:text-sm">
-              <p>Mode femme</p>
-              <p>Mode homme</p>
-              <p>Mode enfant</p>
-              <p>Chaussures, sacs & maroquinerie</p>
-              <p>Bijoux & accessoires</p>
-              <p>Beauté & soins</p>
-              <p>Technologie</p>
-              <p>Maison & cadeaux</p>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Mode femme</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Mode homme</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Mode enfant</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Chaussures, sacs & maroquinerie</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Bijoux & accessoires</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Beauté & soins</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Technologie</Link>
+              <Link to="/boutiques" onClick={scrollToTop} className="block hover:text-white transition-colors">Maison & cadeaux</Link>
             </div>
           </div>
 
@@ -39,14 +39,14 @@ const Footer = () => {
               RESTAURANTS
             </Link>
             <div className="space-y-1 text-gray-300 font-sofia text-xs md:text-sm">
-              <p>Beyti</p>
-              <p>Di Napoli</p>
-              <p>Dipndip</p>
-              <p>La Brioche</p>
-              <p>Pistache & Chocolat</p>
-              <p>Poz' Café</p>
-              <p>Smöoy</p>
-              <p>Velvet</p>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Beyti</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Di Napoli</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Dipndip</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">La Brioche</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Pistache & Chocolat</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Poz' Café</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Smöoy</Link>
+              <Link to="/restaurants" onClick={scrollToTop} className="block hover:text-white transition-colors">Velvet</Link>
             </div>
           </div>
 
@@ -55,11 +55,11 @@ const Footer = () => {
             <Link to="/contact" onClick={scrollToTop} className="text-xs md:text-sm font-sofia font-bold mb-2 text-white uppercase hover:opacity-90 transition-opacity w-fit tracking-wide">
               HORAIRES 7j/7
             </Link>
-            <div className="space-y-1 text-gray-300 font-sofia text-xs md:text-sm">
-              <p>Galerie : 09h00 – 20h00</p>
-              <p>Restaurants & cinéma : 09h00 – 00h00</p>
-              <p>Hypermarché : 08h30 – 23h00</p>
-              <p className="text-gray-400 text-xs mt-1.5">Les horaires peuvent varier selon les enseignes.</p>
+            <div className="space-y-2 text-gray-300 font-sofia text-xs md:text-sm">
+              <p>Galerie :<br />09h00 – 20h00</p>
+              <p>Restaurants & cinéma :<br />09h00 – 00h00</p>
+              <p>Hypermarché :<br />08h30 – 23h00</p>
+              <p className="text-gray-400 text-xs mt-1.5">Les horaires peuvent<br />varier selon les enseignes.</p>
             </div>
           </div>
 

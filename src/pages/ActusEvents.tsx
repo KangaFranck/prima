@@ -91,7 +91,7 @@ function EventRow({
       </div>
       <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-6 md:p-8 lg:p-10">
         <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
-          Prochain événement
+          Prochaine actu
         </p>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
           {evenement.title}
@@ -208,7 +208,7 @@ const ActusEvents = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16"
           >
-            Actualités & Événements
+            Actus & Events
           </motion.h1>
 
           {isEmpty ? (
@@ -216,9 +216,9 @@ const ActusEvents = () => {
               <div className="w-20 h-20 bg-gray-100 flex items-center justify-center mx-auto mb-6 rounded-full">
                 <Calendar className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucun événement à afficher</h3>
+              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucune actu à afficher</h3>
               <p className="text-gray-500 max-w-md mx-auto font-sofia">
-                D'autres événements seront bientôt ajoutés. Revenez plus tard !
+                D'autres actus seront bientôt ajoutées. Revenez plus tard !
               </p>
             </div>
           ) : (
@@ -235,7 +235,7 @@ const ActusEvents = () => {
               {past.length > 0 && (
                 <section className="mt-16 pt-12 border-t border-gray-200">
                   <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    Événements passés
+                    Actus passées
                   </h2>
                   <div className="space-y-8">
                     {past.map((evenement, index) => (

@@ -9,8 +9,12 @@ import {
   Accessibility,
   Banknote,
   Store,
-  Shirt
+  Shirt,
+  Navigation
 } from 'lucide-react';
+
+/** Lien Google Maps : ouvrir l’itinéraire vers Prima Center (Zone 4 Marcory) */
+const MAPS_PLACE_URL = 'https://www.google.com/maps/place/Prima+Center/@5.2952773,-3.9861489,17z/data=!3m1!4b1!4m6!3m5!1s0xfc1eeaa2fb3afbf:0x1456a227925d7ee3!8m2!3d5.295272!4d-3.983574!16s%2Fg%2F1hf2nj89n?entry=ttu';
 
 export default function ServicesInfo() {
   const services = [
@@ -129,30 +133,56 @@ export default function ServicesInfo() {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 gap-8 items-center"
           >
-            {/* Carte Google Maps sans flou ni voile */}
+            {/* Carte Google Maps : clic ouvre Prima Center sur Maps (contourne l'erreur "Impossible de charger...") */}
             <div className="h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg bg-[#f5f3ef] p-2 md:p-3">
-              <div className="relative w-full h-full rounded-md overflow-hidden">
+              <div className="relative w-full h-full rounded-md overflow-hidden group">
                 <iframe
                   title="Carte Prima Center - Zone 4 Marcory"
-                  src="https://maps.google.com/maps?q=5.295272,-3.983574&z=15&output=embed&hl=fr"
+                  src="https://www.google.com/maps?q=5.295272,-3.983574&z=17&output=embed&hl=fr"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-full"
+                  className="w-full h-full pointer-events-none"
                 />
+                <a
+                  href={MAPS_PLACE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-auto cursor-pointer"
+                  aria-label="Ouvrir Prima Center sur Google Maps"
+                >
+                  <span className="px-4 py-2 bg-white text-black font-sofia text-sm font-medium shadow-lg border border-gray-200">
+                    Ouvrir dans Maps
+                  </span>
+                </a>
               </div>
             </div>
 
             {/* Texte explicatif à droite - Ogg Roman (titres) + Sofia Pro (corps) - page Contact */}
             <div className="space-y-6 font-sofia">
               <div>
-                <h2 className="text-3xl md:text-4xl font-ogg font-bold text-black mb-6 uppercase tracking-tight">
-                  NOTRE LOCALISATION ZONE 4 MARCORY
+                <p className="text-xs md:text-sm font-ogg uppercase tracking-widest text-gray-500 mb-2">
+                  Notre position
+                </p>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
+                  Zone 4
                 </h2>
-                <div className="w-16 h-0.5 bg-black mb-6"></div>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
+                  Marcory
+                </h2>
+                <div className="w-16 h-0.5 bg-black mt-2 mb-4"></div>
+                <a
+                  href={MAPS_PLACE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-black text-white font-sofia text-sm font-medium hover:bg-gray-800 transition-colors"
+                >
+                  <Navigation className="w-4 h-4" />
+                  Obtenir l'itinéraire
+                </a>
               </div>
               
               <p className="text-gray-700 text-lg leading-relaxed font-sofia">

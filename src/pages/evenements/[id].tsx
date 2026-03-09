@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEvenementStore } from '../../store/evenementStore';
 import { apiClient } from '../../services/apiClient';
-import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, Phone, Mail, ArrowRight, Facebook, Instagram, Plus, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { formatDate, formatEventDateRange } from '../../utils/date';
+import 'swiper/css';
 
 /** Forme attendue par la page détail (liste ou détail par ID). */
 type DetailEvenement = {
@@ -49,6 +51,7 @@ const EventDetail = () => {
   const [galleryErrors, setGalleryErrors] = useState<Set<number>>(new Set());
   /** Image affichée en lightbox (cliquable) ; null = fermé */
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const carouselSwiperRef = useRef<{ slidePrev: () => void; slideNext: () => void } | null>(null);
 
   useEffect(() => {
     fetchEvenements();
@@ -118,7 +121,7 @@ const EventDetail = () => {
   if (!evenement) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4]">
-        <p className="text-xl text-gray-600">Événement non trouvé.</p>
+        <p className="text-xl text-gray-600">Actu non trouvée.</p>
       </div>
     );
   }
@@ -126,146 +129,155 @@ const EventDetail = () => {
   // Get other evenements (excluding current one) - show up to 6
   const otherEvenements = evenements.filter(e => e.id !== id).slice(0, 6);
 
-  const hasGalerie = evenement.images && evenement.images.length > 0;
-  const galerieCount = hasGalerie ? evenement.images!.length : 0;
+  /** Ordre : affiche → galerie1 → galerie2 → galerie3 (si renseignées) */
+  const carouselImages = useMemo(() => {
+    const out: string[] = [];
+    if (evenement.image && !mainImageError) out.push(evenement.image);
+    if (evenement.images?.length) {
+      for (let i = 0; i < evenement.images.length; i++) {
+        if (evenement.images[i] && !galleryErrors.has(i)) out.push(evenement.images[i]);
+      }
+    }
+    return out;
+  }, [evenement.image, evenement.images, mainImageError, galleryErrors]);
 
   return (
     <div className="min-h-screen bg-white" style={{ paddingTop: 'var(--navbar-height)' }}>
-      {/* 1) Bloc images : galerie au-dessus, affiche en dessous. Si une seule image galerie elle occupe tout le bloc ; sinon partagé. Toutes cliquables → lightbox. */}
-      <div className="w-full max-w-6xl mx-auto">
-        {/* Galerie (au-dessus de l'affiche) : 1 image = bloc plein, 2–3 = partagé */}
-        {hasGalerie && (
-          <div
-            className={`grid gap-3 overflow-hidden px-4 sm:px-6 pt-4 sm:pt-6 ${
-              galerieCount === 1
-                ? 'grid-cols-1'
-                : galerieCount === 2
-                  ? 'grid-cols-1 sm:grid-cols-2'
-                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}
-          >
-            {evenement.images!.map((url, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setLightboxUrl(url)}
-                className={`overflow-hidden rounded-lg bg-[#F8F7F4] text-left focus:outline-none focus:ring-2 focus:ring-black/20 cursor-pointer ${
-                  galerieCount === 1
-                    ? 'aspect-[16/10] min-h-[200px] sm:min-h-[280px]'
-                    : 'aspect-[4/3] min-h-[160px] sm:min-h-[200px]'
-                }`}
-              >
-                {!galleryErrors.has(i) ? (
-                  <img
-                    src={url}
-                    alt={`${evenement.title} - image ${i + 1}`}
-                    className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
-                    onError={() => setGalleryErrors(prev => new Set(prev).add(i))}
-                  />
+      {/* Bloc unique : images (carousel) à gauche, infos à droite */}
+      <div className="w-full bg-[#F8F7F4] py-8 sm:py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-10 xl:gap-14">
+            {/* Bloc images à gauche : carousel avec boutons gauche/droite */}
+            <div className="shrink-0 lg:w-[340px] xl:w-[400px]">
+              <div className="relative aspect-[4/3] max-h-[320px] lg:max-h-[380px] overflow-hidden rounded-lg bg-[#E5DDD3]">
+                {carouselImages.length > 0 ? (
+                  <>
+                    <Swiper
+                      spaceBetween={0}
+                      slidesPerView={1}
+                      loop={carouselImages.length > 1}
+                      onSwiper={(swiper) => { carouselSwiperRef.current = swiper; }}
+                      className="w-full h-full event-detail-carousel"
+                    >
+                      {carouselImages.map((url, i) => (
+                        <SwiperSlide key={i}>
+                          <button
+                            type="button"
+                            onClick={() => setLightboxUrl(url)}
+                            className="w-full h-full block text-left focus:outline-none focus:ring-2 focus:ring-black/20 cursor-pointer"
+                          >
+                            <img
+                              src={url}
+                              alt={`${evenement.title} - ${i === 0 ? 'affiche' : `image ${i}`}`}
+                              className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
+                              onError={() => {
+                                if (i === 0) setMainImageError(true);
+                                else setGalleryErrors(prev => new Set(prev).add(i - 1));
+                              }}
+                            />
+                          </button>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                    {carouselImages.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => carouselSwiperRef.current?.slidePrev()}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
+                          aria-label="Image précédente"
+                        >
+                          <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => carouselSwiperRef.current?.slideNext()}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
+                          aria-label="Image suivante"
+                        >
+                          <ChevronRight className="w-6 h-6" />
+                        </button>
+                      </>
+                    )}
+                  </>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Calendar className="w-12 h-12 text-gray-300" />
+                    <Calendar className="w-20 h-20 text-gray-300" />
                   </div>
                 )}
-              </button>
-            ))}
-          </div>
-        )}
+              </div>
+            </div>
 
-        {/* Affiche principale (en dessous de la galerie si présente, sinon en tête) */}
-        <div className={`w-full px-4 sm:px-6 ${hasGalerie ? 'pt-3 pb-4' : 'pt-4 sm:pt-6 pb-4'}`}>
-          <div className="aspect-[16/10] sm:aspect-[2/1] max-h-[60vh] overflow-hidden rounded-lg bg-[#F8F7F4]">
-            {evenement.image && !mainImageError ? (
+            {/* Bloc infos à droite */}
+            <div className="flex-1 min-w-0 pt-6 lg:pt-0">
+              <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
+                Prochaine actu
+              </p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">
+                {evenement.title}
+              </h1>
+              {evenement.lieu && (
+                <div className="flex items-start gap-2 text-gray-600 mb-3">
+                  <MapPin className="w-5 h-5 mt-0.5 shrink-0 text-gray-500" />
+                  <span className="font-sofia text-base md:text-lg">{evenement.lieu}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2 text-gray-600 mb-8">
+                <Clock className="w-5 h-5 shrink-0 text-gray-500" />
+                <span className="font-sofia text-base md:text-lg">
+                  {formatEventDateRange({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin })}
+                </span>
+              </div>
+
+              {evenement.description && (
+                <div className="font-sofia text-gray-700 text-lg md:text-xl leading-relaxed mb-10 whitespace-pre-line">
+                  {evenement.description}
+                </div>
+              )}
+
               <button
                 type="button"
-                onClick={() => setLightboxUrl(evenement.image)}
-                className="w-full h-full block text-left focus:outline-none focus:ring-2 focus:ring-black/20 cursor-pointer"
+                onClick={addToCalendar}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white font-sofia font-medium text-base hover:bg-gray-800 transition-colors justify-center mb-10"
               >
-                <img
-                  src={evenement.image}
-                  alt={evenement.title}
-                  className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
-                  onError={() => setMainImageError(true)}
-                />
+                <Plus className="w-5 h-5 flex-shrink-0" />
+                Ajouter au calendrier
               </button>
-            ) : (
-              <div className="w-full h-full min-h-[280px] bg-[#F8F7F4] flex items-center justify-center">
-                <Calendar className="w-20 h-20 text-gray-300" />
+
+              <div className="pt-8 border-t border-gray-300">
+                <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-4">Partager</p>
+                <div className="flex gap-3">
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrlFull)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+                    aria-label="Partager sur Facebook"
+                  >
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+                    aria-label="Instagram"
+                  >
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* 2) Bloc infos en grand type cover (pleine largeur, typo grande) */}
-      <div className="w-full bg-[#F8F7F4] py-12 sm:py-16 md:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
-            Prochain événement
-          </p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">
-            {evenement.title}
-          </h1>
-          {evenement.lieu && (
-            <div className="flex items-start gap-2 text-gray-600 mb-3">
-              <MapPin className="w-5 h-5 mt-0.5 shrink-0 text-gray-500" />
-              <span className="font-sofia text-base md:text-lg">{evenement.lieu}</span>
+              <div className="mt-10 pt-8 border-t border-gray-200">
+                <h3 className="text-base font-sofia font-semibold text-gray-700 mb-3">Contact</h3>
+                <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black">
+                  <Phone className="w-5 h-5" /> +225 07 88 00 80
+                </a>
+                <a href="mailto:communicationprimacenter@gmail.com" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black mt-2">
+                  <Mail className="w-5 h-5" /> communicationprimacenter@gmail.com
+                </a>
+              </div>
             </div>
-          )}
-          <div className="flex items-center gap-2 text-gray-600 mb-8">
-            <Clock className="w-5 h-5 shrink-0 text-gray-500" />
-            <span className="font-sofia text-base md:text-lg">
-              {formatEventDateRange({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin })}
-            </span>
-          </div>
-
-          {evenement.description && (
-            <div className="font-sofia text-gray-700 text-lg md:text-xl leading-relaxed mb-10 whitespace-pre-line">
-              {evenement.description}
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={addToCalendar}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white font-sofia font-medium text-base hover:bg-gray-800 transition-colors justify-center mb-10"
-          >
-            <Plus className="w-5 h-5 flex-shrink-0" />
-            Ajouter au calendrier
-          </button>
-
-          <div className="pt-8 border-t border-gray-300">
-            <p className="text-xs font-sofia text-gray-500 uppercase tracking-wider mb-4">Partager</p>
-            <div className="flex gap-3">
-              <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrlFull)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                aria-label="Partager sur Facebook"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-10 pt-8 border-t border-gray-200">
-            <h3 className="text-base font-sofia font-semibold text-gray-700 mb-3">Contact</h3>
-            <a href="tel:+22507880080" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black">
-              <Phone className="w-5 h-5" /> +225 07 88 00 80
-            </a>
-            <a href="mailto:communicationprimacenter@gmail.com" className="flex items-center gap-2 text-gray-600 font-sofia text-base hover:text-black mt-2">
-              <Mail className="w-5 h-5" /> communicationprimacenter@gmail.com
-            </a>
           </div>
         </div>
       </div>
@@ -300,7 +312,7 @@ const EventDetail = () => {
       <div className="bg-white py-16 w-full">
         <div className="content-wrap">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres événements</h2>
+            <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres actus</h2>
             <div className="w-24 h-1 bg-black mx-auto"></div>
           </div>
           
@@ -356,9 +368,9 @@ const EventDetail = () => {
               <div className="w-32 h-32 bg-black flex items-center justify-center mx-auto mb-6">
                 <Calendar className="w-16 h-16 text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-black mb-4">Aucun autre événement disponible</h3>
+              <h3 className="text-3xl font-bold text-black mb-4">Aucune autre actu disponible</h3>
               <p className="text-gray-600 mb-8 max-w-md mx-auto text-lg">
-                D'autres événements seront bientôt ajoutés. Revenez plus tard pour découvrir nos prochains événements !
+                D'autres actus seront bientôt ajoutées. Revenez plus tard pour découvrir nos prochaines actus !
               </p>
             </div>
           )}
@@ -369,7 +381,7 @@ const EventDetail = () => {
               className="inline-flex items-center px-12 py-6 bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <Calendar className="w-6 h-6 mr-3" />
-              Voir tous les événements
+              Voir toutes les actus
               <ArrowRight className="w-6 h-6 ml-3" />
             </a>
           </div>

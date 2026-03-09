@@ -19,7 +19,7 @@ const NewsletterBanner = () => {
             {/* Bloc gauche : titre sans soulignement + description (rendu type BHS) */}
             <div className="space-y-1.5 flex-shrink-0 md:max-w-[48%]">
               <h2 className="font-ogg text-2xl md:text-3xl lg:text-4xl tracking-tight leading-tight">
-                <span className="text-black uppercase"> Les actualités </span>
+                <span className="text-black uppercase">LES ACTUALITÉS </span>
                 <span className="text-gray-400 font-sofia font-normal text-xl md:text-2xl lg:text-3xl normal-case">Prima Center</span>
               </h2>
               <p className="text-gray-400 text-sm md:text-base font-sofia leading-relaxed max-w-md">

@@ -64,9 +64,19 @@ export default function Home() {
   const [enseignesPage, setEnseignesPage] = useState(0);
   /** Sur iOS, définir la source après le montage peut éviter l’écran noir */
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [videoFallback, setVideoFallback] = useState(false);
   useEffect(() => {
     setVideoSrc(backVideo);
   }, []);
+
+  useEffect(() => {
+    if (!videoSrc || videoFallback) return;
+    const t = setTimeout(() => {
+      const video = videoRef.current;
+      if (video && (video.readyState ?? 0) < 2) setVideoFallback(true);
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [videoSrc, videoFallback]);
 
   /** Sur iOS/Safari mobile la vidéo peut rester noire : forcer la lecture dès que possible */
   const tryPlayVideo = useCallback(() => {
@@ -121,25 +131,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
-      {/* Section 1: Vidéo de fond (backvideos.mp4) - lecture forcée sur iOS/Safari mobile pour éviter écran noir */}
+      {/* Section 1: Vidéo de fond — fallback gradient si non supportée ou échec de chargement */}
       <section
         className="relative h-screen overflow-hidden bg-black"
         onTouchEnd={onVideoSectionTouch}
       >
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
-          src={videoSrc ?? undefined}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          onCanPlay={tryPlayVideo}
-          onLoadedData={tryPlayVideo}
-          onError={(e) => console.warn('Vidéo de fond:', (e.target as HTMLVideoElement).error?.message || 'échec chargement')}
-        />
+        {videoFallback ? (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
+        ) : (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            onCanPlay={tryPlayVideo}
+            onLoadedData={tryPlayVideo}
+            onError={() => setVideoFallback(true)}
+          >
+            {videoSrc && (
+              <source src={videoSrc} type="video/mp4" />
+            )}
+          </video>
+        )}
         <div className="absolute inset-0 bg-black/30">
           <div className="w-full h-full flex flex-col content-edge">
             <div className="h-full flex flex-col items-center justify-center text-center">
