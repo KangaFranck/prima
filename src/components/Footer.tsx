@@ -50,19 +50,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* HORAIRES 7j/7 */}
-          <div className="flex flex-col">
-            <Link to="/contact" onClick={scrollToTop} className="text-xs md:text-sm font-sofia font-bold mb-2 text-white uppercase hover:opacity-90 transition-opacity w-fit tracking-wide">
-              HORAIRES 7j/7
-            </Link>
-            <div className="space-y-2 text-gray-300 font-sofia text-xs md:text-sm">
-              <p>Galerie :<br />09h00 – 20h00</p>
-              <p>Restaurants & cinéma :<br />09h00 – 00h00</p>
-              <p>Hypermarché :<br />08h30 – 23h00</p>
-              <p className="text-gray-400 text-xs mt-1.5">Les horaires peuvent<br />varier selon les enseignes.</p>
-            </div>
-          </div>
-
           {/* DÉCOUVRIR */}
           <div className="flex flex-col">
             <Link to="/" onClick={scrollToTop} className="text-xs md:text-sm font-sofia font-bold mb-2 text-white uppercase hover:opacity-90 transition-opacity w-fit tracking-wide">
@@ -74,6 +61,19 @@ const Footer = () => {
               <Link to="/loisirs" className="block hover:text-white transition-colors">Loisirs</Link>
               <Link to="/services" className="block hover:text-white transition-colors">Services</Link>
               <Link to="/evenements" className="block hover:text-white transition-colors">Actus & Events</Link>
+            </div>
+          </div>
+
+          {/* HORAIRES 7j/7 */}
+          <div className="flex flex-col">
+            <Link to="/contact" onClick={scrollToTop} className="text-xs md:text-sm font-sofia font-bold mb-2 text-white uppercase hover:opacity-90 transition-opacity w-fit tracking-wide">
+              HORAIRES 7j/7
+            </Link>
+            <div className="space-y-2 text-gray-300 font-sofia text-xs md:text-sm">
+              <p>Galerie :<br />09h00 – 20h00</p>
+              <p>Restaurants & cinéma :<br />09h00 – 00h00</p>
+              <p>Hypermarché :<br />08h30 – 23h00</p>
+              <p className="text-gray-400 text-xs mt-1.5">Les horaires peuvent<br />varier selon les enseignes.</p>
             </div>
           </div>
 
