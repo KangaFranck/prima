@@ -124,33 +124,9 @@ export const userSyncService = {
   },
   
   // Créer un utilisateur admin dans la collection users si nécessaire
+  // Ne pas mettre de mots de passe en dur. Utiliser PocketBase _/ ou npm run seed:admin
   async createAdminUserIfNeeded() {
-    try {
-      console.log('=== VÉRIFICATION ET CRÉATION UTILISATEUR ADMIN ===');
-      
-      const adminEmail = 'communicationprimacenter@gmail.com';
-      const userExists = await this.checkUserExists(adminEmail);
-      
-      if (!userExists) {
-        console.log('Création de l\'utilisateur admin dans la collection users...');
-        
-        const adminUser = await pb.collection('users').create({
-          email: adminEmail,
-          password: 'admin123',
-          passwordConfirm: 'admin123',
-          name: 'Administrateur Prima Center',
-          role: 'admin'
-        }, { requestKey: null });
-        
-        console.log(' Utilisateur admin créé:', adminUser);
-        return adminUser;
-      } else {
-        console.log(' Utilisateur admin existe déjà');
-        return null;
-      }
-    } catch (error) {
-      console.error(' Erreur lors de la création de l\'utilisateur admin:', error);
-      throw error;
-    }
+    console.warn('⚠️ createAdminUserIfNeeded : créer l\'admin via PocketBase _/ ou npm run seed:admin');
+    return null;
   }
 };

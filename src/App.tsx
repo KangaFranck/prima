@@ -25,7 +25,6 @@ import EventDetail from './pages/evenements/[id]';
 import ActusEvents from './pages/ActusEvents';
 import ServicesInfo from './pages/ServicesInfo';
 import APropos from './pages/APropos';
-import { Menu, ShoppingBag, Phone, MapPin, Clock, ChevronRight, Facebook, Instagram, Twitter } from 'lucide-react';
 import Navbar from './components/Navbar';
 import TopInfoBar from './components/TopInfoBar';
 import Hero from './components/Hero';

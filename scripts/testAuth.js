@@ -1,4 +1,11 @@
-﻿import PocketBase from 'pocketbase';
+import PocketBase from 'pocketbase';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, '..', '.env.local') });
+dotenv.config({ path: join(__dirname, '..', '.env') });
 
 async function testAuth() {
   const pb = new PocketBase('https://primacenter.fly.dev');
@@ -6,11 +13,13 @@ async function testAuth() {
   try {
     console.log(' Test de connexion admin...');
     
-    // Utiliser la méthode directe pour l'authentification admin
-    const authData = await pb.admins.authWithPassword(
-      'communicationprimacenter@gmail.com',
-      'Prima@center2025'
-    );
+    const email = process.env.ADMIN_EMAIL || process.env.PB_ADMIN_EMAIL;
+    const password = process.env.ADMIN_PASSWORD || process.env.PB_ADMIN_PASSWORD;
+    if (!email || !password) {
+      console.error('❌ Définissez ADMIN_EMAIL et ADMIN_PASSWORD (ou PB_ADMIN_*) dans .env');
+      process.exit(1);
+    }
+    const authData = await pb.admins.authWithPassword(email, password);
     
     console.log(' Connexion admin réussie!');
     console.log('Token:', authData.token.substring(0, 20) + '...');
@@ -29,8 +38,8 @@ async function testAuth() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          identity: 'communicationprimacenter@gmail.com',
-          password: 'Prima@center2025'
+          identity: process.env.ADMIN_EMAIL || process.env.PB_ADMIN_EMAIL,
+          password: process.env.ADMIN_PASSWORD || process.env.PB_ADMIN_PASSWORD
         })
       });
       

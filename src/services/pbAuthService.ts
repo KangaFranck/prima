@@ -137,55 +137,22 @@ export const pbAuthService = {
     }
   },
 
-  // Créer l'admin principal s'il n'existe pas
+  // Créer l'admin principal s'il n'existe pas (NE PAS utiliser de mots de passe en dur)
+  // Créer l'admin via : http://127.0.0.1:8090/_/ ou npm run seed:admin
   async ensureAdminExists(): Promise<void> {
     try {
-      console.log('🔐 Vérification de l\'admin principal...');
-      
-      // Vérifier si l'admin principal existe
       const adminResponse = await fetch(`${PB_URL}/api/admins`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
+        headers: { 'Content-Type': 'application/json' },
       });
-      
       if (adminResponse.ok) {
         const admins = await adminResponse.json();
-        const adminExists = admins.items?.some((admin: { email?: string }) => admin.email === 'communicationprimacenter@gmail.com');
-        
-        if (!adminExists) {
-          console.log('🔐 Création de l\'admin principal...');
-          
-          // Créer l'admin principal avec le bon mot de passe
-          const createResponse = await fetch(`${PB_URL}/api/admins`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: 'communicationprimacenter@gmail.com',
-              password: 'Pr!ma@center#2025', // Mot de passe correct
-              passwordConfirm: 'Pr!ma@center#2025',
-              name: 'Administrateur Principal'
-            })
-          });
-          
-          if (createResponse.ok) {
-            console.log('✅ Admin principal créé avec succès');
-          } else {
-            const errorData = await createResponse.json();
-            console.log('⚠️ Admin principal existe peut-être déjà:', errorData);
-          }
-        } else {
-          console.log('✅ Admin principal existe déjà');
+        if (admins.items?.length === 0) {
+          console.warn('⚠️ Aucun admin PocketBase. Créez-en un via http://127.0.0.1:8090/_/ ou npm run seed:admin');
         }
-      } else {
-        console.log('⚠️ Impossible de vérifier les admins existants');
       }
-    } catch (error) {
-      console.error('❌ Erreur lors de la création de l\'admin:', error);
-      // Ne pas bloquer la connexion si la création échoue
+    } catch {
+      // Ignorer silencieusement
     }
   },
 
