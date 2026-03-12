@@ -178,7 +178,18 @@ const Footer = () => {
 
       <div className="bg-black w-full">
         <div className="content-wrap py-4 md:py-5">
-          <p className="font-sofia text-white text-center text-xs md:text-sm">© 2025 Prima Center.</p>
+          <p className="font-sofia text-white text-center text-xs md:text-sm">
+            © 2026 Prima Center. Réalisé par{' '}
+            <a
+              href="https://www.instagram.com/coemagency/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline hover:opacity-80 transition-opacity"
+            >
+              coem agency
+            </a>
+            .
+          </p>
         </div>
       </div>
     </footer>
