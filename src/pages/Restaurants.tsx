@@ -60,7 +60,7 @@ const Restaurants = () => {
       {/* Hero réduit : image pleine largeur + titre en overlay (décalage navbar géré par le layout) */}
       <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
         <img
-            src="/images/restaurants-hero-2.jpg"
+            src="/images/NOS UNIVERS RESTAURANTS.png"
             alt="Restaurants Prima Center"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"

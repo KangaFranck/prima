@@ -68,14 +68,14 @@ function EventRow({
       transition={{ duration: 0.4 }}
       className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl w-full mx-auto mb-12 lg:mb-16`}
     >
-      <div className="w-full lg:w-[70%] aspect-[1020/1350] flex-shrink-0 overflow-hidden">
+      <div className="w-full lg:w-[70%] aspect-[1080/1350] flex-shrink-0 overflow-hidden">
         <button type="button" onClick={onSeeMore} className="block w-full h-full text-left">
           {evenement.image ? (
             <img
               src={evenement.image}
               alt={evenement.title}
-              className="w-full h-full object-cover hover:opacity-95 transition-opacity"
-              width={1020}
+              className="w-full h-full object-cover object-center hover:opacity-95 transition-opacity"
+              width={1080}
               height={1350}
             />
           ) : (
@@ -196,7 +196,7 @@ const ActusEvents = () => {
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16"
+            className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16 text-center"
           >
             Actus & Events
           </motion.h1>

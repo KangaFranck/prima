@@ -57,42 +57,6 @@ interface CarouselItem {
 const DESKTOP_BREAKPOINT = 1024;
 const ENSEIGNES_PER_PAGE_DESKTOP = 6;
 
-/** Texte avec effet machine à écrire, lettre par lettre */
-function TypewriterText({
-  text,
-  className,
-  as: Tag = 'span',
-  delay = 0,
-  charDelay = 0.045,
-}: {
-  text: string;
-  className?: string;
-  as?: 'span' | 'h2' | 'p';
-  delay?: number;
-  charDelay?: number;
-}) {
-  const chars = Array.from(text);
-  return (
-    <Tag className={className}>
-      {chars.map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-20px' }}
-          transition={{
-            duration: 0.02,
-            delay: delay + i * charDelay,
-          }}
-          style={{ display: 'inline-block' }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
-      ))}
-    </Tag>
-  );
-}
-
 export default function Home() {
   const swiperRef = useRef<{ realIndex: number; slideTo: (i: number) => void } | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -219,34 +183,39 @@ export default function Home() {
       <section className="py-20 bg-white w-full">
         <div className="content-wrap">
           <div className="text-center mb-16">
-            <TypewriterText
-              text="NOS UNIVERS"
-              as="h2"
+            <motion.h2
               className="text-4xl font-ogg font-bold mb-4 text-gray-800"
-            />
-            <TypewriterText
-              text="Découvrez plus de 70 enseignes, des marques internationales aux adresses locales, reconnues pour leur qualité et leur savoir-faire."
-              as="p"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+              NOS UNIVERS
+            </motion.h2>
+            <motion.p
               className="text-gray-600 max-w-2xl mx-auto"
-              delay={0.55}
-            />
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Découvrez plus de 70 enseignes, des marques internationales aux adresses locales, reconnues pour leur qualité et leur savoir-faire.
+            </motion.p>
           </div>
           
           <div className="space-y-20">
             {universeBlocks.map((block, index) => (
-              <div
+              <motion.div
                 key={index}
                 className={`flex flex-col lg:flex-row items-center gap-12 ${
                   index % 2 === 1 ? 'lg:flex-row-reverse' : ''
                 }`}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -200 : 200 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
               >
-                <motion.div
-                  className="w-full lg:w-1/2 overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-2xl"
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -200 : 200 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                >
+                <div className="w-full lg:w-1/2 overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-2xl">
                   <Link to={block.link} className="group relative block aspect-square overflow-hidden">
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300 z-10" />
                     <img
@@ -258,35 +227,26 @@ export default function Home() {
                       <ArrowRight className="w-8 h-8 text-white" />
                     </div>
                   </Link>
-                </motion.div>
+                </div>
                 
                 <div className="w-full lg:w-1/2 text-center lg:text-left">
-                  <TypewriterText
-                    text={block.category}
-                    className="text-sm font-sofia font-normal text-gray-500 uppercase tracking-widest block"
-                    delay={0}
-                  />
-                  <TypewriterText
-                    text={block.title}
-                    as="h2"
-                    className="text-4xl font-ogg font-bold text-gray-800 mt-2 mb-4 tracking-wide uppercase"
-                    delay={0.15}
-                  />
-                  <TypewriterText
-                    text={block.description}
-                    as="p"
-                    className="text-base lg:text-lg font-sofia text-gray-600 leading-relaxed mb-6 max-w-xl"
-                    delay={0.4}
-                  />
+                  <p className="text-sm font-sofia font-normal text-gray-500 uppercase tracking-widest block">
+                    {block.category}
+                  </p>
+                  <h2 className="text-4xl font-ogg font-bold text-gray-800 mt-2 mb-4 tracking-wide uppercase">
+                    {block.title}
+                  </h2>
+                  <p className="text-base lg:text-lg font-sofia text-gray-600 leading-relaxed mb-6 max-w-xl">
+                    {block.description}
+                  </p>
                   <Link
                     to={block.link}
                     className="inline-flex items-center gap-2 px-8 py-3.5 bg-transparent border-2 border-gray-800 text-gray-800 font-sofia font-medium text-sm tracking-wide rounded-md hover:bg-gray-800 hover:text-white hover:border-gray-800 transition-colors"
                   >
-                    <TypewriterText text="Découvrir " delay={0.7} />
-                    <span aria-hidden>→</span>
+                    Découvrir <span aria-hidden>→</span>
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

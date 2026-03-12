@@ -60,7 +60,7 @@ const Services = () => {
     <div className="min-h-screen antialiased w-full max-w-full min-w-0 overflow-x-hidden">
       <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
         <img
-          src="/images/sections/services-info.jpg"
+          src="/images/NOS UNIVERS SERVIVCES.png"
           alt="Services Prima Center"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"

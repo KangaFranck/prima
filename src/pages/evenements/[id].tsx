@@ -149,7 +149,7 @@ const EventDetail = () => {
           <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-10 xl:gap-14">
             {/* Bloc images à gauche : carousel avec boutons gauche/droite */}
             <div className="shrink-0 lg:w-[340px] xl:w-[400px]">
-              <div className="relative aspect-[3/4] min-h-[280px] overflow-hidden rounded-lg bg-[#E5DDD3]">
+              <div className="relative aspect-[1080/1350] min-h-[280px] overflow-hidden bg-[#E5DDD3]">
                 {carouselImages.length > 0 ? (
                   <>
                     <Swiper
@@ -184,18 +184,18 @@ const EventDetail = () => {
                         <button
                           type="button"
                           onClick={() => carouselSwiperRef.current?.slidePrev()}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 text-white hover:opacity-80 transition-opacity"
                           aria-label="Image précédente"
                         >
-                          <ChevronLeft className="w-6 h-6" />
+                          <ChevronLeft className="w-8 h-8" />
                         </button>
                         <button
                           type="button"
                           onClick={() => carouselSwiperRef.current?.slideNext()}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 text-white hover:opacity-80 transition-opacity"
                           aria-label="Image suivante"
                         >
-                          <ChevronRight className="w-6 h-6" />
+                          <ChevronRight className="w-8 h-8" />
                         </button>
                       </>
                     )}

@@ -38,10 +38,10 @@ const APropos = () => {
               whileInView={{ x: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative h-[400px] overflow-hidden shadow-xl"
+              className="relative aspect-square overflow-hidden shadow-xl"
             >
               <img 
-                src="https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?ixlib=rb-4.0.3"
+                src="/images/A PROPOS.png"
                 alt="Prima Center"
                 className="w-full h-full object-cover"
               />
