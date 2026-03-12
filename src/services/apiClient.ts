@@ -215,6 +215,18 @@ export const apiClient = {
     },
   },
 
+  newsletter: {
+    subscribe(email: string): Promise<{ ok: boolean; message?: string }> {
+      return request<{ ok: boolean; message?: string }>('newsletter', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+    },
+    list(): Promise<{ id: string; email: string; created_at: string }[]> {
+      return request<{ id: string; email: string; created_at: string }[]>('newsletter');
+    },
+  },
+
   upload: {
     async upload(fileBase64: string, folder: string, name: string, contentType?: string): Promise<{ url: string; key: string }> {
       return request<{ url: string; key: string }>('upload', {

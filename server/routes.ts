@@ -160,6 +160,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })(req, res);
     }
 
+    // ---- POST /api/newsletter — inscription publique (sans auth) ----
+    if (path === 'newsletter' && req.method === 'POST') {
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Adresse email invalide.' });
+      }
+      try {
+        await sql`
+          INSERT INTO newsletter_subscribers (email)
+          VALUES (${email})
+          ON CONFLICT (email) DO NOTHING
+        `;
+        return res.status(200).json({ ok: true, message: 'Inscription enregistrée.' });
+      } catch (e) {
+        console.error('Newsletter signup error:', e);
+        return res.status(500).json({ error: 'Erreur lors de l\'inscription.' });
+      }
+    }
+
     // ---- Public GET: boutiques, restaurants, loisirs, services, evenements ----
     // Pas de cache navigateur : après une modif admin, les visiteurs voient les nouvelles infos au prochain chargement
     if (req.method === 'GET' && ['boutiques', 'restaurants', 'loisirs', 'services', 'evenements'].includes(resource)) {
@@ -188,6 +208,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const admin = getAdminFromToken(req);
     if (!admin && req.method !== 'GET') {
       return res.status(401).json({ error: 'Token manquant ou invalide' });
+    }
+
+    // ---- GET /api/newsletter — liste des inscrits (admin only) ----
+    if (path === 'newsletter' && req.method === 'GET') {
+      if (!admin) return res.status(401).json({ error: 'Non autorisé.' });
+      try {
+        const rows = await sql`
+          SELECT id, email, created_at
+          FROM newsletter_subscribers
+          ORDER BY created_at DESC
+        `;
+        return res.status(200).json(rows);
+      } catch (e) {
+        console.error('Newsletter list error:', e);
+        return res.status(500).json({ error: 'Erreur lors de la récupération.' });
+      }
     }
 
     if (resource === 'boutiques') {

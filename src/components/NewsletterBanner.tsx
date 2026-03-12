@@ -1,11 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { apiClient } from '../services/apiClient';
 
 /**
  * Bannière newsletter affichée au-dessus du footer sur toutes les pages.
  * Modèle type BHS Roundup : titre deux tons, description grise, input souligné, flèche.
+ * Enregistre les inscriptions via POST /api/newsletter.
  */
 const NewsletterBanner = () => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      await apiClient.newsletter.subscribe(trimmed);
+      setSuccess(true);
+      setEmail('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de l\'inscription.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="pt-10 pb-6 md:pt-12 md:pb-8 bg-white w-full">
       <div className="content-wrap">
@@ -28,16 +53,21 @@ const NewsletterBanner = () => {
             </div>
 
             {/* Bloc droit : une seule ligne horizontale sous input + flèche (comme référence) */}
-            <form className="flex w-full md:w-auto md:flex-1 md:max-w-sm md:min-w-[280px]">
+            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-auto md:flex-1 md:max-w-sm md:min-w-[280px] gap-1">
               <div className="flex items-end flex-1 min-w-0 border-b border-gray-300 focus-within:border-gray-500 transition-colors">
                 <input
                   type="email"
                   placeholder="Votre adresse email"
-                  className="flex-1 min-w-0 bg-transparent border-0 py-2 pr-1 text-gray-500 placeholder-gray-400 focus:outline-none font-sofia text-sm md:text-base"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                  required
+                  className="flex-1 min-w-0 bg-transparent border-0 py-2 pr-1 text-gray-500 placeholder-gray-400 focus:outline-none font-sofia text-sm md:text-base disabled:opacity-60"
                 />
                 <button
                   type="submit"
-                  className="flex-shrink-0 pb-2.5 pl-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  disabled={loading}
+                  className="flex-shrink-0 pb-2.5 pl-1 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-60"
                   aria-label="S'inscrire à la newsletter"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
@@ -45,6 +75,8 @@ const NewsletterBanner = () => {
                   </svg>
                 </button>
               </div>
+              {success && <p className="text-sm text-green-600 font-sofia">Inscription enregistrée. Merci !</p>}
+              {error && <p className="text-sm text-red-600 font-sofia">{error}</p>}
             </form>
         </motion.div>
       </div>

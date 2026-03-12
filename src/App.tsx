@@ -46,6 +46,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ScrollToTop from './components/ScrollToTop';
 import { Loisirs as AdminLoisirs } from './admin/pages/Loisirs';
 import { Services as AdminServices } from './admin/pages/Services';
+import { Newsletter } from './admin/pages/Newsletter';
 import { useAuthStore } from './store/pbAuthStore';
 
 const queryClient = new QueryClient();
@@ -115,6 +116,7 @@ export default function App() {
             <Route path="loisirs" element={<AdminLoisirs />} />
             <Route path="services" element={<AdminServices />} />
             <Route path="evenements" element={<Evenements />} />
+            <Route path="newsletter" element={<Newsletter />} />
             <Route 
               path="settings" 
               element={
