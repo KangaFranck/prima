@@ -348,7 +348,7 @@ export default function Home() {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true, margin: '-20px' }}
-                    transition={{ duration: 0.5, delay: index * 0.1, ease: 'easeOut' }}
+                    transition={{ duration: 0.9, delay: index * 0.22, ease: 'easeOut' }}
                   >
                     <Link 
                       to={`/${item.type}s/${item.id}`}
