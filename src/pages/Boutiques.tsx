@@ -50,14 +50,32 @@ const Boutiques = () => {
 
       <div className="bg-[#f5f3ef] py-20 w-full">
         <div className="content-wrap">
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.2 }
+              }
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-100px' }}
+            className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5"
+          >
             {shops.map((shop) => (
                 <Link
                   key={shop.id}
                   to={`/boutiques/${shop.id}`}
                   className="group block w-full max-w-[200px] sm:max-w-[220px] mx-auto aspect-square relative overflow-hidden bg-transparent transition-transform duration-300 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-400"
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-start p-4">
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+                    }}
+                    className="w-full h-full flex flex-col items-center justify-start p-4"
+                  >
                     <div className="w-full h-24 sm:h-28 flex-shrink-0 flex items-center justify-center">
                       {(shop.logo || shop.image) ? (
                         <img
@@ -74,10 +92,10 @@ const Boutiques = () => {
                         {shop.name}
                       </h3>
                     </div>
-                  </div>
+                  </motion.div>
                 </Link>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

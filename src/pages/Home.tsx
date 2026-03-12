@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Coffee, Dumbbell, Calendar, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Coffee, Dumbbell, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { useShopStore } from '../store/shopStore';
@@ -342,36 +342,29 @@ export default function Home() {
               }}
               className="w-full"
             >
-              {allItems.map((item, index) => (
+              {allItems.map((item) => (
                 <SwiperSlide key={item.id}>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true, margin: '-20px' }}
-                    transition={{ duration: 1.2, delay: index * 0.50, ease: 'easeOut' }}
+                  <Link 
+                    to={`/${item.type}s/${item.id}`}
+                    className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
+                    title={item.name}
                   >
-                    <Link 
-                      to={`/${item.type}s/${item.id}`}
-                      className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
-                      title={item.name}
-                    >
-                      <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
-                        {(item.logo || item.image) ? (
-                          <img
-                            src={item.logo || item.image}
-                            alt=""
-                            className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center p-2">
-                            {item.type === 'boutique' && <ShoppingBag className="w-14 h-14 text-gray-600" />}
-                            {item.type === 'restaurant' && <Coffee className="w-14 h-14 text-gray-600" />}
-                            {item.type === 'loisir' && <Dumbbell className="w-14 h-14 text-gray-600" />}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  </motion.div>
+                    <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
+                      {(item.logo || item.image) ? (
+                        <img
+                          src={item.logo || item.image}
+                          alt=""
+                          className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center p-2">
+                          {item.type === 'boutique' && <ShoppingBag className="w-14 h-14 text-gray-600" />}
+                          {item.type === 'restaurant' && <Coffee className="w-14 h-14 text-gray-600" />}
+                          {item.type === 'loisir' && <Dumbbell className="w-14 h-14 text-gray-600" />}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
                 </SwiperSlide>
               ))}
             </Swiper>
