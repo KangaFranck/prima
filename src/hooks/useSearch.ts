@@ -27,7 +27,7 @@ export const useSearch = () => {
   useEffect(() => {
     const debounceTimer = setTimeout(async () => {
       const query = searchQuery.toLowerCase().trim();
-      if (query.length < 2) {
+      if (query.length < 1) {
         setResults([]);
         setIsLoading(false);
         return;
@@ -112,7 +112,7 @@ export const useSearch = () => {
       } finally {
         setIsLoading(false);
       }
-    }, 300);
+    }, 150);
 
     return () => clearTimeout(debounceTimer);
   }, [searchQuery]);

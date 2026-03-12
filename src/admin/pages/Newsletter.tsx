@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Mail, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Mail, Send, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { apiClient, invalidateDataCache } from '../../services/apiClient';
 
 type Subscriber = { id: string; email: string; created_at: string };
@@ -28,6 +28,7 @@ export const Newsletter = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -112,6 +113,23 @@ export const Newsletter = () => {
     window.open(mailto, '_blank', 'noopener,noreferrer');
   };
 
+  const handleDeleteSelected = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (!window.confirm(`Supprimer ${ids.length} abonné(s) sélectionné(s) ?`)) return;
+    setDeleting(true);
+    try {
+      await apiClient.newsletter.deleteMany(ids);
+      invalidateDataCache('newsletter');
+      setSubscribers((prev) => prev.filter((s) => !selectedIds.has(s.id)));
+      setSelectedIds(new Set());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur lors de la suppression.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -165,6 +183,15 @@ export const Newsletter = () => {
           >
             <Send className="w-4 h-4" />
             Faire une annonce ({selectedEmails.length})
+          </button>
+          <button
+            type="button"
+            onClick={handleDeleteSelected}
+            disabled={selectedIds.size === 0 || deleting}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            Supprimer ({selectedIds.size})
           </button>
         </div>
       </div>

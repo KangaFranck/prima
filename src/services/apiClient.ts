@@ -225,6 +225,12 @@ export const apiClient = {
     list(): Promise<{ id: string; email: string; created_at: string }[]> {
       return request<{ id: string; email: string; created_at: string }[]>('newsletter');
     },
+    deleteMany(ids: string[]): Promise<{ ok: boolean; deleted: number }> {
+      return request<{ ok: boolean; deleted: number }>('newsletter/delete', {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      });
+    },
   },
 
   upload: {

@@ -226,6 +226,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // ---- POST /api/newsletter/delete — supprimer des inscrits (admin only) ----
+    if (path === 'newsletter/delete' && req.method === 'POST') {
+      if (!admin) return res.status(401).json({ error: 'Non autorisé.' });
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      const ids = Array.isArray(body.ids) ? body.ids.filter((x): x is string => typeof x === 'string') : [];
+      if (ids.length === 0) {
+        return res.status(400).json({ error: 'Aucun identifiant fourni.' });
+      }
+      try {
+        for (const id of ids) {
+          await sql`DELETE FROM newsletter_subscribers WHERE id = ${id}`;
+        }
+        return res.status(200).json({ ok: true, deleted: ids.length });
+      } catch (e) {
+        console.error('Newsletter delete error:', e);
+        return res.status(500).json({ error: 'Erreur lors de la suppression.' });
+      }
+    }
+
     if (resource === 'boutiques') {
       if (req.method === 'POST') {
         const b = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};

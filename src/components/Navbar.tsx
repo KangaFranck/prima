@@ -70,6 +70,7 @@ const Navbar = () => {
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
     if (isMenuOpen) setIsMenuOpen(false);
+    if (isUniversOpen) setIsUniversOpen(false);
   };
 
   // Composant pour le menu déroulant des univers
@@ -243,10 +244,10 @@ const Navbar = () => {
                 <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" align="left" />
               </Link>
 
-            {/* Menu desktop : à partir de lg (1024px) pour garder le hamburger sur iPad */}
-            <nav className="hidden lg:flex items-center justify-center flex-1 space-x-8">
+            {/* Menu desktop : masqué quand la recherche est ouverte pour éviter le chevauchement */}
+            <nav className={`hidden items-center justify-center flex-1 space-x-8 min-w-0 ${isSearchOpen ? 'lg:hidden' : 'lg:flex'}`}>
               {navigationLinks.map((link) => (
-                <div key={link.label} className="relative">
+                <div key={link.label} className="relative flex-shrink-0">
                   {link.type === 'univers' ? (
                     <div className="relative univers-menu">
                       <button
@@ -462,66 +463,60 @@ const Navbar = () => {
               )}
             </AnimatePresence>
 
-            {/* Barre de recherche desktop */}
-            <div className="hidden lg:block absolute right-0">
-              <div className="relative">
-                <AnimatePresence>
-                  {isSearchOpen && (
-                    <motion.div
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: 'auto', opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      className="absolute right-0 top-1/2 transform -translate-y-1/2"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="relative flex items-center">
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Rechercher une boutique ou catégorie..."
-                          className="w-72 bg-transparent border-0 border-b border-gray-300 focus:border-black focus:outline-none py-2 pr-16 text-gray-700 placeholder-gray-400"
-                          autoFocus
-                        />
-                        {searchQuery && (
-                          <button
-                            onClick={() => setSearchQuery('')}
-                            className="absolute right-8 text-gray-400 hover:text-gray-600 transition-colors"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        )}
+            {/* Barre de recherche desktop : prend la place du nav quand ouverte */}
+            <div className={`hidden lg:flex items-center flex-shrink-0 ${isSearchOpen ? 'flex-1 min-w-0 justify-end' : ''}`}>
+              <AnimatePresence mode="wait">
+                {isSearchOpen ? (
+                  <motion.div
+                    key="search-open"
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: '100%' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative flex items-center w-full max-w-md ml-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="relative flex items-center flex-1 min-w-0">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Rechercher une boutique ou catégorie..."
+                        className="flex-1 min-w-0 w-full bg-transparent border-0 border-b border-gray-300 focus:border-black focus:outline-none py-2 pr-16 text-gray-700 placeholder-gray-400"
+                        autoFocus
+                      />
+                      {searchQuery && (
                         <button
-                          type="submit"
-                          className="absolute right-0 text-gray-400 hover:text-black transition-colors"
+                          type="button"
+                          onClick={() => setSearchQuery('')}
+                          className="absolute right-8 text-gray-400 hover:text-gray-600 transition-colors"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
-                      </div>
-                      {isSearchOpen && (
-                        <div className="relative">
-                          <SearchResults />
-                        </div>
                       )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <button
-                  onClick={toggleSearch}
-                  className="p-3 hover:bg-[#F8F7F4] rounded-full transition-colors"
-                  aria-label="Rechercher"
-                >
-                  {isSearchOpen ? (
-                    <X className="w-6 h-6 text-gray-800" />
-                  ) : (
-                    <Search className="w-6 h-6 text-gray-800" />
-                  )}
-                </button>
-              </div>
+                      <span className="absolute right-0 text-gray-400 pointer-events-none">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                    <SearchResults />
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+              <button
+                onClick={toggleSearch}
+                className="p-3 hover:bg-[#F8F7F4] rounded-full transition-colors flex-shrink-0"
+                aria-label="Rechercher"
+              >
+                {isSearchOpen ? (
+                  <X className="w-6 h-6 text-gray-800" />
+                ) : (
+                  <Search className="w-6 h-6 text-gray-800" />
+                )}
+              </button>
             </div>
           </div>
         </div>
