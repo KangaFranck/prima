@@ -213,7 +213,7 @@ const EventDetail = () => {
               <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
                 {(() => {
                   const s = getEventStatus({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin });
-                  return s === 'en_cours' ? 'En cours' : s === 'avenir' ? 'À venir' : 'Actus & Events passées';
+                  return s === 'en_cours' ? 'Actus & Events en cours' : s === 'avenir' ? 'À venir' : 'Actus & Events passées';
                 })()}
               </p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">

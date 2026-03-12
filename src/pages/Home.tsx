@@ -240,7 +240,13 @@ export default function Home() {
                   index % 2 === 1 ? 'lg:flex-row-reverse' : ''
                 }`}
               >
-                <div className="w-full lg:w-1/2 overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-2xl">
+                <motion.div
+                  className="w-full lg:w-1/2 overflow-hidden transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-2xl"
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -200 : 200 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                >
                   <Link to={block.link} className="group relative block aspect-square overflow-hidden">
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300 z-10" />
                     <img
@@ -252,7 +258,7 @@ export default function Home() {
                       <ArrowRight className="w-8 h-8 text-white" />
                     </div>
                   </Link>
-                </div>
+                </motion.div>
                 
                 <div className="w-full lg:w-1/2 text-center lg:text-left">
                   <TypewriterText
@@ -336,29 +342,36 @@ export default function Home() {
               }}
               className="w-full"
             >
-              {allItems.map((item) => (
+              {allItems.map((item, index) => (
                 <SwiperSlide key={item.id}>
-                  <Link 
-                    to={`/${item.type}s/${item.id}`}
-                    className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
-                    title={item.name}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, margin: '-20px' }}
+                    transition={{ duration: 0.5, delay: index * 0.1, ease: 'easeOut' }}
                   >
-                    <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
-                      {(item.logo || item.image) ? (
-                        <img
-                          src={item.logo || item.image}
-                          alt=""
-                          className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center p-2">
-                          {item.type === 'boutique' && <ShoppingBag className="w-14 h-14 text-gray-600" />}
-                          {item.type === 'restaurant' && <Coffee className="w-14 h-14 text-gray-600" />}
-                          {item.type === 'loisir' && <Dumbbell className="w-14 h-14 text-gray-600" />}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
+                    <Link 
+                      to={`/${item.type}s/${item.id}`}
+                      className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
+                      title={item.name}
+                    >
+                      <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
+                        {(item.logo || item.image) ? (
+                          <img
+                            src={item.logo || item.image}
+                            alt=""
+                            className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center p-2">
+                            {item.type === 'boutique' && <ShoppingBag className="w-14 h-14 text-gray-600" />}
+                            {item.type === 'restaurant' && <Coffee className="w-14 h-14 text-gray-600" />}
+                            {item.type === 'loisir' && <Dumbbell className="w-14 h-14 text-gray-600" />}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  </motion.div>
                 </SwiperSlide>
               ))}
             </Swiper>

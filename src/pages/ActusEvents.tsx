@@ -40,7 +40,7 @@ function shareUrl(path: string): string {
 
 /** Libellé selon le statut */
 const STATUS_LABEL: Record<string, string> = {
-  en_cours: 'En cours',
+  en_cours: 'Actus & Events en cours',
   avenir: 'À venir',
   passe: 'Actus & Events passées',
 };
@@ -215,9 +215,6 @@ const ActusEvents = () => {
             <>
               {enCours.length > 0 && (
                 <section className="mb-16">
-                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    En cours
-                  </h2>
                   <div className="space-y-12">
                     {enCours.map((evenement, index) => (
                       <EventRow
