@@ -12,8 +12,8 @@ import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-// Vidéo unique de la première section (fichier : public/videos/backvideos.mp4)
-const backVideo = '/videos/backvideos.mp4';
+// Vidéo unique de la première section (fichier : public/videos/backvideos1.mp4)
+const backVideo = '/videos/backvideos1.mp4';
 
 const universeBlocks = [
   {
@@ -142,9 +142,10 @@ export default function Home() {
         {videoFallback ? (
           <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
         ) : (
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
+          <div className="absolute inset-0 w-full h-full brightness-125 overflow-hidden">
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover"
             autoPlay
             loop
             muted
@@ -157,22 +158,26 @@ export default function Home() {
           >
             <source src={backVideo} type="video/mp4" />
           </video>
+        </div>
         )}
-        <div className="absolute inset-0 bg-black/30">
+        <div className="absolute inset-0">
           <div className="w-full h-full flex flex-col content-edge">
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="flex flex-col items-center justify-center w-full">
-                <div className="mb-6 flex items-center justify-center w-full">
-                  <Logo 
-                    className="h-40 md:h-56 lg:h-72 xl:h-80 mx-auto" 
-                    color="white"
-                    variant="light"
-                  />
+                <div className="flex flex-col items-center justify-center w-full">
+                  <div className="mb-6 flex items-center justify-center w-full h-40 md:h-56 lg:h-72 xl:h-80">
+                    <img
+                      src="/images/logobackvideos.png"
+                      alt="Prima Center"
+                      className="h-full w-auto object-contain mx-auto"
+                      style={{ transform: 'scale(2.6)', transformOrigin: '50% 50%' }}
+                    />
+                  </div>
+                  <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-10 md:-mt-12 lg:-mt-14 xl:-mt-16 max-w-2xl">
+                    Shopping, restaurants, loisirs et services<br />
+                    au cœur de la Zone 4 à Abidjan.
+                  </p>
                 </div>
-                <p className="text-[16px] md:text-[18px] lg:text-[20px] font-sofia font-thin text-white text-center tracking-wider leading-relaxed -mt-10 md:-mt-12 lg:-mt-14 xl:-mt-16 max-w-2xl">
-                  Shopping, restaurants, loisirs et services<br />
-                  au cœur de la Zone 4 à Abidjan.
-                </p>
               </div>
             </div>
           </div>
@@ -253,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* Section 3: Carousel - même alignement que navbar/footer */}
-      <section className="py-12 relative overflow-hidden bg-[#E5DDD3] w-full enseignes-carousel">
+      <section className="py-12 relative overflow-hidden w-full enseignes-carousel bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-beige.png')", backgroundColor: '#efece6' }}>
         <div className="content-wrap relative z-10">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-ogg mb-4 text-gray-800">DÉCOUVREZ NOS ENSEIGNES</h2>
@@ -325,7 +330,7 @@ export default function Home() {
                       )}
                     </div>
                   </Link>
-  bndfgh;''                </SwiperSlide>
+                 </SwiperSlide>
               ))}
             </Swiper>
             {/* Pagination desktop : un point par groupe de 6 logos */}

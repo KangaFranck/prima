@@ -42,7 +42,7 @@ const APropos = () => {
               className="relative aspect-[16/9] overflow-hidden shadow-xl bg-[#E5DDD3]"
             >
               <img 
-                src="/images/A PROPOS.png"
+                src="/images/NOTRE HISTOIRE IMG.png"
                 alt="Prima Center"
                 className="w-full h-full object-contain"
               />

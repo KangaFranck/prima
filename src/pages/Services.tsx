@@ -70,13 +70,13 @@ const Services = () => {
         />
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute bottom-6 left-0 right-0 content-wrap">
-          <h1 className="text-[32px] sm:text-[38px] md:text-[46px] lg:text-[54px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
+          <h1 className="text-[48px] sm:text-[56px] md:text-[64px] lg:text-[80px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
             Services
           </h1>
         </div>
       </div>
 
-      <div className="bg-[#f5f3ef] py-20 w-full">
+      <div className="py-20 w-full bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-beige.png')", backgroundColor: '#efece6' }}>
         <div className="content-wrap">
           <motion.div
             variants={containerVariants}

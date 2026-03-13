@@ -326,14 +326,14 @@ const EventDetail = () => {
                   key={otherEvenement.id}
                   href={`/evenements/${otherEvenement.id}`}
                   className="group relative bg-white shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-gray-300 transform hover:-translate-y-2"
-                  style={{ aspectRatio: '1/1' }}
+                  style={{ aspectRatio: '1080/1350' }}
                 >
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full bg-[#F8F7F4]">
                     {otherEvenement.image ? (
                       <img
                         src={otherEvenement.image}
                         alt={otherEvenement.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-[#F8F7F4] to-gray-200 flex items-center justify-center">
