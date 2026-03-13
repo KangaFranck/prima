@@ -97,6 +97,7 @@ export default function RestaurantDetail() {
   const currentId = id ?? "";
   const otherRestaurants = restaurants
     .filter((r) => r.id !== currentId)
+    .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr'))
     .slice(0, 5)
     .map((r) => ({ id: r.id, name: r.name, logo: r.logo }));
 

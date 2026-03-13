@@ -30,7 +30,7 @@ const universList = [
 const navigationLinks = [
   { path: '/a-propos', label: 'À propos' },
   { type: 'univers', label: 'Nos univers' },
-  { path: '/actualites', label: 'Actus & Events' },
+  { path: '/actualites', label: 'Actualités & Événements' },
   { path: '/contact', label: 'Infos pratiques' }
 ];
 
@@ -232,20 +232,21 @@ const Navbar = () => {
         className="fixed left-0 right-0 w-full z-40 bg-white shadow-none transition-all duration-300 pt-[var(--safe-area-top)]"
         style={{
           '--navbar-height': isTopInfoBarVisible ? 'calc(152px + var(--safe-area-top))' : 'calc(112px + var(--safe-area-top))',
-          top: isTopInfoBarVisible ? '32px' : '0px',
+          top: isTopInfoBarVisible ? '40px' : '0px',
           width: '100%',
         } as React.CSSProperties}
       >
         {/* Même conteneur que TopInfoBar et Footer : content-wrap = marge identique */}
         <div className="content-wrap">
-          <div className="flex items-center h-24 md:h-28 relative min-w-0 gap-6">
+          <div className="flex items-center h-24 md:h-28 relative min-w-0">
             {/* Logo : même marge gauche que "Ouvert" et footer */}
               <Link to="/" className="flex-shrink-0 flex items-center header-logo" onClick={handleLogoClick}>
                 <Logo className="h-[4.5rem] md:h-[5.5rem] w-auto" align="left" />
               </Link>
 
-            {/* Menu desktop : masqué quand la recherche est ouverte pour éviter le chevauchement */}
-            <nav className={`hidden items-center justify-center flex-1 space-x-8 min-w-0 ${isSearchOpen ? 'lg:hidden' : 'lg:flex'}`}>
+            {/* Menu desktop : centré entre logo et recherche */}
+            <div className="hidden lg:flex flex-1 justify-center min-w-0">
+              <nav className={`flex items-center justify-center space-x-8 ${isSearchOpen ? 'hidden' : 'flex'}`}>
               {navigationLinks.map((link) => (
                 <div key={link.label} className="relative flex-shrink-0">
                   {link.type === 'univers' ? (
@@ -271,7 +272,8 @@ const Navbar = () => {
                   )}
                 </div>
               ))}
-            </nav>
+              </nav>
+            </div>
 
             {/* Boutons tablette / mobile : hamburger jusqu'à lg (iPad mini, Air, Pro) */}
             <div className="lg:hidden flex-1 flex justify-end items-center space-x-3">

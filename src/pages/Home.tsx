@@ -124,13 +124,13 @@ export default function Home() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base)
+  // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base), triés par ordre alphabétique
   const allItems: CarouselItem[] = [
     ...shops.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'boutique' as const })),
     ...restaurants.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'restaurant' as const })),
     ...loisirs.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'loisir' as const })),
     ...services.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'service' as const }))
-  ];
+  ].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr'));
 
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
@@ -325,7 +325,7 @@ export default function Home() {
                       )}
                     </div>
                   </Link>
-                </SwiperSlide>
+  bndfgh;''                </SwiperSlide>
               ))}
             </Swiper>
             {/* Pagination desktop : un point par groupe de 6 logos */}

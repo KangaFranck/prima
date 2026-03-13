@@ -60,7 +60,7 @@ const Footer = () => {
               <Link to="/restaurants" className="block hover:text-white transition-colors">Restaurants</Link>
               <Link to="/loisirs" className="block hover:text-white transition-colors">Loisirs</Link>
               <Link to="/services" className="block hover:text-white transition-colors">Services</Link>
-              <Link to="/evenements" className="block hover:text-white transition-colors">Actus & Events</Link>
+              <Link to="/evenements" className="block hover:text-white transition-colors">Actualités & Événements</Link>
             </div>
           </div>
 
@@ -179,14 +179,14 @@ const Footer = () => {
       <div className="bg-black w-full">
         <div className="content-wrap py-4 md:py-5">
           <p className="font-sofia text-white text-center text-xs md:text-sm">
-            © 2026 Prima Center. Réalisé par{' '}
+            © 2026 PRIMA CENTER · Réalisé par{' '}
             <a
               href="https://www.instagram.com/coemagency/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:no-underline hover:opacity-80 transition-opacity"
+              className="hover:opacity-80 transition-opacity"
             >
-              coem agency
+              COEM AGENCY
             </a>
             .
           </p>

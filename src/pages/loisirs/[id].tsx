@@ -97,6 +97,7 @@ export default function LoisirDetail() {
   const currentId = id ?? "";
   const otherLoisirs = loisirs
     .filter((l) => l.id !== currentId)
+    .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr'))
     .slice(0, 5)
     .map((l) => ({ id: l.id, name: l.name, logo: l.logo }));
 

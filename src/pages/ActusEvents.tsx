@@ -40,9 +40,9 @@ function shareUrl(path: string): string {
 
 /** Libellé selon le statut */
 const STATUS_LABEL: Record<string, string> = {
-  en_cours: 'Actus & Events en cours',
+  en_cours: 'Actualités & Événements en cours',
   avenir: 'À venir',
-  passe: 'Actus & Events passées',
+  passe: 'ACTUS ET ÉVENTS PASSÉS',
 };
 
 /** Carte événement style Bal Harbour : image à gauche, infos à droite */
@@ -66,9 +66,9 @@ function EventRow({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-6xl w-full mx-auto mb-12 lg:mb-16`}
+      className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} bg-white border border-gray-100 overflow-hidden max-w-[920px] w-full mx-auto mb-12 lg:mb-16`}
     >
-      <div className="w-full lg:w-[70%] aspect-[1080/1350] flex-shrink-0 overflow-hidden">
+      <div className="w-full lg:w-[70%] aspect-[1080/1080] flex-shrink-0 overflow-hidden">
         <button type="button" onClick={onSeeMore} className="block w-full h-full text-left">
           {evenement.image ? (
             <img
@@ -85,7 +85,7 @@ function EventRow({
           )}
         </button>
       </div>
-      <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-6 md:p-8 lg:p-10">
+      <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-5 md:p-6 lg:p-8">
         <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
           {statusLabel}
         </p>
@@ -198,7 +198,7 @@ const ActusEvents = () => {
             animate={{ opacity: 1, y: 0 }}
             className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16 text-center"
           >
-            Actus & Events
+            Actualités & Événements
           </motion.h1>
 
           {isEmpty ? (
@@ -206,9 +206,9 @@ const ActusEvents = () => {
               <div className="w-20 h-20 bg-gray-100 flex items-center justify-center mx-auto mb-6 rounded-full">
                 <Calendar className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-xl font-ogg font-semibold text-gray-800 mb-3">Aucun Actus & Events à afficher</h3>
+              <h3 className="text-lg font-ogg font-semibold text-gray-800 mb-3">Aucun Actualités & Événements à afficher</h3>
               <p className="text-gray-500 max-w-md mx-auto font-sofia">
-                D'autres Actus & Events seront bientôt ajoutés. Revenez plus tard !
+                D'autres Actualités & Événements seront bientôt ajoutés. Revenez plus tard !
               </p>
             </div>
           ) : (
@@ -251,7 +251,7 @@ const ActusEvents = () => {
               {past.length > 0 && (
                 <section className="mt-16 pt-12 border-t border-gray-200">
                   <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    Actus & Events passées
+                    ACTUS ET ÉVENTS PASSÉS
                   </h2>
                   <div className="space-y-8">
                     {past.map((evenement, index) => (
@@ -274,7 +274,7 @@ const ActusEvents = () => {
                       key={evenement.id}
                       evenement={evenement}
                       index={index}
-                      statusLabel="Actus & Events"
+                      statusLabel="Actualités & Événements"
                       onSeeMore={() => navigate(`/evenements/${evenement.id}`)}
                     />
                   ))}

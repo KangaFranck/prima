@@ -69,8 +69,8 @@ const Services = () => {
           }}
         />
         <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute bottom-6 left-0 right-0 content-edge">
-          <h1 className="text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
+        <div className="absolute bottom-6 left-0 right-0 content-wrap">
+          <h1 className="text-[32px] sm:text-[38px] md:text-[46px] lg:text-[54px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
             Services
           </h1>
         </div>
@@ -85,7 +85,7 @@ const Services = () => {
             viewport={{ once: true, margin: "-100px" }}
             className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5"
           >
-            {services.map((service) => (
+            {[...services].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr')).map((service) => (
               <Link
                 key={service.id}
                 to={`/services/${service.id}`}

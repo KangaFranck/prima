@@ -42,6 +42,7 @@ export const useSearch = () => {
           apiClient.services.list(),
         ]);
 
+        const q = query.toLowerCase();
         const searchResults: SearchResult[] = [];
 
         boutiques
@@ -98,10 +99,15 @@ export const useSearch = () => {
           });
 
         const sorted = searchResults.sort((a, b) => {
-          const aExact = a.name.toLowerCase() === query;
-          const bExact = b.name.toLowerCase() === query;
-          if (aExact && !bExact) return -1;
-          if (!aExact && bExact) return 1;
+          const aStarts = a.name.toLowerCase().startsWith(q);
+          const bStarts = b.name.toLowerCase().startsWith(q);
+          const aContains = a.name.toLowerCase().includes(q);
+          const bContains = b.name.toLowerCase().includes(q);
+
+          if (aStarts && !bStarts) return -1;
+          if (!aStarts && bStarts) return 1;
+          if (aContains && !bContains) return -1;
+          if (!aContains && bContains) return 1;
           return a.name.localeCompare(b.name);
         });
 

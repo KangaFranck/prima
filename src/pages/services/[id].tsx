@@ -92,6 +92,7 @@ export default function ServiceDetail() {
   const currentId = id ?? "";
   const otherServices = services
     .filter((s) => s.id !== currentId)
+    .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'fr'))
     .slice(0, 5)
     .map((s) => ({ id: s.id, name: s.name, logo: s.logo }));
 

@@ -134,7 +134,7 @@ const EventDetail = () => {
   if (!evenement) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4]">
-        <p className="text-xl text-gray-600">Actus & Events non trouvé(e).</p>
+        <p className="text-xl text-gray-600">Actualités & Événements non trouvé(e).</p>
       </div>
     );
   }
@@ -169,7 +169,7 @@ const EventDetail = () => {
                             <img
                               src={url}
                               alt={`${evenement.title} - ${i === 0 ? 'affiche' : `image ${i}`}`}
-                              className="w-full h-full object-cover object-center scale-110 hover:scale-[1.12] transition-transform duration-300"
+                              className="w-full h-full object-contain object-center bg-[#E5DDD3]"
                               onError={() => {
                                 if (i === 0) setMainImageError(true);
                                 else setGalleryErrors(prev => new Set(prev).add(i - 1));
@@ -213,7 +213,7 @@ const EventDetail = () => {
               <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-3">
                 {(() => {
                   const s = getEventStatus({ date: evenement.date, heure: evenement.heure, dateFin: evenement.dateFin, heureFin: evenement.heureFin });
-                  return s === 'en_cours' ? 'Actus & Events en cours' : s === 'avenir' ? 'À venir' : 'Actus & Events passées';
+                  return s === 'en_cours' ? 'Actualités & Événements en cours' : s === 'avenir' ? 'À venir' : 'ACTUS ET ÉVENTS PASSÉS';
                 })()}
               </p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-ogg font-bold text-gray-900 tracking-tight mb-6 break-words leading-tight">
@@ -222,7 +222,7 @@ const EventDetail = () => {
               {evenement.lieu && (
                 <div className="flex items-start gap-2 text-gray-600 mb-3">
                   <MapPin className="w-5 h-5 mt-0.5 shrink-0 text-gray-500" />
-                  <span className="font-sofia text-base md:text-lg">{evenement.lieu}</span>
+                  <span className="font-sofia text-sm md:text-base">{evenement.lieu}</span>
                 </div>
               )}
               <div className="flex items-center gap-2 text-gray-600 mb-8">
@@ -315,7 +315,7 @@ const EventDetail = () => {
       <div className="bg-white py-16 w-full">
         <div className="content-wrap">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-ogg text-black mb-4">Découvrez d'autres Actus & Events</h2>
+            <h2 className="text-2xl md:text-3xl font-ogg text-black mb-4">Découvrez d'autres Actualités & Événements</h2>
             <div className="w-24 h-1 bg-black mx-auto"></div>
           </div>
           
@@ -384,7 +384,7 @@ const EventDetail = () => {
               className="inline-flex items-center px-12 py-6 bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <Calendar className="w-6 h-6 mr-3" />
-              Voir tous les Actus & Events
+              Voir tous les Actualités & Événements
               <ArrowRight className="w-6 h-6 ml-3" />
             </a>
           </div>

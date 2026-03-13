@@ -96,6 +96,7 @@ export default function BoutiqueDetail() {
   const currentId = id ?? "";
   const otherBoutiques = boutiques
     .filter((b) => b._id !== currentId)
+    .sort((a, b) => (a.nom || '').localeCompare(b.nom || '', 'fr'))
     .slice(0, 5)
     .map((b) => ({ id: b._id, name: b.nom, logo: b.logo }));
 

@@ -32,7 +32,7 @@ const NewsletterBanner = () => {
   };
 
   return (
-    <section className="pt-10 pb-6 md:pt-12 md:pb-8 bg-white w-full">
+    <section className="pt-14 pb-6 md:pt-16 md:pb-8 bg-white w-full">
       <div className="content-wrap">
         <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -42,7 +42,7 @@ const NewsletterBanner = () => {
             className="flex flex-col md:flex-row md:items-center justify-between gap-10 md:gap-16"
           >
             {/* Bloc gauche : titre sans soulignement + description (rendu type BHS) */}
-            <div className="space-y-1.5 flex-shrink-0 md:max-w-[48%]">
+            <div className="space-y-1.5 flex-shrink-0 md:max-w-[48%] overflow-visible">
               <h2 className="font-ogg text-2xl md:text-3xl lg:text-4xl tracking-tight leading-tight">
                 <span className="text-black uppercase">LES ACTUALITÉS </span>
                 <span className="text-gray-400 font-sofia font-normal text-xl md:text-2xl lg:text-3xl normal-case">Prima Center</span>
@@ -53,7 +53,7 @@ const NewsletterBanner = () => {
             </div>
 
             {/* Bloc droit : une seule ligne horizontale sous input + flèche (comme référence) */}
-            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-auto md:flex-1 md:max-w-sm md:min-w-[280px] gap-1">
+            <form onSubmit={handleSubmit} className="flex flex-col w-full md:w-auto md:flex-1 md:max-w-sm md:min-w-[280px] gap-1 mt-4 md:mt-0">
               <div className="flex items-end flex-1 min-w-0 border-b border-gray-300 focus-within:border-gray-500 transition-colors">
                 <input
                   type="email"

@@ -33,17 +33,18 @@ const APropos = () => {
                 Pensé comme un véritable lieu de vie, PRIMA CENTER accueille chaque jour visiteurs et habitués dans un environnement animé et convivial.
               </p>
             </motion.div>
+            {/* Bloc image rectangulaire paysage (largeur > hauteur) 16:9 — dimensions : 1920×1080 ou 1600×900 px */}
             <motion.div 
               initial={{ x: 50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-square overflow-hidden shadow-xl"
+              className="relative aspect-[16/9] overflow-hidden shadow-xl bg-[#E5DDD3]"
             >
               <img 
                 src="/images/A PROPOS.png"
                 alt="Prima Center"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </motion.div>
           </div>
