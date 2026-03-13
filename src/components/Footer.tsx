@@ -83,7 +83,7 @@ const Footer = () => {
               CONTACT
             </Link>
             <div className="space-y-1 text-gray-300 font-sofia text-xs md:text-sm">
-              <p className="font-ogg font-semibold text-white text-xs md:text-sm">PRIMA CENTER</p>
+              <p className="font-sofia text-white text-xs md:text-sm">PRIMA CENTER</p>
               <p>Marcory Zone 4 – Abidjan</p>
               <a href="mailto:primacenterabidjan@gmail.com" className="hover:text-white transition-colors">primacenterabidjan@gmail.com</a>
             </div>

@@ -196,7 +196,7 @@ const ActusEvents = () => {
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-ogg text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight pt-16 mb-12 md:mb-16 text-center"
+            className="text-[48px] sm:text-[56px] md:text-[64px] lg:text-[80px] font-ogg font-semibold text-gray-900 leading-tight tracking-wide pt-16 mb-12 md:mb-16 text-center"
           >
             Actualités & Événements
           </motion.h1>

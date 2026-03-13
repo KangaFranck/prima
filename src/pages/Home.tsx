@@ -12,8 +12,8 @@ import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-// Vidéo unique de la première section (fichier : public/videos/backvideos1.mp4)
-const backVideo = '/videos/backvideos1.mp4';
+// Vidéo unique de la première section (fichier : public/videos/videos.mp4)
+const backVideo = '/videos/videos.mp4';
 
 const universeBlocks = [
   {
