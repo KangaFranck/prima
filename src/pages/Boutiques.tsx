@@ -36,7 +36,7 @@ const Boutiques = () => {
       <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
         <img
           src="/images/NOS UNIVERS BOUTIQUES.png"
-          alt="Boutiques Prima Center"
+          alt="Boutiques PRIMA CENTER"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
         />

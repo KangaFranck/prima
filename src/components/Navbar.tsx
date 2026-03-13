@@ -100,7 +100,7 @@ const Navbar = () => {
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 5 }}
-      className="absolute top-full right-0 w-96 max-h-[80vh] bg-white rounded-lg shadow-lg overflow-y-auto border border-gray-200 mt-2 z-[60]"
+      className="absolute top-full right-0 w-96 max-h-[80vh] bg-white rounded-b-lg shadow-lg overflow-y-auto border border-t-0 border-gray-200 mt-0 z-[60]"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -229,7 +229,7 @@ const Navbar = () => {
     <div className="relative">
       {/* En-tête fixe avec animation */}
       <motion.header 
-        className="fixed left-0 right-0 w-full z-40 bg-white shadow-none transition-all duration-300 pt-[var(--safe-area-top)]"
+        className="navbar-main fixed left-0 right-0 w-full z-40 bg-white shadow-none border-b-0 transition-all duration-300 pt-[var(--safe-area-top)]"
         style={{
           '--navbar-height': isTopInfoBarVisible ? 'calc(152px + var(--safe-area-top))' : 'calc(112px + var(--safe-area-top))',
           top: isTopInfoBarVisible ? '40px' : '0px',
@@ -364,7 +364,7 @@ const Navbar = () => {
                     <div className="relative h-24 bg-white border-b border-gray-200">
                       <div className="relative flex items-center justify-between p-6">
                         <div>
-                          <h2 className="font-ogg font-semibold text-gray-900">Prima Center</h2>
+                          <h2 className="font-ogg font-semibold text-gray-900">PRIMA CENTER</h2>
                           <p className="text-sm font-ogg text-gray-500">Menu de navigation</p>
                         </div>
                         <motion.button
@@ -456,7 +456,7 @@ const Navbar = () => {
                     {/* Footer du menu — même fond */}
                     <div className="p-6 border-t border-gray-200 bg-white">
                       <div className="text-center">
-                        <p className="text-sm font-ogg font-medium text-gray-900 mb-1">Prima Center</p>
+                        <p className="text-sm font-ogg font-medium text-gray-900 mb-1">PRIMA CENTER</p>
                         <p className="text-xs font-ogg text-gray-500">Votre centre commercial de référence</p>
                       </div>
                     </div>
@@ -478,31 +478,28 @@ const Navbar = () => {
                     className="relative flex items-center w-full max-w-md ml-auto"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="relative flex items-center flex-1 min-w-0">
+                    <div className="search-bar-wrap relative flex items-center flex-1 min-w-0 gap-2 border-b border-gray-300 focus-within:border-black transition-colors">
+                      <Search className="w-5 h-5 text-gray-400 flex-shrink-0" aria-hidden />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Rechercher une boutique ou catégorie..."
-                        className="flex-1 min-w-0 w-full bg-transparent border-0 border-b border-gray-300 focus:border-black focus:outline-none py-2 pr-16 text-gray-700 placeholder-gray-400"
+                        placeholder="rechercher ici ..."
+                        className="flex-1 min-w-0 bg-transparent border-0 outline-none ring-0 py-2 pr-10 text-gray-700 placeholder-gray-400"
                         autoFocus
                       />
-                      {searchQuery && (
+                      {searchQuery ? (
                         <button
                           type="button"
                           onClick={() => setSearchQuery('')}
-                          className="absolute right-8 text-gray-400 hover:text-gray-600 transition-colors"
+                          className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 p-1"
+                          aria-label="Effacer la recherche"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         </button>
-                      )}
-                      <span className="absolute right-0 text-gray-400 pointer-events-none">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </span>
+                      ) : null}
                     </div>
                     <SearchResults />
                   </motion.div>
@@ -536,36 +533,31 @@ const Navbar = () => {
               top: isTopInfoBarVisible ? '72px' : '80px',
             }}
           >
-            <div className="bg-white shadow-lg border-b border-gray-200 p-4">
+            <div className="bg-white p-4">
               <div className="flex items-center space-x-3">
                 <div className="flex-1 relative">
-                  <div className="relative flex items-center">
+                  <div className="search-bar-wrap relative flex items-center gap-2 border-b border-gray-300 focus-within:border-black transition-colors">
+                    <Search className="w-5 h-5 text-gray-400 flex-shrink-0" aria-hidden />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Rechercher boutiques, restaurants, loisirs..."
-                      className="flex-1 bg-transparent border-0 border-b border-gray-300 focus:border-black focus:outline-none py-2 pr-16 text-gray-700 placeholder-gray-400"
+                      placeholder="rechercher ici ..."
+                      className="flex-1 bg-transparent border-0 outline-none ring-0 py-2 pr-2 text-gray-700 placeholder-gray-400"
                       autoFocus
                     />
-                    {searchQuery && (
+                    {searchQuery ? (
                       <button
+                        type="button"
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-8 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 p-1"
+                        aria-label="Effacer la recherche"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-                    )}
-                    <button
-                      type="submit"
-                      className="absolute right-0 text-gray-400 hover:text-black transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
+                    ) : null}
                   </div>
                   <SearchResults />
                 </div>

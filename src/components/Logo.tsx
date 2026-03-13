@@ -32,7 +32,7 @@ const Logo: React.FC<LogoProps> = ({
     <div className={`${className} flex items-center ${alignClass}`}>
       <img 
         src={logoSrc}
-        alt="Prima Center"
+        alt="PRIMA CENTER"
         className={`h-full w-auto object-contain max-w-none ${imgMarginClass}`}
         style={{ 
           filter: color === 'white' ? 'brightness(0) invert(1)' : 'none',

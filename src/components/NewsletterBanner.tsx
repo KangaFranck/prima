@@ -45,7 +45,7 @@ const NewsletterBanner = () => {
             <div className="space-y-1.5 flex-shrink-0 md:max-w-[48%] overflow-visible">
               <h2 className="font-ogg text-2xl md:text-3xl lg:text-4xl tracking-tight leading-tight">
                 <span className="text-black uppercase">LES ACTUALITÉS </span>
-                <span className="text-gray-400 font-sofia font-normal text-xl md:text-2xl lg:text-3xl normal-case">Prima Center</span>
+                <span className="text-gray-400 font-sofia font-normal text-xl md:text-2xl lg:text-3xl normal-case">PRIMA CENTER</span>
               </h2>
               <p className="text-gray-400 text-sm md:text-base font-sofia leading-relaxed max-w-md">
                 Recevez en avant-première les événements, nouveautés et actualités de la galerie.
@@ -57,7 +57,7 @@ const NewsletterBanner = () => {
               <div className="flex items-end flex-1 min-w-0 border-b border-gray-300 focus-within:border-gray-500 transition-colors">
                 <input
                   type="email"
-                  placeholder="Votre adresse email"
+                  placeholder="Votre adresse e-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}

@@ -123,7 +123,7 @@ const Footer = () => {
               <Link to="/" className="flex-shrink-0" onClick={scrollToTop}>
                 <img
                   src="/images/logo%20blanc.jpeg"
-                  alt="Prima Center"
+                  alt="PRIMA CENTER"
                   className="h-28 sm:h-32 md:h-36 w-auto object-contain object-right"
                 />
               </Link>
@@ -166,7 +166,7 @@ const Footer = () => {
             <Link to="/" className="inline-block flex-shrink-0" onClick={scrollToTop}>
               <img
                 src="/images/logo%20blanc.jpeg"
-                alt="Prima Center"
+                alt="PRIMA CENTER"
                 className="h-28 lg:h-32 xl:h-36 w-auto object-contain object-right"
               />
             </Link>

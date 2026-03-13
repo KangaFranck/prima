@@ -61,7 +61,7 @@ const Loisirs = () => {
       <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
         <img
             src="/images/NOS UNIVERS LOISIRS.png"
-            alt="Loisirs Prima Center"
+            alt="Loisirs PRIMA CENTER"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
           />

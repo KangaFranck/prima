@@ -61,7 +61,7 @@ const Services = () => {
       <div className="relative h-[42vh] min-h-[240px] max-h-[380px] w-full overflow-hidden">
         <img
           src="/images/NOS UNIVERS SERVIVCES.png"
-          alt="Services Prima Center"
+          alt="Services PRIMA CENTER"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
           onError={(e) => {

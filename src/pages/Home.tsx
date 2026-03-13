@@ -150,7 +150,7 @@ export default function Home() {
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             disablePictureInPicture
             onCanPlay={tryPlayVideo}
             onLoadedData={tryPlayVideo}
@@ -168,7 +168,7 @@ export default function Home() {
                   <div className="mb-6 flex items-center justify-center w-full h-40 md:h-56 lg:h-72 xl:h-80">
                     <img
                       src="/images/logobackvideos.png"
-                      alt="Prima Center"
+                      alt="PRIMA CENTER"
                       className="h-full w-auto object-contain mx-auto"
                       style={{ transform: 'scale(2.6)', transformOrigin: '50% 50%' }}
                     />
@@ -198,7 +198,7 @@ export default function Home() {
               NOS UNIVERS
             </motion.h2>
             <motion.p
-              className="text-gray-600 max-w-2xl mx-auto"
+              className="text-base lg:text-lg font-sofia text-gray-600 leading-relaxed max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}

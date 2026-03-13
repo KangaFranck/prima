@@ -37,7 +37,7 @@ export const AdminLayout = () => {
       >
         <div className="flex items-center justify-between p-4 border-b border-[#3D3D3D] lg:p-6">
           <div>
-            <h1 className="text-lg font-semibold text-[#F5F5DC] lg:text-xl">Prima Center</h1>
+            <h1 className="text-lg font-semibold text-[#F5F5DC] lg:text-xl">PRIMA CENTER</h1>
             <p className="text-xs text-[#E8E8D5] mt-0.5 lg:text-sm lg:mt-1">Interface d'administration</p>
           </div>
           <button

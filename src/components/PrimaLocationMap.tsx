@@ -1,7 +1,7 @@
 import React from 'react';
 import { Car } from 'lucide-react';
 
-/** Carte de situation stylisée type brochure : beige / doré, quartiers Abidjan, temps de trajet depuis Prima Center */
+/** Carte de situation stylisée type brochure : beige / doré, quartiers Abidjan, temps de trajet depuis PRIMA CENTER */
 export function PrimaLocationMap() {
   const travelTimes = [
     { label: 'Vers Plateau 7 min', x: '8%', y: '18%' },
@@ -16,7 +16,7 @@ export function PrimaLocationMap() {
       <svg
         viewBox="0 0 520 380"
         className="absolute inset-0 w-full h-full object-cover"
-        aria-label="Carte de situation Prima Center - Zone 4 Marcory"
+        aria-label="Carte de situation PRIMA CENTER - Zone 4 Marcory"
       >
         <defs>
           <linearGradient id="water" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -62,7 +62,7 @@ export function PrimaLocationMap() {
           <line x1="0" y1="-6" x2="0" y2="6" stroke="#b8956e" strokeWidth="1.2" />
           <line x1="6" y1="-6" x2="6" y2="6" stroke="#b8956e" strokeWidth="1.2" />
         </g>
-        <text x="268" y="228" textAnchor="middle" fontSize="11" fontWeight="600" fill="#5c4a3a" fontFamily="system-ui, sans-serif">Prima Center</text>
+        <text x="268" y="228" textAnchor="middle" fontSize="11" fontWeight="600" fill="#5c4a3a" fontFamily="system-ui, sans-serif">PRIMA CENTER</text>
       </svg>
 
       {/* Encarts temps de trajet en overlay */}

@@ -95,6 +95,20 @@
   }
 }
 
+/* Navbar principale : supprimer toute bordure ou trait du bas (évite la double ligne sous la barre de recherche) */
+header.navbar-main {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Barre de recherche : une seule ligne (border-b sur .search-bar-wrap), supprimer tout trait sur l'input */
+.search-bar-wrap input {
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* Logo navbar : aucun décalage propre, il respecte la marge du conteneur (.content-wrap) */
 .header-logo {
   margin-left: 0;

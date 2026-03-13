@@ -22,7 +22,7 @@ const APropos = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-4xl font-ogg mb-6">Notre Histoire</h2>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-ogg mb-6">Notre Histoire</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
                 Situé à Marcory, au cœur de la Zone 4, PRIMA CENTER est l'une des galeries commerciales emblématiques d'Abidjan. Depuis 1998, le centre réunit visiteurs et enseignes dans un lieu dédié au shopping, à la restauration, aux loisirs et aux services du quotidien.
               </p>
@@ -43,7 +43,7 @@ const APropos = () => {
             >
               <img 
                 src="/images/NOTRE HISTOIRE IMG.png"
-                alt="Prima Center"
+                alt="PRIMA CENTER"
                 className="w-full h-full object-contain"
               />
             </motion.div>
@@ -73,7 +73,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-8 shadow-lg"
+              className="bg-[#efece6] p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Trophy className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
@@ -88,7 +88,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="bg-white p-8 shadow-lg"
+              className="bg-[#efece6] p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Users className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
@@ -103,7 +103,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6 }}
-              className="bg-white p-8 shadow-lg"
+              className="bg-[#efece6] p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Leaf className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />

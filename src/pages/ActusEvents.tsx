@@ -42,7 +42,7 @@ function shareUrl(path: string): string {
 const STATUS_LABEL: Record<string, string> = {
   en_cours: 'Actualités & Événements en cours',
   avenir: 'À venir',
-  passe: 'ACTUS ET ÉVENTS PASSÉS',
+  passe: 'Actualités & Événements PASSÉS',
 };
 
 /** Carte événement style Bal Harbour : image à gauche, infos à droite */
@@ -86,9 +86,11 @@ function EventRow({
         </button>
       </div>
       <div className="flex-1 lg:w-[30%] lg:flex-shrink-0 flex flex-col justify-center p-5 md:p-6 lg:p-8">
-        <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
-          {statusLabel}
-        </p>
+        {statusLabel && (
+          <p className="text-xs md:text-sm font-sofia font-medium text-gray-500 uppercase tracking-widest mb-2">
+            {statusLabel}
+          </p>
+        )}
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-ogg font-bold text-gray-900 tracking-tight mb-4">
           {evenement.title}
         </h2>
@@ -196,7 +198,7 @@ const ActusEvents = () => {
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[48px] sm:text-[56px] md:text-[64px] lg:text-[80px] font-ogg font-semibold text-gray-900 leading-tight tracking-wide pt-16 mb-12 md:mb-16 text-center"
+            className="text-[40px] sm:text-[48px] md:text-[56px] lg:text-[64px] font-ogg font-semibold text-gray-900 leading-tight tracking-wide pt-16 mb-12 md:mb-16 text-center"
           >
             Actualités & Événements
           </motion.h1>
@@ -251,7 +253,7 @@ const ActusEvents = () => {
               {past.length > 0 && (
                 <section className="mt-16 pt-12 border-t border-gray-200">
                   <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    ACTUS ET ÉVENTS PASSÉS
+                    Actualités & Événements PASSÉS
                   </h2>
                   <div className="space-y-8">
                     {past.map((evenement, index) => (

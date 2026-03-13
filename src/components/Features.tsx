@@ -64,7 +64,7 @@ const Features = () => {
             <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-pink-500 transform scale-x-50 group-hover:scale-x-100 transition-transform duration-500"></div>
           </h2>
           <p className="text-xl text-gray-600">
-            Découvrez tout ce que Prima Center a à vous offrir
+            Découvrez tout ce que PRIMA CENTER a à vous offrir
           </p>
         </div>
 

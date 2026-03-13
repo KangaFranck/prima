@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 /** Lien Google Maps : ouvrir l’itinéraire vers Prima Center (Zone 4 Marcory) */
-const MAPS_PLACE_URL = 'https://www.google.com/maps/place/Prima+Center/@5.95773,-3.9861489,17z/data=!3m1!4b1!4m6!3m5!1s0xfc1eeaafb3afbf:0x1456a795d7ee3!8m!3d5.957!4d-3.983574!16s%Fg%F1hfnj89n?entry=ttu';
+const MAPS_PLACE_URL = 'https://www.google.com/maps/search/?api=1&query=5.29532268,-3.98346473';
 
 export default function ServicesInfo() {
   const services = [
@@ -79,7 +79,7 @@ export default function ServicesInfo() {
       {/* Hero : même style que Boutiques / Restaurants / Loisirs, taille augmentée (décalage navbar géré par le layout) */}
       <section className="relative h-[85vh] min-h-[480px] max-h-[900px] w-full overflow-hidden">
         <img
-          src="/images/electronique.jpg"
+          src="/images/INFO%20PRATIQUE%20IMG%20.png"
           alt="Services et Informations"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
@@ -89,21 +89,21 @@ export default function ServicesInfo() {
           <h1 className="text-[48px] sm:text-[56px] md:text-[64px] lg:text-[80px] font-ogg font-semibold text-white leading-tight tracking-wide drop-shadow-sm [-webkit-font-smoothing:antialiased]">
             Infos pratiques
           </h1>
-          <p className="mt- text-sm sm:text-base md:text-lg font-sofia font-light text-white/95 drop-shadow-sm">
+          <p className="mt-2 text-sm sm:text-base md:text-lg font-sofia font-light text-white/95 drop-shadow-sm">
             Tout ce dont vous avez besoin pour votre visite
           </p>
         </div>
       </section>
 
       {/* Services Grid - pleine largeur */}
-      <section className="py-0 bg-white w-full">
+      <section className="py-16 md:py-20 bg-white w-full">
         <div className="content-wrap">
           <motion.div
             initial={{ opacity: 0, y: 0 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols- lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {services.map((service, index) => (
               <motion.div
@@ -114,8 +114,8 @@ export default function ServicesInfo() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <h3 className="text-lg font-bold text-black mb-">{service.title}</h3>
-                <div className="w-4 h-0.5 bg-black mx-auto mb-3"></div>
+                <h3 className="text-2xl md:text-3xl font-ogg font-bold text-black mb-2">{service.title}</h3>
+                <div className="w-12 md:w-16 h-0.5 bg-black mx-auto mb-3"></div>
                 <p className="text-gray-600 text-sm">{service.description}</p>
               </motion.div>
             ))}
@@ -124,21 +124,21 @@ export default function ServicesInfo() {
       </section>
 
       {/* Contact Section - pleine largeur */}
-      <section className="py-0 bg-white w-full">
+      <section className="py-16 md:py-20 bg-white w-full">
         <div className="content-wrap">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="grid md:grid-cols- gap-8 items-center"
+            className="grid md:grid-cols-2 gap-8 items-center"
           >
             {/* Carte Google Maps : clic ouvre Prima Center sur Maps (contourne l'erreur "Impossible de charger...") */}
-            <div className="h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg bg-[#f5f3ef] p- md:p-3">
+            <div className="h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg shadow-lg bg-[#f5f3ef] p-2 md:p-3">
               <div className="relative w-full h-full rounded-md overflow-hidden group">
                 <iframe
                   title="Carte Prima Center - Zone 4 Marcory"
-                  src="https://www.google.com/maps?q=5.957,-3.983574&z=17&output=embed&hl=fr"
+                  src="https://www.google.com/maps?q=5.29532268,-3.98346473&z=17&output=embed&hl=fr"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -154,7 +154,7 @@ export default function ServicesInfo() {
                   className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-auto cursor-pointer"
                   aria-label="Ouvrir Prima Center sur Google Maps"
                 >
-                  <span className="px-4 py- bg-white text-black font-sofia text-sm font-medium shadow-lg border border-gray-00">
+                  <span className="px-4 py-2 bg-white text-black font-sofia text-sm font-medium shadow-lg border border-gray-300">
                     Ouvrir dans Maps
                   </span>
                 </a>
@@ -164,21 +164,21 @@ export default function ServicesInfo() {
             {/* Texte explicatif à droite - Ogg Roman (titres) + Sofia Pro (corps) - page Contact */}
             <div className="space-y-6 font-sofia">
               <div>
-                <p className="text-xs md:text-sm font-ogg uppercase tracking-widest text-gray-500 mb-">
+                <p className="text-xs md:text-sm font-ogg uppercase tracking-widest text-gray-500 mb-2">
                   Notre position
                 </p>
-                <h className="text-3xl md:text-4xl lg:text-5xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
                   Zone 4
-                </h>
-                <h className="text-3xl md:text-4xl lg:text-5xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
+                </h2>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-ogg font-bold text-black uppercase tracking-tight leading-tight">
                   Marcory
-                </h>
-                <div className="w-16 h-0.5 bg-black mt- mb-4"></div>
+                </h2>
+                <div className="w-16 h-0.5 bg-black mt-2 mb-4"></div>
                 <a
                   href={MAPS_PLACE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap- px-4 py-.5 bg-black text-white font-sofia text-sm font-medium hover:bg-gray-800 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white font-sofia text-sm font-medium hover:bg-gray-800 transition-colors"
                 >
                   <Navigation className="w-4 h-4" />
                   Obtenir l'itinéraire
@@ -193,15 +193,15 @@ export default function ServicesInfo() {
 
               <div className="space-y-3 pt-4 font-sofia">
                 <div className="flex items-center space-x-3">
-                  <div className="w- h- bg-black rounded-full"></div>
+                  <div className="w-2 h-2 bg-black rounded-full flex-shrink-0"></div>
                   <span className="text-gray-600">À quelques minutes de l'aéroport international Félix Houphouët-Boigny</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w- h- bg-black rounded-full"></div>
+                  <div className="w-2 h-2 bg-black rounded-full flex-shrink-0"></div>
                   <span className="text-gray-600">Accès direct depuis les principaux axes de Marcory</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w- h- bg-black rounded-full"></div>
+                  <div className="w-2 h-2 bg-black rounded-full flex-shrink-0"></div>
                   <span className="text-gray-600">Parking extérieur disponible pour les visiteurs</span>
                 </div>
               </div>

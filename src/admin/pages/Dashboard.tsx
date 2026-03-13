@@ -140,7 +140,7 @@ export const Dashboard = () => {
           </div>
           <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full mb-3 sm:mb-4"></div>
           <p className="text-sm sm:text-base md:text-xl text-stone-600 max-w-2xl mx-auto px-2">
-            Vue d'ensemble de votre centre commercial Prima Center
+            Vue d'ensemble de votre centre commercial PRIMA CENTER
           </p>
           {loading && (
             <p className="text-amber-600 mt-2 text-sm">Chargement des données...</p>
