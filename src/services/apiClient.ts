@@ -42,6 +42,7 @@ export function invalidateDataCache(segment?: string): void {
     if (segment.startsWith('loisirs')) dataCache.delete('loisirs');
     if (segment.startsWith('services')) dataCache.delete('services');
     if (segment.startsWith('evenements')) dataCache.delete('evenements');
+    if (segment.startsWith('home-settings')) dataCache.delete('home-settings');
   } else {
     dataCache.clear();
   }
@@ -229,6 +230,18 @@ export const apiClient = {
       return request<{ ok: boolean; deleted: number }>('newsletter/delete', {
         method: 'POST',
         body: JSON.stringify({ ids }),
+      });
+    },
+  },
+
+  homeSettings: {
+    get(): Promise<{ image_boutiques: string; image_restaurants: string; image_loisirs: string; image_services: string }> {
+      return request<{ image_boutiques: string; image_restaurants: string; image_loisirs: string; image_services: string }>('home-settings');
+    },
+    update(body: { image_boutiques?: string; image_restaurants?: string; image_loisirs?: string; image_services?: string }) {
+      return request<{ image_boutiques: string; image_restaurants: string; image_loisirs: string; image_services: string }>('home-settings', {
+        method: 'PUT',
+        body: JSON.stringify(body),
       });
     },
   },

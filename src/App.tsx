@@ -47,6 +47,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { Loisirs as AdminLoisirs } from './admin/pages/Loisirs';
 import { Services as AdminServices } from './admin/pages/Services';
 import { Newsletter } from './admin/pages/Newsletter';
+import { HomeImages } from './admin/pages/HomeImages';
 import { useAuthStore } from './store/pbAuthStore';
 
 const queryClient = new QueryClient();
@@ -117,6 +118,7 @@ export default function App() {
             <Route path="services" element={<AdminServices />} />
             <Route path="evenements" element={<Evenements />} />
             <Route path="newsletter" element={<Newsletter />} />
+            <Route path="home-images" element={<HomeImages />} />
             <Route 
               path="settings" 
               element={

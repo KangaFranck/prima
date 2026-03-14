@@ -73,7 +73,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-[#e8e8e8] p-8 shadow-lg"
+              className="bg-white p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Trophy className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
@@ -88,7 +88,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="bg-[#e8e8e8] p-8 shadow-lg"
+              className="bg-white p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Users className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
@@ -103,7 +103,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6 }}
-              className="bg-[#e8e8e8] p-8 shadow-lg"
+              className="bg-white p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Leaf className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />

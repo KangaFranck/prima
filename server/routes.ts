@@ -180,6 +180,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // ---- GET /api/home-settings — images page d'accueil (public) ----
+    if (path === 'home-settings' && req.method === 'GET') {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      try {
+        const rows = await sql`SELECT image_boutiques, image_restaurants, image_loisirs, image_services FROM home_settings LIMIT 1`;
+        const def = {
+          image_boutiques: '/images/BOUTIQUES.png',
+          image_restaurants: '/images/RESTAURANTS.png',
+          image_loisirs: '/images/LOISIRS.png',
+          image_services: '/images/SERVICES.png',
+        };
+        const row = rows[0] as Record<string, string> | undefined;
+        return res.status(200).json(row ? {
+          image_boutiques: row.image_boutiques || def.image_boutiques,
+          image_restaurants: row.image_restaurants || def.image_restaurants,
+          image_loisirs: row.image_loisirs || def.image_loisirs,
+          image_services: row.image_services || def.image_services,
+        } : def);
+      } catch (e) {
+        console.error('home-settings GET error:', e);
+        return res.status(200).json({
+          image_boutiques: '/images/BOUTIQUES.png',
+          image_restaurants: '/images/RESTAURANTS.png',
+          image_loisirs: '/images/LOISIRS.png',
+          image_services: '/images/SERVICES.png',
+        });
+      }
+    }
+
     // ---- Public GET: boutiques, restaurants, loisirs, services, evenements ----
     // Pas de cache navigateur : après une modif admin, les visiteurs voient les nouvelles infos au prochain chargement
     if (req.method === 'GET' && ['boutiques', 'restaurants', 'loisirs', 'services', 'evenements'].includes(resource)) {
@@ -223,6 +252,52 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } catch (e) {
         console.error('Newsletter list error:', e);
         return res.status(500).json({ error: 'Erreur lors de la récupération.' });
+      }
+    }
+
+    // ---- PUT /api/home-settings — mettre à jour images page d'accueil (admin only) ----
+    if (path === 'home-settings' && req.method === 'PUT') {
+      if (!admin) return res.status(401).json({ error: 'Non autorisé.' });
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      const image_boutiques = typeof body.image_boutiques === 'string' ? body.image_boutiques : null;
+      const image_restaurants = typeof body.image_restaurants === 'string' ? body.image_restaurants : null;
+      const image_loisirs = typeof body.image_loisirs === 'string' ? body.image_loisirs : null;
+      const image_services = typeof body.image_services === 'string' ? body.image_services : null;
+      try {
+        const rows = await sql`SELECT id FROM home_settings LIMIT 1`;
+        if (rows.length > 0) {
+          const id = (rows[0] as { id: string }).id;
+          await sql`
+            UPDATE home_settings SET
+              image_boutiques = COALESCE(${image_boutiques}, image_boutiques),
+              image_restaurants = COALESCE(${image_restaurants}, image_restaurants),
+              image_loisirs = COALESCE(${image_loisirs}, image_loisirs),
+              image_services = COALESCE(${image_services}, image_services),
+              updated_at = NOW()
+            WHERE id = ${id}
+          `;
+        } else {
+          await sql`
+            INSERT INTO home_settings (image_boutiques, image_restaurants, image_loisirs, image_services)
+            VALUES (
+              ${image_boutiques || '/images/BOUTIQUES.png'},
+              ${image_restaurants || '/images/RESTAURANTS.png'},
+              ${image_loisirs || '/images/LOISIRS.png'},
+              ${image_services || '/images/SERVICES.png'}
+            )
+          `;
+        }
+        const [row] = await sql`SELECT image_boutiques, image_restaurants, image_loisirs, image_services FROM home_settings LIMIT 1`;
+        const r = row as Record<string, string>;
+        return res.status(200).json({
+          image_boutiques: r?.image_boutiques || '/images/BOUTIQUES.png',
+          image_restaurants: r?.image_restaurants || '/images/RESTAURANTS.png',
+          image_loisirs: r?.image_loisirs || '/images/LOISIRS.png',
+          image_services: r?.image_services || '/images/SERVICES.png',
+        });
+      } catch (e) {
+        console.error('home-settings PUT error:', e);
+        return res.status(500).json({ error: 'Erreur lors de la mise à jour des images.' });
       }
     }
 

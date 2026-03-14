@@ -8,6 +8,7 @@ import { useShopStore } from '../store/shopStore';
 import { useRestaurantStore } from '../store/restaurantStore';
 import { useLoisirStore } from '../store/loisirStore';
 import { useServiceStore } from '../store/serviceStore';
+import { useHomeSettingsStore } from '../store/homeSettingsStore';
 import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -15,35 +16,11 @@ import 'swiper/css/navigation';
 // Vidéo unique de la première section (fichier : public/videos/videos.mp4)
 const backVideo = '/videos/videos.mp4';
 
-const universeBlocks = [
-  {
-    category: 'Shopping',
-    title: 'Boutiques',
-    description: 'Mode, beauté, technologie et équipements du quotidien dans une sélection variée pour toutes les envies.',
-    image: '/images/BOUTIQUES.png',
-    link: '/boutiques'
-  },
-  {
-    category: 'FOOD & DRINKS',
-    title: 'Restaurants',
-    description: 'Restaurants, cafés, pâtisseries et glaciers pour se retrouver à tout moment de la journée.',
-    image: '/images/RESTAURANTS.png',
-    link: '/restaurants'
-  },
-  {
-    category: 'Lifestyle',
-    title: 'Loisirs',
-    description: 'Cinéma et espaces de jeux pour enfants et adultes pour se divertir et partager un moment de détente.',
-    image: '/images/LOISIRS.png',
-    link: '/loisirs'
-  },
-  {
-    category: 'DAILY LIFE',
-    title: 'Services',
-    description: 'Banques, santé et services du quotidien réunis en un seul lieu.',
-    image: '/images/SERVICES.png',
-    link: '/services'
-  }
+const universeBlocksBase = [
+  { category: 'Shopping', title: 'Boutiques', description: 'Mode, beauté, technologie et équipements du quotidien dans une sélection variée pour toutes les envies.', link: '/boutiques', imageKey: 'image_boutiques' as const },
+  { category: 'FOOD & DRINKS', title: 'Restaurants', description: 'Restaurants, cafés, pâtisseries et glaciers pour se retrouver à tout moment de la journée.', link: '/restaurants', imageKey: 'image_restaurants' as const },
+  { category: 'Lifestyle', title: 'Loisirs', description: 'Cinéma et espaces de jeux pour enfants et adultes pour se divertir et partager un moment de détente.', link: '/loisirs', imageKey: 'image_loisirs' as const },
+  { category: 'DAILY LIFE', title: 'Services', description: 'Banques, santé et services du quotidien réunis en un seul lieu.', link: '/services', imageKey: 'image_services' as const },
 ];
 
 interface CarouselItem {
@@ -107,6 +84,7 @@ export default function Home() {
   const { restaurants, fetchRestaurants } = useRestaurantStore();
   const { loisirs, fetchLoisirs } = useLoisirStore();
   const { services, fetchServices } = useServiceStore();
+  const { settings: homeSettings, fetchSettings: fetchHomeSettings } = useHomeSettingsStore();
 
   // Charger les données au montage du composant
   useEffect(() => {
@@ -114,7 +92,13 @@ export default function Home() {
     fetchRestaurants();
     fetchLoisirs();
     fetchServices();
-  }, [fetchShops, fetchRestaurants, fetchLoisirs, fetchServices]);
+    fetchHomeSettings();
+  }, [fetchShops, fetchRestaurants, fetchLoisirs, fetchServices, fetchHomeSettings]);
+
+  const universeBlocks = universeBlocksBase.map((b) => ({
+    ...b,
+    image: homeSettings[b.imageKey] || `/images/${b.title.toUpperCase()}.png`,
+  }));
 
   // Desktop ou mobile pour la pagination du carousel enseignes (mobile = rien ne change)
   useEffect(() => {
@@ -126,7 +110,7 @@ export default function Home() {
 
   // Combine tous les commerces pour le carousel (logos carousel en priorité depuis la base), triés par ordre alphabétique
   const allItems: CarouselItem[] = [
-    ...shops.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'boutique' as const })),
+    ...shops.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.logoCarousel || item.logo, type: 'boutique' as const })),
     ...restaurants.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'restaurant' as const })),
     ...loisirs.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'loisir' as const })),
     ...services.map((item) => ({ id: item.id, name: item.name, logo: item.logo, image: item.image, type: 'service' as const }))
