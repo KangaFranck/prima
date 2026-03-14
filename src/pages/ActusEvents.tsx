@@ -252,9 +252,6 @@ const ActusEvents = () => {
 
               {past.length > 0 && (
                 <section className="mt-16 pt-12 border-t border-gray-200">
-                  <h2 className="font-ogg text-xl md:text-2xl font-semibold text-gray-600 uppercase tracking-wider mb-8">
-                    Actualités & Événements PASSÉS
-                  </h2>
                   <div className="space-y-8">
                     {past.map((evenement, index) => (
                       <EventRow
