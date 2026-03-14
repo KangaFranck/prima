@@ -298,7 +298,7 @@ export default function Home() {
                     className="block bg-transparent backdrop-blur-none overflow-hidden transition-all"
                     title={item.name}
                   >
-                    <div className="min-w-[140px] min-h-[120px] w-[140px] h-[120px] md:min-w-[160px] md:min-h-[100px] md:w-[160px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
+                    <div className="min-w-[90px] min-h-[90px] w-[90px] h-[90px] sm:min-w-[110px] sm:min-h-[90px] sm:w-[110px] sm:h-[90px] md:min-w-[140px] md:min-h-[100px] md:w-[140px] md:h-[100px] lg:min-w-[180px] lg:min-h-[120px] lg:w-[180px] lg:h-[120px] flex items-center justify-center p-2 mx-auto">
                       {(item.logo || item.image) ? (
                         <img
                           src={item.logo || item.image}
