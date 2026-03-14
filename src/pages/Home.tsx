@@ -244,8 +244,8 @@ export default function Home() {
       {/* Section 3: Carousel - même alignement que navbar/footer */}
       <section className="py-12 relative overflow-hidden w-full enseignes-carousel bg-cover bg-center" style={{ backgroundImage: "url('/images/bg-beige.png')", backgroundColor: '#efece6' }}>
         <div className="content-wrap relative z-10">
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-ogg mb-4 text-gray-800">DÉCOUVREZ NOS ENSEIGNES</h2>
+          <div className="text-center mb-8 pt-4">
+            <h2 className="text-4xl font-ogg mb-4 text-gray-800 leading-[1.2]">DÉCOUVREZ NOS ENSEIGNES</h2>
           </div>
           
           <div>

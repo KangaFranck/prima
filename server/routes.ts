@@ -33,8 +33,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const segments = path.split('/').filter(Boolean);
   const [resource, id] = segments;
 
-  // GET /api/debug — diagnostic : path, method, env (sans secrets) pour trouver la cause 405
+  // GET /api/debug — diagnostic (désactivé en production pour éviter fuite d'infos)
   if (path === 'debug' && (req.method || '').toUpperCase() === 'GET') {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(404).json({ error: 'Non trouvé' });
+    }
     const originNorm = (origin || '').replace(/\/$/, '');
     return res.status(200).json({
       ok: true,
@@ -141,10 +144,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (!file || !folder || !name) {
           return res.status(400).json({ error: 'file (base64), folder et name requis' });
         }
+        // Sécurité : sanitize filename (éviter path traversal)
+        const safeName = String(name).replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100) || 'file';
+        const safeFolder = String(folder).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50) || 'uploads';
+        const contentType = body.contentType || 'application/octet-stream';
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+        if (!allowedTypes.includes(contentType)) {
+          return res.status(400).json({ error: 'Type de fichier non autorisé. Images uniquement (JPEG, PNG, GIF, WebP, SVG).' });
+        }
         try {
           const buf = Buffer.from(file, 'base64');
-          const key = `${folder}/${Date.now()}-${name}`;
-          const contentType = body.contentType || 'application/octet-stream';
+          if (buf.length > 5 * 1024 * 1024) { // 5 Mo max
+            return res.status(400).json({ error: 'Fichier trop volumineux (max 5 Mo).' });
+          }
+          const key = `${safeFolder}/${Date.now()}-${safeName}`;
           const url = await uploadToR2(key, buf, contentType);
           return res.status(200).json({ url, key });
         } catch (e) {
@@ -163,7 +176,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // ---- POST /api/newsletter — inscription publique (sans auth) ----
     if (path === 'newsletter' && req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-      const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+      const email = typeof body.email === 'string' ? body.email.trim().toLowerCase().slice(0, 254) : '';
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return res.status(400).json({ error: 'Adresse email invalide.' });
       }
