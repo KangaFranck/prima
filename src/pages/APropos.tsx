@@ -24,13 +24,13 @@ const APropos = () => {
             >
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-ogg mb-6">Notre Histoire</h2>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Situé à Marcory, au cœur de la Zone 4, PRIMA CENTER est l'une des galeries commerciales emblématiques d'Abidjan. Depuis 1998, le centre réunit visiteurs et enseignes dans un lieu dédié au shopping, à la restauration, aux loisirs et aux services du quotidien.
+                Situé à Marcory, au cœur de la Zone 4, Prima Center est l'une des galeries commerciales emblématiques d'Abidjan. Depuis 1998, le centre réunit visiteurs et enseignes dans un lieu dédié au shopping, à la restauration, aux loisirs et aux services du quotidien.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Au fil des années, PRIMA CENTER est devenu une adresse incontournable où se mêlent commerce, détente et convivialité. Grâce à une offre variée de boutiques, restaurants, espaces de loisirs et services, le centre propose une expérience complète à ses visiteurs.
+                Au fil des années, Prima Center est devenu une adresse incontournable où se mêlent commerce, détente et convivialité. Grâce à une offre variée de boutiques, restaurants, espaces de loisirs et services, le centre propose une expérience complète à ses visiteurs.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Pensé comme un véritable lieu de vie, PRIMA CENTER accueille chaque jour visiteurs et habitués dans un environnement animé et convivial.
+                Pensé comme un véritable lieu de vie, Prima Center accueille chaque jour visiteurs et habitués dans un environnement animé et convivial.
               </p>
             </motion.div>
             {/* Bloc image rectangulaire paysage (largeur > hauteur) 16:9 — dimensions : 1920×1080 ou 1600×900 px */}
@@ -43,7 +43,7 @@ const APropos = () => {
             >
               <img 
                 src="/images/NOTRE HISTOIRE IMG.png"
-                alt="PRIMA CENTER"
+                alt="Prima Center"
                 className="w-full h-full object-contain"
               />
             </motion.div>
@@ -56,8 +56,8 @@ const APropos = () => {
         <Stats />
       </section>
 
-      {/* Section L'Expérience PRIMA CENTER */}
-      <section className="py-16 md:py-24 bg-[#E5DDD3]/10 w-full">
+      {/* Section L'Expérience Prima Center */}
+      <section className="py-16 md:py-24 bg-[#efece6] w-full">
         <div className="content-wrap">
           <motion.h2 
             initial={{ y: 20, opacity: 0 }}
@@ -65,7 +65,7 @@ const APropos = () => {
             viewport={{ once: true }}
             className="text-4xl font-bold text-center mb-16"
           >
-            L'Expérience PRIMA CENTER
+            L'Expérience Prima Center
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
@@ -73,14 +73,14 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-[#efece6] p-8 shadow-lg"
+              className="bg-[#E5DDD3]/10 p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Trophy className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
               </div>
               <h3 className="text-xl font-bold mb-4">Accueil & Expérience</h3>
               <p className="text-gray-600">
-                PRIMA CENTER accorde une attention particulière à l'accueil et au confort de ses visiteurs afin d'offrir une expérience agréable à chaque passage.
+                Prima Center accorde une attention particulière à l'accueil et au confort de ses visiteurs afin d'offrir une expérience agréable à chaque passage.
               </p>
             </motion.div>
             <motion.div 
@@ -88,7 +88,7 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="bg-[#efece6] p-8 shadow-lg"
+              className="bg-[#E5DDD3]/10 p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Users className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
@@ -103,14 +103,14 @@ const APropos = () => {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6 }}
-              className="bg-[#efece6] p-8 shadow-lg"
+              className="bg-[#E5DDD3]/10 p-8 shadow-lg"
             >
               <div className="flex justify-center mb-6">
                 <Leaf className="w-14 h-14 text-[#b8a898] stroke-[1.2]" strokeWidth={1.2} aria-hidden />
               </div>
               <h3 className="text-xl font-bold mb-4">Une Galerie Animée</h3>
               <p className="text-gray-600">
-                Tout au long de l'année, PRIMA CENTER se transforme au rythme des grandes fêtes avec des décorations et des animations qui créent une atmosphère chaleureuse.
+                Tout au long de l'année, Prima Center se transforme au rythme des grandes fêtes avec des décorations et des animations qui créent une atmosphère chaleureuse.
               </p>
             </motion.div>
           </div>
