@@ -8,7 +8,9 @@
  *    (dont domaine perso). Ne pas définir VITE_API_URL : les appels restent `/api/...` sur ce domaine.
  *
  * 2) Front et API sur deux hôtes (ex. primacenter.store + xxx.onrender.com)
- *    Au BUILD du front : VITE_API_URL=https://xxx.onrender.com (sans /api à la fin).
+ *    - Au BUILD : VITE_API_URL=https://xxx.onrender.com (sans /api à la fin), OU
+ *    - Fichier public/api-config.json déployé avec { "apiBaseUrl": "https://xxx.onrender.com" }
+ *      (lu au démarrage ; utile sans refaire un build).
  *    Sur l’API : ALLOWED_ORIGINS doit inclure https://primacenter.store (et www si utilisé).
  *
  * Les hôtes *.onrender.com et *.vercel.app utilisent `/api/` en relatif (même origine sur ces plateformes).
@@ -19,6 +21,10 @@ import type { Boutique, Restaurant, Loisir, Service, Evenement } from '../types/
 function getBaseURL(): string {
   const fromEnv = (import.meta.env.VITE_API_URL as string) || '';
   if (fromEnv) return fromEnv;
+  if (typeof window !== 'undefined') {
+    const injected = (window as unknown as { __PRIMA_API_BASE_URL__?: string }).__PRIMA_API_BASE_URL__;
+    if (injected) return injected.replace(/\/$/, '');
+  }
   if (typeof window !== 'undefined' && /localhost|127\.0\.0\.1/.test(window.location.hostname)) {
     return 'http://localhost:3002';
   }
