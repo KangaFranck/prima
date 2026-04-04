@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { getFileUrl } from "../services/pbClient";
-import { apiClient, useApi } from "../services/apiClient";
+import { getFileUrl } from "../utils/mediaUrl";
+import { apiClient } from "../services/apiClient";
 
 interface Service {
   id: string;
@@ -72,16 +72,8 @@ export const useServiceStore = create<ServiceStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.services.list();
-        const services = result.map((r: any) => mapRecordToService(r)).filter((s: Service) => s.statut !== 'inactif');
-        set({ services, loading: false });
-        return;
-      }
-      const result = await (await import('../services/pbClient')).pb.collection("services").getFullList();
-      const services = result
-        .map(mapRecordToService)
-        .filter((s: Service) => s.statut === "actif");
+      const result = await apiClient.services.list();
+      const services = result.map((r: any) => mapRecordToService(r)).filter((s: Service) => s.statut !== 'inactif');
       set({ services, loading: false });
     } catch (error) {
       console.error("Error fetching services:", error);

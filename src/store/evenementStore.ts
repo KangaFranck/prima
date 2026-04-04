@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { pb, getFileUrl } from "../services/pbClient";
-import { apiClient, useApi } from "../services/apiClient";
+import { getFileUrl } from "../utils/mediaUrl";
+import { apiClient } from "../services/apiClient";
 
 interface Evenement {
   id: string;
@@ -74,17 +74,10 @@ export const useEvenementStore = create<EvenementStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.evenements.list();
-        const activeEvenements = result
-          .map((r: any) => mapRecordToEvenement(r))
-          .filter((e: Evenement) => e.statut === "actif" || e.statut === "planifié");
-        set({ evenements: activeEvenements, loading: false });
-        return;
-      }
-      const result = await pb.collection('evenements').getFullList();
-      const mappedEvenements = result.map(mapRecordToEvenement);
-      const activeEvenements = mappedEvenements.filter(e => e.statut === "actif" || e.statut === "planifié");
+      const result = await apiClient.evenements.list();
+      const activeEvenements = result
+        .map((r: any) => mapRecordToEvenement(r))
+        .filter((e: Evenement) => e.statut === "actif" || e.statut === "planifié");
       set({ evenements: activeEvenements, loading: false });
     } catch (error) {
       console.error('❌ Erreur lors de la récupération des événements:', error);

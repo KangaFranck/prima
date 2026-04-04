@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app,https://prima-liwx.onrender.com').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app,https://prima-liwx.onrender.com,https://primacenter.store,https://www.primacenter.store').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
 
 function cors(res: VercelResponse, origin: string | undefined) {
   const originNorm = origin ? origin.replace(/\/$/, '') : '';
@@ -130,6 +130,70 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email: (admin as any).email,
         name: (admin as any).name,
         role: 'super_admin',
+        permissions,
+        isActive: true,
+      };
+      return res.status(200).json({ token, record });
+    }
+
+    // ---- PUT /api/admins/me — profil admin (Neon), JWT requis ----
+    if (path === 'admins/me' && req.method === 'PUT') {
+      const admin = getAdminFromToken(req);
+      if (!admin) return res.status(401).json({ error: 'Non autorisé.' });
+      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
+      const nameIn = typeof body.name === 'string' ? body.name.trim() : undefined;
+      const emailIn = typeof body.email === 'string' ? body.email.trim().toLowerCase().slice(0, 254) : undefined;
+      const password = typeof body.password === 'string' ? body.password : undefined;
+      const currentPassword = typeof body.currentPassword === 'string' ? body.currentPassword : undefined;
+
+      const rows = await sql`SELECT id, email, password_hash, name, permissions FROM admins WHERE id = ${admin.adminId} LIMIT 1`;
+      const row = rows[0] as { id: string; email: string; password_hash: string; name: string | null; permissions: unknown } | undefined;
+      if (!row) return res.status(404).json({ error: 'Compte introuvable.' });
+
+      if (nameIn === undefined && emailIn === undefined && (password === undefined || password === '')) {
+        return res.status(400).json({ error: 'Aucune modification.' });
+      }
+
+      let newHash = row.password_hash;
+      if (password !== undefined && password !== '') {
+        if (!currentPassword) {
+          return res.status(400).json({ error: 'Mot de passe actuel requis pour changer le mot de passe.' });
+        }
+        const okCur = await bcrypt.compare(currentPassword, row.password_hash);
+        if (!okCur) return res.status(401).json({ error: 'Mot de passe actuel incorrect.' });
+        if (password.length < 6) {
+          return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir au moins 6 caractères.' });
+        }
+        newHash = await bcrypt.hash(password, 10);
+      }
+
+      const newEmail = emailIn !== undefined ? emailIn : row.email;
+      const newName = nameIn !== undefined ? nameIn : (row.name || '');
+      if (emailIn !== undefined && emailIn !== row.email) {
+        const clashRows = await sql`SELECT id FROM admins WHERE email = ${newEmail} LIMIT 1`;
+        const clashId = (clashRows[0] as { id: string } | undefined)?.id;
+        if (clashId && clashId !== row.id) {
+          return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
+        }
+      }
+
+      await sql`
+        UPDATE admins
+        SET email = ${newEmail}, name = ${newName}, password_hash = ${newHash}, updated_at = NOW()
+        WHERE id = ${row.id}
+      `;
+
+      const permissions = (row.permissions as string[]) || ['dashboard', 'boutiques', 'restaurants', 'loisirs', 'evenements', 'settings', 'users'];
+      const token = jwt.sign(
+        { adminId: row.id, email: newEmail, permissions },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      const record = {
+        id: row.id,
+        email: newEmail,
+        name: newName,
+        role: 'super_admin' as const,
         permissions,
         isActive: true,
       };

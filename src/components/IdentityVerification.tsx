@@ -18,7 +18,7 @@ export const IdentityVerification: React.FC<IdentityVerificationProps> = ({ onVe
     setError('');
 
     try {
-      // Utiliser getCurrentUser() (cohérent avec le login PocketBase admin)
+      // Compte admin principal (Neon / JWT)
       const currentUser = pbAuthService.getCurrentUser();
       if (!currentUser || currentUser.email !== 'communicationprimacenter@gmail.com') {
         setError('Accès refusé. Seul l\'administrateur principal peut accéder aux paramètres.');

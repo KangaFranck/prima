@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { pb, getFileUrl } from "../services/pbClient";
 import { adminService } from "../services/pbAdminService";
 
 interface Boutique {
@@ -241,7 +240,7 @@ export const usePbAdminStore = create<AdminStore>((set, get) => ({
       } else if (error.message?.includes('API injoignable')) {
         errorMessage = error.message;
       } else if (error.status === 0 || error.message?.includes('fetch') || error.message?.includes('injoignable')) {
-        errorMessage = 'PocketBase est injoignable. Lancez-le avec : npm run pb:serve (dans un autre terminal).';
+        errorMessage = 'API injoignable. Vérifiez que le service tourne (npm run api en local ou Render en production).';
       } else if (error.status === 400) {
         errorMessage = 'Données invalides. Vérifiez que tous les champs obligatoires sont remplis.';
       } else if (error.status === 401) {

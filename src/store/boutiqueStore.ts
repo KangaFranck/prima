@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { pb, getFileUrl } from "../services/pbClient";
-import { apiClient, useApi } from "../services/apiClient";
+import { getFileUrl } from "../utils/mediaUrl";
+import { apiClient } from "../services/apiClient";
 
 interface Boutique {
   _id: string;
@@ -75,15 +75,8 @@ export const useBoutiqueStore = create<BoutiqueStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.boutiques.list();
-        const activeBoutiques = result.map((r: any) => mapRecordToBoutique(r)).filter((b: Boutique) => b.statut !== "inactif");
-        set({ boutiques: activeBoutiques, loading: false });
-        return;
-      }
-      const result = await pb.collection("boutiques").getFullList();
-      const mappedBoutiques = result.map(mapRecordToBoutique);
-      const activeBoutiques = mappedBoutiques.filter(b => b.statut !== "inactif");
+      const result = await apiClient.boutiques.list();
+      const activeBoutiques = result.map((r: any) => mapRecordToBoutique(r)).filter((b: Boutique) => b.statut !== "inactif");
       set({ boutiques: activeBoutiques, loading: false });
     } catch (error) {
       console.error("Error fetching boutiques:", error);

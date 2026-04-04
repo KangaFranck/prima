@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { pb, getFileUrl } from "../services/pbClient";
-import { apiClient, useApi } from "../services/apiClient";
+import { getFileUrl } from "../utils/mediaUrl";
+import { apiClient } from "../services/apiClient";
 
 interface Loisir {
   id: string;
@@ -77,18 +77,8 @@ export const useLoisirStore = create<LoisirStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.loisirs.list();
-        const loisirs = result.map((r: any) => mapRecordToLoisir(r)).filter((l: Loisir) => l.statut !== 'inactif');
-        set({ loisirs, loading: false });
-        return;
-      }
-      const result = await pb.collection("loisirs").getFullList();
-      const loisirs = result
-        .map(mapRecordToLoisir)
-        .filter(loisir => loisir.statut === "actif");
-      
-      console.log(` Loisirs actifs récupérés: ${loisirs.length}`);
+      const result = await apiClient.loisirs.list();
+      const loisirs = result.map((r: any) => mapRecordToLoisir(r)).filter((l: Loisir) => l.statut !== 'inactif');
       set({ loisirs, loading: false });
     } catch (error) {
       console.error("Error fetching loisirs:", error);

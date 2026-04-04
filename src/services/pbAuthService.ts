@@ -1,11 +1,6 @@
-import PocketBase from 'pocketbase';
-import { apiClient, useApi } from './apiClient';
+import { apiClient, type AuthResponse } from './apiClient';
 
-/** URL PocketBase : en local par défaut. Définir VITE_PB_URL dans .env si besoin. */
-const PB_URL = import.meta.env.VITE_PB_URL || 'http://127.0.0.1:8090';
-const pb = new PocketBase(PB_URL);
-
-/** Stockage auth admin : sessionStorage = session uniquement, pas de cache du mot de passe entre les onglets/sessions. */
+/** Stockage auth admin : sessionStorage = session uniquement. */
 const authStorage = sessionStorage;
 
 export interface User {
@@ -15,168 +10,58 @@ export interface User {
   role?: string;
   permissions?: string[];
   isActive?: boolean;
-  created: string;
-  updated: string;
+  created?: string;
+  updated?: string;
 }
 
-export interface AuthResponse {
-  token: string;
-  record: User;
+function persistAuthResponse(authData: AuthResponse): void {
+  const userRecord: User = {
+    ...authData.record,
+    role: authData.record.role || 'super_admin',
+    permissions: authData.record.permissions ?? ['dashboard', 'boutiques', 'restaurants', 'loisirs', 'evenements', 'settings', 'users'],
+    isActive: true,
+    created: '',
+    updated: '',
+  };
+  authStorage.setItem('pb_token', authData.token);
+  authStorage.setItem('pb_user', JSON.stringify(userRecord));
+  authStorage.setItem('user_permissions', JSON.stringify(userRecord.permissions));
+  authStorage.setItem('user_role', userRecord.role || '');
 }
 
 export const pbAuthService = {
   async login(email: string, password: string): Promise<AuthResponse> {
-    try {
-      if (useApi()) {
-        if (import.meta.env.DEV) console.log('🔐 Connexion API (Neon)', email);
-        const authData = await apiClient.auth.login(email, password);
-        const userRecord: User = {
-          ...authData.record,
-          role: authData.record.role || 'super_admin',
-          permissions: authData.record.permissions ?? ['dashboard', 'boutiques', 'restaurants', 'loisirs', 'evenements', 'settings', 'users'],
-          isActive: true,
-          created: '',
-          updated: '',
-        };
-        authStorage.setItem('pb_token', authData.token);
-        authStorage.setItem('pb_user', JSON.stringify(userRecord));
-        authStorage.setItem('user_permissions', JSON.stringify(userRecord.permissions));
-        authStorage.setItem('user_role', userRecord.role || '');
-        return { token: authData.token, record: userRecord };
-      }
-
-      if (import.meta.env.DEV) console.log('🔐 Connexion', email, '→', PB_URL);
-      await this.checkConnectivity();
-
-      const response = await fetch(`${PB_URL}/api/admins/auth-with-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          identity: email,
-          password: password
-        })
-      });
-      
-      if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch {
-          errorData = { message: 'Erreur de communication avec le serveur' };
-        }
-        
-        console.error('❌ Erreur d\'authentification:', {
-          status: response.status,
-          statusText: response.statusText,
-          data: errorData
-        });
-        
-        if (response.status === 400) {
-          throw new Error('Identifiants incorrects. Vérifiez votre email et mot de passe.');
-        } else if (response.status === 401) {
-          throw new Error('Non autorisé. Vérifiez vos identifiants.');
-        } else if (response.status === 500) {
-          throw new Error('Erreur serveur. Veuillez réessayer plus tard.');
-        } else if (response.status === 404) {
-          throw new Error(
-            'PocketBase n’est pas disponible (404). Le port 8090 est peut-être utilisé par un autre programme. Installez le binaire PocketBase dans pocketbase/ (voir pocketbase/README.md), puis lancez npm run pb:serve. Ensuite créez un admin sur http://127.0.0.1:8090/_/'
-          );
-        } else {
-          throw new Error(`Erreur d'authentification: ${response.status} - ${errorData.message || 'Erreur inconnue'}`);
-        }
-      }
-      
-      const authData = await response.json();
-      if (import.meta.env.DEV) console.log('✅ Connexion réussie');
-      
-      // Créer l'objet utilisateur avec les permissions
-      const userRecord = {
+    if (import.meta.env.DEV) console.log('🔐 Connexion API (Neon)', email);
+    const authData = await apiClient.auth.login(email, password);
+    persistAuthResponse(authData);
+    return {
+      token: authData.token,
+      record: {
         ...authData.record,
-        role: 'super_admin',
-        permissions: ['dashboard', 'boutiques', 'restaurants', 'loisirs', 'evenements', 'settings', 'users'],
-        isActive: true
-      };
-      
-      // Sauvegarder les données d'authentification
-      localStorage.setItem('pb_token', authData.token);
-      localStorage.setItem('pb_user', JSON.stringify(userRecord));
-      localStorage.setItem('user_permissions', JSON.stringify(userRecord.permissions));
-      localStorage.setItem('user_role', userRecord.role);
-      
-      pb.authStore.save(authData.token, userRecord);
-      
-      return {
-        token: authData.token,
-        record: userRecord
-      };
-      
-    } catch (error) {
-      console.error('❌ Erreur de connexion:', error);
-      throw error;
-    }
+        role: authData.record.role || 'super_admin',
+        permissions: authData.record.permissions ?? ['dashboard', 'boutiques', 'restaurants', 'loisirs', 'evenements', 'settings', 'users'],
+        isActive: true,
+        created: '',
+        updated: '',
+      },
+    };
   },
 
-  // Vérifier que PocketBase est démarré et répond (évite 404 sur /api/admins)
-  async checkConnectivity(): Promise<void> {
-    try {
-      const response = await fetch(`${PB_URL}/api/health`, { method: 'GET' });
-      if (response.ok) return;
-      if (response.status === 404) {
-        throw new Error(
-          'Le port 8090 n’est pas PocketBase (404). Arrêtez tout autre logiciel sur ce port, puis lancez le serveur PocketBase : 1) Téléchargez le binaire depuis https://github.com/pocketbase/pocketbase/releases (pocketbase_*_windows_amd64.zip), 2) Extrayez pocketbase.exe dans le dossier pocketbase/ du projet, 3) Exécutez npm run pb:serve dans un terminal.'
-        );
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error && (err.message?.includes('8090') || err.message?.includes('PocketBase'))) throw err;
-      console.error('❌ PocketBase injoignable:', err);
-      throw new Error(
-        'PocketBase ne semble pas démarré. Installez le binaire (voir dossier pocketbase/README.md) puis lancez : npm run pb:serve dans un autre terminal.'
-      );
-    }
-  },
-
-  // Créer l'admin principal s'il n'existe pas (NE PAS utiliser de mots de passe en dur)
-  // Créer l'admin via : http://127.0.0.1:8090/_/ ou npm run seed:admin
-  async ensureAdminExists(): Promise<void> {
-    try {
-      const adminResponse = await fetch(`${PB_URL}/api/admins`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (adminResponse.ok) {
-        const admins = await adminResponse.json();
-        if (admins.items?.length === 0) {
-          console.warn('⚠️ Aucun admin PocketBase. Créez-en un via http://127.0.0.1:8090/_/ ou npm run seed:admin');
-        }
-      }
-    } catch {
-      // Ignorer silencieusement
-    }
-  },
-
-  /** Vérifie le mot de passe de l'admin (API Admins, pas la collection users). */
+  /** Vérifie le mot de passe et rafraîchit le JWT en session (même flux que login). */
   async verifyAdminPassword(email: string, password: string): Promise<boolean> {
-    const response = await fetch(`${PB_URL}/api/admins/auth-with-password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ identity: email, password }),
-    });
-    return response.ok;
+    try {
+      const authData = await apiClient.auth.login(email, password);
+      persistAuthResponse(authData);
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   async logout(): Promise<void> {
-    try {
-      pb.authStore.clear();
-      for (const key of ['pb_token', 'pb_user', 'user_permissions', 'user_role']) {
-        sessionStorage.removeItem(key);
-        localStorage.removeItem(key);
-      }
-      console.log('✅ Déconnexion réussie');
-    } catch (error) {
-      console.error('❌ Erreur lors de la déconnexion:', error);
-      throw error;
+    for (const key of ['pb_token', 'pb_user', 'user_permissions', 'user_role']) {
+      sessionStorage.removeItem(key);
+      localStorage.removeItem(key);
     }
   },
 
@@ -192,7 +77,7 @@ export const pbAuthService = {
       return {
         ...user,
         role,
-        permissions: Array.isArray(permissions) ? permissions : []
+        permissions: Array.isArray(permissions) ? permissions : [],
       };
     } catch {
       return null;
@@ -202,27 +87,30 @@ export const pbAuthService = {
   isAuthenticated(): boolean {
     const token = authStorage.getItem('pb_token');
     const user = this.getCurrentUser();
-    
-    if (!token || !user) {
-      return false;
-    }
-    
-    // Vérifier que l'utilisateur est toujours actif
+    if (!token || !user) return false;
     return user.isActive !== false;
   },
 
   hasPermission(permission: string): boolean {
     const user = this.getCurrentUser();
     if (!user || !user.permissions) return false;
-    
     return user.permissions.includes(permission);
   },
 
   canAccessSettings(): boolean {
     const user = this.getCurrentUser();
     if (!user) return false;
-    
-    // Seul communicationprimacenter@gmail.com peut accéder aux paramètres
     return user.email === 'communicationprimacenter@gmail.com';
-  }
+  },
+
+  async updateProfile(body: {
+    name?: string;
+    email?: string;
+    password?: string;
+    currentPassword?: string;
+  }): Promise<AuthResponse> {
+    const authData = await apiClient.adminMe.update(body);
+    persistAuthResponse(authData);
+    return authData;
+  },
 };

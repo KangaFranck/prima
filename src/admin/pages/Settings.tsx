@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { User, Save, Eye, EyeOff, Mail, Lock, User as UserIcon, Users, Settings as SettingsIcon } from 'lucide-react';
 import { userSyncService, UserUpdateData } from '../../services/userSyncService';
-import { pb } from '../../services/pbClient';
+import { pbAuthService } from '../../services/pbAuthService';
+import { useAuthStore } from '../../store/pbAuthStore';
 import { UserManagement } from './UserManagement';
 import { IdentityVerification } from '../../components/IdentityVerification';
 
@@ -21,8 +22,7 @@ export const UserSettings = () => {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    // Vérifier si l'utilisateur a besoin de vérification d'identité
-    const currentUser = pb.authStore.model;
+    const currentUser = pbAuthService.getCurrentUser();
     if (currentUser && currentUser.email === 'communicationprimacenter@gmail.com') {
       setNeedsVerification(true);
     } else {
@@ -36,12 +36,6 @@ export const UserSettings = () => {
       setMessage(null);
       
       // Vérifier d'abord l'état de connexion
-      console.log('État de connexion:', {
-        isValid: pb.authStore.isValid,
-        token: pb.authStore.token ? 'Présent' : 'Absent',
-        model: pb.authStore.model
-      });
-      
       const user = await userSyncService.getAdminUser();
       if (user) {
         setUserData(user);
@@ -76,7 +70,7 @@ export const UserSettings = () => {
 
     try {
       // Vérifier l'état de connexion avant de continuer
-      if (!pb.authStore.isValid && !sessionStorage.getItem('pb_user')) {
+      if (!pbAuthService.isAuthenticated() && !sessionStorage.getItem('pb_user')) {
         setMessage({ type: 'error', text: 'Session expirée. Veuillez vous reconnecter.' });
         return;
       }
@@ -89,6 +83,11 @@ export const UserSettings = () => {
 
       if (formData.newPassword && formData.newPassword.length < 6) {
         setMessage({ type: 'error', text: 'Le mot de passe doit contenir au moins 6 caractères' });
+        return;
+      }
+
+      if (formData.newPassword && !formData.currentPassword?.trim()) {
+        setMessage({ type: 'error', text: 'Indiquez le mot de passe actuel pour définir un nouveau.' });
         return;
       }
 
@@ -105,14 +104,14 @@ export const UserSettings = () => {
       
       if (formData.newPassword) {
         updateData.password = formData.newPassword;
+        updateData.currentPassword = formData.currentPassword;
       }
 
       // Synchroniser les modifications
       if (Object.keys(updateData).length > 0) {
         await userSyncService.syncAdminUser(updateData);
+        useAuthStore.getState().checkAuth();
         setMessage({ type: 'success', text: 'Paramètres mis à jour avec succès' });
-        
-        // Recharger les données
         await loadUserData();
       } else {
         setMessage({ type: 'error', text: 'Aucune modification détectée' });

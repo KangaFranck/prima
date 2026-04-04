@@ -1,11 +1,21 @@
 /**
  * Client API Prima Center (Neon + R2).
- * Utilisé quand VITE_API_URL est défini (test local avec vercel dev ou prod Vercel).
+ *
+ * --- Architecture durable (choisir UNE logique en prod) ---
+ *
+ * 1) Même origine (recommandé pour éviter CORS + oublis d’URL)
+ *    Un seul service (ex. Render) avec `server.ts` : le site et `/api/*` partagent le même domaine
+ *    (dont domaine perso). Ne pas définir VITE_API_URL : les appels restent `/api/...` sur ce domaine.
+ *
+ * 2) Front et API sur deux hôtes (ex. primacenter.store + xxx.onrender.com)
+ *    Au BUILD du front : VITE_API_URL=https://xxx.onrender.com (sans /api à la fin).
+ *    Sur l’API : ALLOWED_ORIGINS doit inclure https://primacenter.store (et www si utilisé).
+ *
+ * Les hôtes *.onrender.com et *.vercel.app utilisent `/api/` en relatif (même origine sur ces plateformes).
  */
 
 import type { Boutique, Restaurant, Loisir, Service, Evenement } from '../types/admin';
 
-// En dev sans URL : requête relative. En local (localhost), fallback sur le port 3002 (npm run api) pour éviter PocketBase 8090.
 function getBaseURL(): string {
   const fromEnv = (import.meta.env.VITE_API_URL as string) || '';
   if (fromEnv) return fromEnv;
@@ -23,7 +33,7 @@ function getToken(): string | null {
   return sessionStorage.getItem('pb_token');
 }
 
-/** Construit l'URL de l'API. Sur Render ou Vercel : même origine (/api/...). Sinon VITE_API_URL si défini, sinon /api/. */
+/** Construit l’URL complète vers l’API (voir doc en tête de fichier). */
 function apiPath(segment: string): string {
   if (typeof window !== 'undefined' && (/\.onrender\.com$/i.test(window.location.hostname) || /\.vercel\.app$/i.test(window.location.hostname))) {
     return `/api/${segment}`;
@@ -107,6 +117,18 @@ export interface AuthResponse {
 }
 
 export const apiClient = {
+  /** Profil admin (table `admins` Neon) — JWT requis. */
+  adminMe: {
+    async update(body: {
+      name?: string;
+      email?: string;
+      password?: string;
+      currentPassword?: string;
+    }): Promise<AuthResponse> {
+      return request<AuthResponse>('admins/me', { method: 'PUT', body: JSON.stringify(body) });
+    },
+  },
+
   auth: {
     async login(email: string, password: string): Promise<AuthResponse> {
       const url = apiPath('login');
@@ -256,7 +278,6 @@ export const apiClient = {
   },
 };
 
-/** Toujours true : le front n'utilise que l'API Node (Neon + R2), jamais PocketBase. l’API */
 /** Récupère l'URL de la miniature (cover) d'un post/reel Instagram via l'API oEmbed. Retourne null en cas d'erreur. */
 export async function getInstagramThumbnail(postUrl: string): Promise<string | null> {
   if (!/instagram\.com\/(p|reel)\//i.test(postUrl)) return null;
@@ -267,8 +288,4 @@ export async function getInstagramThumbnail(postUrl: string): Promise<string | n
   } catch {
     return null;
   }
-}
-
-export function useApi(): boolean {
-  return true;
 }

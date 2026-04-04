@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { pb, getFileUrl } from '../services/pbClient';
-import { apiClient, useApi } from '../services/apiClient';
+import { getFileUrl } from '../utils/mediaUrl';
+import { apiClient } from '../services/apiClient';
 
 interface Shop {
   id: string;
@@ -60,14 +60,8 @@ export const useShopStore = create<ShopStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.boutiques.list();
-        const shops = result.map((r: any) => mapRecordToShop(r)).filter((s: Shop) => s.statut !== 'inactif');
-        set({ shops, loading: false });
-        return;
-      }
-      const result = await pb.collection('boutiques').getFullList();
-      const shops = result.map(mapRecordToShop);
+      const result = await apiClient.boutiques.list();
+      const shops = result.map((r: any) => mapRecordToShop(r)).filter((s: Shop) => s.statut !== 'inactif');
       set({ shops, loading: false });
     } catch (error) {
       console.error('Error fetching shops:', error);

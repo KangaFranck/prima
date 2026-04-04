@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { pb, getFileUrl } from "../services/pbClient";
-import { apiClient, useApi } from "../services/apiClient";
+import { getFileUrl } from "../utils/mediaUrl";
+import { apiClient } from "../services/apiClient";
 
 interface Restaurant {
   id: string;
@@ -77,18 +77,8 @@ export const useRestaurantStore = create<RestaurantStore>((set, get) => ({
     if (state.loading) return;
     set({ loading: true, error: null });
     try {
-      if (useApi()) {
-        const result = await apiClient.restaurants.list();
-        const restaurants = result.map((r: any) => mapRecordToRestaurant(r)).filter((r: Restaurant) => r.statut !== 'inactif');
-        set({ restaurants, loading: false });
-        return;
-      }
-      const result = await pb.collection("restaurants").getFullList();
-      const restaurants = result
-        .map(mapRecordToRestaurant)
-        .filter(restaurant => restaurant.statut !== "inactif"); // Masquer les "inactif"
-      
-      console.log(` Restaurants visibles récupérés: ${restaurants.length}`);
+      const result = await apiClient.restaurants.list();
+      const restaurants = result.map((r: any) => mapRecordToRestaurant(r)).filter((r: Restaurant) => r.statut !== 'inactif');
       set({ restaurants, loading: false });
     } catch (error) {
       console.error("Error fetching restaurants:", error);
