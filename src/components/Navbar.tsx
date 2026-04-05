@@ -364,8 +364,8 @@ const Navbar = () => {
                     <div className="relative h-24 bg-white border-b border-gray-200">
                       <div className="relative flex items-center justify-between p-6">
                         <div>
-                          <h2 className="font-ogg font-semibold text-gray-900">PRIMA CENTER</h2>
-                          <p className="text-sm font-ogg text-gray-500">Menu de navigation</p>
+                          <h2 className="font-sofia font-semibold text-gray-900">PRIMA CENTER</h2>
+                          <p className="text-sm font-sofia text-gray-500">Menu de navigation</p>
                         </div>
                         <motion.button
                           whileHover={{ scale: 1.1, rotate: 90 }}
@@ -393,9 +393,9 @@ const Navbar = () => {
                               <button
                                 type="button"
                                 onClick={() => setIsMobileUniversOpen(!isMobileUniversOpen)}
-                                className="flex items-center justify-between w-full py-3 text-left font-ogg text-lg font-medium text-gray-900"
+                                className="flex items-center justify-between w-full py-3 text-left text-lg font-sofia font-light text-gray-900"
                               >
-                                <span className="font-ogg relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300">
+                                <span className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300">
                                   {link.label}
                                 </span>
                                 <motion.div
@@ -425,7 +425,7 @@ const Navbar = () => {
                                         >
                                           <Link
                                             to={univers.path}
-                                            className="block py-2 font-ogg font-medium text-gray-700 hover:text-gray-900 relative w-fit after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+                                            className="block py-2 text-base font-sofia text-gray-800 hover:text-gray-900 relative w-fit after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
                                             onClick={() => {
                                               setIsMobileUniversOpen(false);
                                               setIsMenuOpen(false);
@@ -443,7 +443,7 @@ const Navbar = () => {
                           ) : (
                             <Link
                               to={link.path!}
-                              className="block py-3 text-lg font-ogg font-medium text-gray-900 relative w-fit after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+                              className="block py-3 text-lg font-sofia font-light text-gray-900 relative w-fit after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-gray-900 after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
                               onClick={() => setIsMenuOpen(false)}
                             >
                               {link.label}
@@ -456,8 +456,8 @@ const Navbar = () => {
                     {/* Footer du menu — même fond */}
                     <div className="p-6 border-t border-gray-200 bg-white">
                       <div className="text-center">
-                        <p className="text-sm font-ogg font-medium text-gray-900 mb-1">PRIMA CENTER</p>
-                        <p className="text-xs font-ogg text-gray-500">Votre centre commercial de référence</p>
+                        <p className="text-sm font-sofia font-medium text-gray-900 mb-1">PRIMA CENTER</p>
+                        <p className="text-xs font-sofia text-gray-500">Votre centre commercial de référence</p>
                       </div>
                     </div>
                   </motion.div>
