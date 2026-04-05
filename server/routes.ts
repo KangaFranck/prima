@@ -7,15 +7,35 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000,http://localhost:3001,https://prima-five.vercel.app,https://prima-six-eta.vercel.app,https://prima-liwx.onrender.com,https://primacenter.store,https://www.primacenter.store').split(',').map((s) => s.trim().replace(/\/$/, '')).filter(Boolean);
+
+/** Toujours fusionner avec les origines de base : si ALLOWED_ORIGINS sur Render ne contient que l’URL de l’API, sans merge le front (primacenter.store) serait exclu et le repli [0] renverrait la mauvaise origine → CORS bloqué. */
+const BASE_ALLOW_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://prima-five.vercel.app',
+  'https://prima-six-eta.vercel.app',
+  'https://prima-liwx.onrender.com',
+  'https://primacenter.store',
+  'https://www.primacenter.store',
+];
+const ALLOWED_ORIGINS = [
+  ...new Set([
+    ...BASE_ALLOW_ORIGINS,
+    ...(process.env.ALLOWED_ORIGINS || '')
+      .split(',')
+      .map((s) => s.trim().replace(/\/$/, ''))
+      .filter(Boolean),
+  ]),
+];
 
 function cors(res: VercelResponse, origin: string | undefined) {
   const originNorm = origin ? origin.replace(/\/$/, '') : '';
   const allowed = originNorm && ALLOWED_ORIGINS.includes(originNorm);
   const vercelApp = originNorm && /\.vercel\.app$/i.test(originNorm);
   const renderApp = originNorm && /\.onrender\.com$/i.test(originNorm);
-  const o = allowed ? originNorm : (vercelApp || renderApp ? originNorm : ALLOWED_ORIGINS[0]);
-  res.setHeader('Access-Control-Allow-Origin', o || '*');
+  const o = allowed ? originNorm : vercelApp || renderApp ? originNorm : '*';
+  res.setHeader('Access-Control-Allow-Origin', o);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Max-Age', '86400');
