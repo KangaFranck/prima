@@ -87,9 +87,9 @@ const Footer = () => {
               <p>Marcory Zone 4 – Abidjan</p>
               <a href="mailto:primacenterabidjan@gmail.com" className="hover:text-white transition-colors">primacenterabidjan@gmail.com</a>
             </div>
-            {/* Mobile : icônes en colonne + logo */}
-            <div className="lg:hidden flex flex-row items-end justify-between gap-3 mt-3 w-full">
-              <div className="flex flex-col gap-2 flex-shrink-0 items-center">
+            {/* Mobile : aligné à gauche comme DÉCOUVRIR / HORAIRES / CONTACT */}
+            <div className="lg:hidden flex flex-col items-start gap-6 mt-6 w-full">
+              <div className="flex flex-col gap-2 items-start">
                 <a
                   href="https://www.facebook.com/PrimaCenter225"
                   target="_blank"
@@ -120,11 +120,11 @@ const Footer = () => {
                   </svg>
                 </a>
               </div>
-              <Link to="/" className="flex-shrink-0" onClick={scrollToTop}>
+              <Link to="/" className="flex-shrink-0 self-start" onClick={scrollToTop}>
                 <img
                   src="/images/logo%20blanc.jpeg"
                   alt="PRIMA CENTER"
-                  className="h-28 sm:h-32 md:h-36 w-auto object-contain object-right"
+                  className="h-36 sm:h-40 md:h-44 w-auto object-contain object-left"
                 />
               </Link>
             </div>
@@ -167,7 +167,7 @@ const Footer = () => {
               <img
                 src="/images/logo%20blanc.jpeg"
                 alt="PRIMA CENTER"
-                className="h-28 lg:h-32 xl:h-36 w-auto object-contain object-right"
+                className="h-36 lg:h-40 xl:h-44 w-auto object-contain object-right"
               />
             </Link>
           </div>
