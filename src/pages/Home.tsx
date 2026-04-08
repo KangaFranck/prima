@@ -13,8 +13,8 @@ import Logo from '../components/Logo';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-// Vidéo unique de la première section (fichier : public/videos/videos.mp4)
-const backVideo = '/videos/videos.mp4';
+// Vidéo unique de la première section (fichier : public/videos/PRIMACENTER .mp4)
+const backVideo = '/videos/PRIMACENTER%20.mp4';
 
 const universeBlocksBase = [
   { category: 'Shopping', title: 'Boutiques', description: 'Mode, beauté, technologie et équipements du quotidien dans une sélection variée pour toutes les envies.', link: '/boutiques', imageKey: 'image_boutiques' as const },
@@ -147,7 +147,8 @@ export default function Home() {
         <div className="absolute inset-0">
           <div className="w-full h-full flex flex-col content-edge">
             <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="flex flex-col items-center justify-center w-full">
+              {/* invisible : masque logo + texte sans retirer le DOM (réactivation ultérieure possible) */}
+              <div className="flex flex-col items-center justify-center w-full invisible">
                 <div className="flex flex-col items-center justify-center w-full">
                   <div className="mb-6 flex items-center justify-center w-full h-40 md:h-56 lg:h-72 xl:h-80">
                     <img
