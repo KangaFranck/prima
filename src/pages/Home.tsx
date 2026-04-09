@@ -120,16 +120,16 @@ export default function Home() {
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
       {/* Section 1: Vidéo de fond — fallback gradient si non supportée ou échec de chargement */}
       <section
-        className="relative h-screen overflow-hidden bg-black"
+        className="relative w-full overflow-hidden bg-black md:min-h-screen md:h-screen"
         onTouchEnd={onVideoSectionTouch}
       >
         {videoFallback ? (
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
+          <div className="relative w-full aspect-video md:absolute md:inset-0 md:aspect-auto md:h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900" />
         ) : (
-          <div className="absolute inset-0 w-full h-full brightness-125 overflow-hidden">
+          <div className="relative w-full aspect-video md:absolute md:inset-0 md:aspect-auto md:h-full brightness-125 overflow-hidden">
             <video
               ref={videoRef}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             autoPlay
             loop
             muted
