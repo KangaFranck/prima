@@ -66,12 +66,16 @@ export default function Home() {
     tryPlayVideo();
   }, [tryPlayVideo]);
 
-  /** useLayoutEffect : synchrone avant paint — crucial pour Safari/iOS */
+  /** useLayoutEffect : synchrone avant paint — crucial pour Safari/iOS (muted obligatoire pour autoplay) */
   useLayoutEffect(() => {
     const video = videoRef.current;
     if (video) {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute('muted', '');
       video.setAttribute('webkit-playsinline', 'true');
       video.setAttribute('playsinline', 'true');
+      video.playsInline = true;
     }
     tryPlayVideo();
     const onVisibility = () => { if (document.visibilityState === 'visible') tryPlayVideo(); };
@@ -119,8 +123,10 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-hidden">
       {/* Section 1: Vidéo de fond — fallback gradient si non supportée ou échec de chargement */}
+      {/* Hauteur = fenêtre moins la navbar (le layout ajoute déjà pt-[--navbar-height]) : évite scroll pour voir le bas de la vidéo sur desktop */}
       <section
-        className="relative w-full overflow-hidden bg-black md:min-h-screen md:h-screen"
+        className="relative w-full overflow-hidden bg-black md:min-h-[calc(100dvh-var(--navbar-height))] md:h-[calc(100dvh-var(--navbar-height))]"
+        onTouchStart={onVideoSectionTouch}
         onTouchEnd={onVideoSectionTouch}
       >
         {videoFallback ? (
@@ -129,17 +135,21 @@ export default function Home() {
           <div className="relative w-full aspect-video md:absolute md:inset-0 md:aspect-auto md:h-full brightness-125 overflow-hidden">
             <video
               ref={videoRef}
-              className="absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            onCanPlay={tryPlayVideo}
-            onLoadedData={tryPlayVideo}
-            onError={() => setVideoFallback(true)}
-          >
+              className="hero-home-video absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              controls={false}
+              controlsList="nodownload noplaybackrate"
+              disablePictureInPicture
+              disableRemotePlayback
+              onCanPlay={tryPlayVideo}
+              onLoadedData={tryPlayVideo}
+              onLoadedMetadata={tryPlayVideo}
+              onError={() => setVideoFallback(true)}
+            >
             <source src={backVideo} type="video/mp4" />
           </video>
         </div>

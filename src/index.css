@@ -275,6 +275,20 @@ header .content-wrap {
       -webkit-padding-end: calc(var(--content-px-md) + var(--safe-area-right));
     }
   }
+  /* Hero home : masquer le gros bouton lecture / contrôles natifs (Safari iOS) — autoplay muted + lecture en boucle côté balise */
+  .hero-home-video {
+    pointer-events: none;
+  }
+  .hero-home-video::-webkit-media-controls {
+    display: none !important;
+  }
+  .hero-home-video::-webkit-media-controls-enclosure {
+    display: none !important;
+  }
+  .hero-home-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+  }
+
   /* Même marge horizontale que .content-wrap, sans max-width (sections pleine largeur) */
   .content-edge {
     padding-left: calc(var(--content-px) + var(--safe-area-left));
