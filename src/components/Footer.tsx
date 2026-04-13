@@ -120,13 +120,6 @@ const Footer = () => {
                   </svg>
                 </a>
               </div>
-              <Link to="/" className="flex-shrink-0 self-start" onClick={scrollToTop}>
-                <img
-                  src="/images/logo%20blanc.jpeg"
-                  alt="PRIMA CENTER"
-                  className="h-36 sm:h-40 md:h-44 w-auto object-contain object-left"
-                />
-              </Link>
             </div>
           </div>
 
@@ -171,6 +164,17 @@ const Footer = () => {
               />
             </Link>
           </div>
+        </div>
+
+        {/* Logo centré mobile uniquement */}
+        <div className="lg:hidden flex justify-center pb-6">
+          <Link to="/" onClick={scrollToTop}>
+            <img
+              src="/images/logo%20blanc.jpeg"
+              alt="PRIMA CENTER"
+              className="h-36 sm:h-40 md:h-44 w-auto object-contain"
+            />
+          </Link>
         </div>
       </div>
 

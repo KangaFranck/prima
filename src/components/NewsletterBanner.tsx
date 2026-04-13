@@ -32,7 +32,7 @@ const NewsletterBanner = () => {
   };
 
   return (
-    <section className="pt-14 pb-6 md:pt-16 md:pb-8 bg-white w-full">
+    <section className="pt-16 pb-10 md:pt-20 md:pb-12 bg-white w-full">
       <div className="content-wrap">
         <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -43,7 +43,7 @@ const NewsletterBanner = () => {
           >
             {/* Bloc gauche : titre sans soulignement + description (rendu type BHS) */}
             <div className="space-y-1.5 flex-shrink-0 md:max-w-[48%] overflow-visible">
-              <h2 className="font-ogg text-2xl md:text-3xl lg:text-4xl tracking-tight leading-tight">
+              <h2 className="font-ogg text-2xl md:text-3xl lg:text-4xl tracking-tight leading-snug overflow-visible">
                 <span className="text-black uppercase">LES ACTUALITÉS </span>
                 <span className="text-gray-400 font-sofia font-normal text-xl md:text-2xl lg:text-3xl normal-case">Prima Center</span>
               </h2>
