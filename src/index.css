@@ -441,3 +441,40 @@ header .content-wrap {
 .footer-logo-touch-right {
   margin-right: calc(-1 * (var(--content-px) + var(--safe-area-right)));
 }
+
+/* ============================================================
+   COMPENSATION TRUE TONE / NIGHT SHIFT (iOS UNIQUEMENT)
+   ------------------------------------------------------------
+   True Tone réchauffe automatiquement la dalle de l'iPhone/iPad
+   en fonction de la lumière ambiante : les blancs purs (#FFFFFF)
+   paraissent beige/rosé à l'oeil, alors que les captures d'écran
+   (qui capturent le framebuffer avant le filtre dalle) restent
+   parfaitement blanches.
+
+   Impossible de désactiver True Tone depuis un site web (hardware
+   Apple). Solution : envoyer un blanc très légèrement refroidi
+   (bleuté) uniquement sur iOS. True Tone va automatiquement le
+   réchauffer → résultat final neutre à l'oeil, identique à Android.
+
+   Le sélecteur @supports (-webkit-touch-callout: none) détecte
+   UNIQUEMENT iOS Safari/Chrome/Firefox (tous WebKit sur iOS).
+   Aucun impact sur Android, Windows, macOS, Linux.
+
+   TROIS NUANCES : commence par la 1. Si le blanc paraît encore
+   chaud à l'oeil sur iPhone, passe à la 2, puis à la 3.
+   Change juste la ligne active (supprime/commente les autres).
+   ============================================================ */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body,
+  .bg-white {
+    /* Nuance 1 — très subtile (recommandée pour démarrer) */
+    background-color: #FBFCFD !important;
+
+    /* Nuance 2 — moyenne (si nuance 1 ne corrige pas assez) */
+    /* background-color: #F8FAFC !important; */
+
+    /* Nuance 3 — forte (si True Tone est très agressif chez le client) */
+    /* background-color: #F5F8FB !important; */
+  }
+}
