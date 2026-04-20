@@ -67,6 +67,8 @@
 
 /* Marge unique : body, header, corps de page et footer partent tous du même bord gauche (alignement parfait) */
 :root {
+  /* Verrouille le schéma de couleur : empêche tout ajustement auto de Safari (mode sombre, Smart Invert, etc.) */
+  color-scheme: only light;
   --header-content-start: 1rem;
   --logo-offset: 2.5rem;
   --logo-image-pull: 0;
@@ -169,6 +171,8 @@ header .content-wrap {
     min-height: 100vh;
     min-height: -webkit-fill-available;
     min-height: 100dvh;
+    /* Force le fond blanc sRGB : évite toute dérive chromatique (Safari iOS P3, True Tone, etc.) */
+    background-color: color(srgb 1 1 1);
   }
 
   body {
@@ -188,6 +192,9 @@ header .content-wrap {
     padding-right: env(safe-area-inset-right, 0);
     -webkit-padding-start: env(safe-area-inset-left, 0);
     -webkit-padding-end: env(safe-area-inset-right, 0);
+    /* Fond blanc sRGB explicite + fallback hex pour navigateurs sans color() */
+    background-color: #ffffff;
+    background-color: color(srgb 1 1 1);
     @apply antialiased;
     font-family: 'Sofia Pro', 'Source Sans 3', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
