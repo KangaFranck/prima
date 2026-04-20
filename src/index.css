@@ -468,13 +468,16 @@ header .content-wrap {
   html,
   body,
   .bg-white {
-    /* Nuance 1 — très subtile (recommandée pour démarrer) */
-    background-color: #FBFCFD !important;
+    /* === MODE DIAGNOSTIC TEMPORAIRE — couleur bleue évidente ===
+       Si le site apparaît bleu clair sur iPhone → le selecteur
+       fonctionne, on repasse aux nuances discrètes.
+       Si le site reste blanc/beige sur iPhone → cache ou specificité,
+       il faut investiguer. */
+    background-color: #CCE5FF !important;
 
-    /* Nuance 2 — moyenne (si nuance 1 ne corrige pas assez) */
-    /* background-color: #F8FAFC !important; */
-
-    /* Nuance 3 — forte (si True Tone est très agressif chez le client) */
-    /* background-color: #F5F8FB !important; */
+    /* Nuances production (réactiver après le test diagnostic) */
+    /* Nuance 1 — très subtile : background-color: #FBFCFD !important; */
+    /* Nuance 2 — moyenne       : background-color: #F8FAFC !important; */
+    /* Nuance 3 — forte         : background-color: #F5F8FB !important; */
   }
 }
